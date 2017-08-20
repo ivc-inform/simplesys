@@ -2,13 +2,11 @@ import java.io.File
 
 import com.simpesys.classutil.ClassFinder
 import com.simpesys.file.util._
-import com.simplesys.log.Logging
 import com.simplesys.common.Strings._
+import com.simplesys.log.Logging
 import org.scalatest.FunSuite
 
-import scala.reflect.internal.util.ScalaClassLoader
 import scala.reflect.internal.util.ScalaClassLoader.URLClassLoader
-import scalax.file.PathSet
 
 class ClassFinderTest extends FunSuite with Logging {
     def assert1(value: Boolean) {
@@ -104,7 +102,6 @@ class ClassFinderTest extends FunSuite with Logging {
     }
 
     test("jar") {
-        import scalax.file.ImplicitConversions._
         import com.simplesys.io._
 
         //val files = ClassFinder(new File("/home/andrew/.ivy2/cache/com.simplesys/joda-wrapper_2.11/jars/joda-wrapper_2.11-1.0.0-SNAPSHOT.jar")).getClasses()

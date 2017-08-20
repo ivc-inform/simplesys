@@ -10,7 +10,7 @@ import scala.collection.JavaConverters._
 import scala.io.Codec._
 import scala.io.Source._
 
-class Properties(protected val proxy: JProperties) extends Logging {
+class Properties(protected val proxy: JProperties = new JProperties()) extends Logging {
     def apply(key: String): String = (proxy get key) toString
 
     def apply(key: String, default: String): String =
@@ -31,9 +31,7 @@ class Properties(protected val proxy: JProperties) extends Logging {
         case (key, value) => (key -> value)
     }.toMap
 
-    def update(key: String, value: String) {
-        proxy put(key, value)
-    }
+    def update(key: String, value: String) = proxy put(key, value)
 
     def propertyNames = proxy keySet
 

@@ -6,7 +6,7 @@ import org.joda
 
 import collection.immutable.SortedMap
 import com.simplesys.log.Logging
-import collection.JavaConversions._
+import collection.JavaConverters._
 import com.simplesys.common._
 import java.util.Date
 
@@ -28,7 +28,7 @@ class HttpSession(protected val proxy: JHttpSession) extends Config with Logging
     def MaxInactiveInterval_=(interval: Long) = proxy setMaxInactiveInterval ((interval / 1000).toInt)
 
     def Attributes: SortedMap[String, Option[Any]] =
-        (proxy.getAttributeNames map {
+        (proxy.getAttributeNames.asScala map {
             case attr: String => attr -> Option(proxy.getAttribute(attr))
         } toMap) To
 

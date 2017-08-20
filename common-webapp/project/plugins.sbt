@@ -1,1 +1,0 @@
-//addSbtPlugin("ru.simplesys" % "transpile-coffeescript" % "1.0.0-SNAPSHOT")

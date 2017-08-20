@@ -33,16 +33,10 @@ if not isc.module_RealtimeMessaging?
 					return
 
 				if executed is true
-					@_reconnect subscribeCallback, event
+					@_reconnect event
+					if subscribeCallback?
+						isc.MessagingSS.fireCallback(subscribeCallback)
 			return
-
-		_emptyChannelsObject: (object) ->
-			if isc.isAn.Object(object) is false
-				return false
-			for own value of object
-				if object.isChannel is true
-					return false
-			return true
 
 		unsubscribe: (channels, unSubscribeCallback, event) ->
 			if channels?
@@ -52,9 +46,9 @@ if not isc.module_RealtimeMessaging?
 				channels.forEach (channel) =>
 					if @_channels[channel]?
 						delete @_channels[channel]
-						return
+					return
 
-				if @_emptyChannelsObject(@_channels) is true
+				if isc.isA.emptyObject(@_channels) is true
 					@disconnect event
 
 				if unSubscribeCallback?
@@ -79,7 +73,7 @@ if not isc.module_RealtimeMessaging?
 
 		disconnect: (event)-> @_cleanup(event); return
 
-		_reconnect: (callback, event) ->
+		_reconnect: (event) ->
 			if isc.Page.isLoaded() isnt true
 				if not @_setLoadEventHandler?
 					_reconnect = -> isc.MessagingSS._reconnect callback
@@ -88,7 +82,7 @@ if not isc.module_RealtimeMessaging?
 					@_setLoadEventHandler = true
 
 			if not @_subscribeReconnectTimer?
-				_connect = -> isc.MessagingSS._connect(callback, event);return
+				_connect = -> isc.MessagingSS._connect(event);return
 				@_subscribeReconnectTimer =
 					isc.Timer.setTimeout(
 						                    _connect,
@@ -111,7 +105,7 @@ if not isc.module_RealtimeMessaging?
 			@checkSimpleSysContextPath()
 			"#{if @simpleSysContextPath? then @simpleSysContextPath else simpleSyS.simpleSysContextPath}Message/Send"
 
-		_connect: (callback, event) ->
+		_connect: (event) ->
 			if not event?
 				event = @_event
 
@@ -120,36 +114,29 @@ if not isc.module_RealtimeMessaging?
 
 			@_cleanup()
 
-			if @getSubscribedChannels().length is 0
-				if callback?
-					isc.MessagingSS.fireCallback callback
-					return
-
 			_url = @messagingSubscribeURL()
 			
-			uriBuilder = isc.URIBuilder.create isc.Page.getURL _url
+			json = isc.JSONSS.encode(@_channels)
+			###console.log "json (cs): #{json}"###
 			
-			data = subscribedChannels: isc.JSONSS.encode @_channels
-
-			for own fieldName, value of data
-				uriBuilder.setQueryParam fieldName, String data[fieldName]
-
+			uriBuilder = isc.URIBuilder.create isc.Page.getURL _url					    			
+			uriBuilder.setQueryParam "subscribedChannels", json
 			uriBuilder.setQueryParam "eventStream", "true"
 
 			if uriBuilder.uri.length > 2000
-				Log.logError "Слишком много каналов, uriBuilder.uri > 2000 символов"
-				return
+				Log.logWarn "URI: #{uriBuilder.uri}"
+				Log.logWarn "URI, БОЛЕЕ 2000 символов, это может быть опвсно"
+				###return###
 
-			##todo В случае необходимости подключения большого кол-ва каналов, необходимо разбиение их на несколько EventSource
+			###todo В случае необходимости подключения большого кол-ва каналов, необходимо разбиение их на несколько EventSource###
 
-			###console.log "URI: #{uriBuilder.uri}"###
+			###console.log "uriBuilder.uri (cs): #{uriBuilder.uri}"###
 			@_es = new EventSource uriBuilder.uri
 
 			@_es.onerror = @_handleEventSourceError
 
-			@_es.addEventListener event, @_message, false
-			if callback?
-				MessagingSS.fireCallback callback
+			###@_es.addEventListener event, @_message, false###
+			@_es.addEventListener event, @_message
 			return
 
 		_message: (message) ->

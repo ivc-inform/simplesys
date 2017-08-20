@@ -15,7 +15,6 @@ import scalaz.{Failure, Success}
 class TestConnect extends FunSuite with BoneCPStack with Logging with BeforeAndAfter {
 
     test("1") {
-
         val ds = OracleDataSource("oracleMFMS")
         val dataSet = UserDS(ds)
 
@@ -56,8 +55,7 @@ class TestConnect extends FunSuite with BoneCPStack with Logging with BeforeAndA
         Close()
     }
 
-    test("2"){
-        println(TextMatchStyle.getObject("substring").toSQL)
-    }
-
+    /*test("2"){
+            println(TextMatchStyle.getObject("substring").toSQL)
+        }*/
 }

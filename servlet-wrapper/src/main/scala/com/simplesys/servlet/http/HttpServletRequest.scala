@@ -1,15 +1,15 @@
 package com.simplesys.servlet.http
 
-import javax.servlet.http.{HttpServletRequest => JHttpServletRequest, Part}
-import com.simplesys.common._
+import java.io.{File, IOException}
+import javax.servlet.http.{Part, HttpServletRequest ⇒ JHttpServletRequest}
+import javax.servlet.{ServletException, ServletRequest ⇒ JServletRequest}
+
 import com.simplesys.common.Strings._
+import com.simplesys.common._
 import com.simplesys.servlet._
-import collection.JavaConversions._
-import java.io.{IOException, File}
-import collection.SortedMap
-import com.simplesys.log.Logger
-import javax.servlet.{ServletException}
-import javax.servlet.{ServletRequest => JServletRequest}
+
+import scala.collection.JavaConverters._
+import scala.collection.SortedMap
 
 object HttpServletRequest {
     def apply(request: JHttpServletRequest): HttpServletRequest = new HttpServletRequest(request)
@@ -30,6 +30,9 @@ object HttpServletRequest {
     val FormAuth = JHttpServletRequest.FORM_AUTH
     val ClientSertAuth = JHttpServletRequest.CLIENT_CERT_AUTH
     val DigestAuth = JHttpServletRequest.DIGEST_AUTH
+
+    implicit def jHttpServletRequest2HttpServletRequest(request: HttpServletRequest): JHttpServletRequest = request.proxy
+    implicit def HttpServletRequest2JHttpServletRequest(request: JHttpServletRequest): HttpServletRequest = new HttpServletRequest(request)
 }
 
 
@@ -38,8 +41,8 @@ class HttpServletRequest(override protected[servlet] val proxy: JHttpServletRequ
     def AuthType = proxy getAuthType
     def DateHeader(name: String) = proxy getDateHeader name
 
-    def Headers(name: String): List[String] = proxy.getHeaders(name).toList
-    def HeadersMap: SortedMap[String, String] = (proxy.getHeaderNames map {
+    def Headers(name: String): List[String] = proxy.getHeaders(name).asScala.toList
+    def HeadersMap: SortedMap[String, String] = (proxy.getHeaderNames.asScala map {
         case header: String => header -> proxy.getHeader(header)
     } toMap).To
 
@@ -132,7 +135,7 @@ class HttpServletRequest(override protected[servlet] val proxy: JHttpServletRequ
     @throws(classOf[IOException])
     @throws(classOf[ServletException])
     @throws(classOf[IllegalStateException])
-    def Parts: List[Part] = proxy.getParts.toList
+    def Parts: List[Part] = proxy.getParts.asScala.toList
 
     @throws(classOf[IOException])
     @throws(classOf[ServletException])

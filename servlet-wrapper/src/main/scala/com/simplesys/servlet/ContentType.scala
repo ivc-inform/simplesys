@@ -11,6 +11,10 @@ sealed abstract trait Content {
     def +(codec: Codec) = ContentType(this, codec)
 }
 
+object ContentType {
+    implicit def ct2Opt(ct: Content): Option[Content] = Some(ct)
+}
+
 case class ContentType(content: Content, codec: Codec) extends Content {
     override def toString: String = {
         content.toString + ";".space + s"charset=${codec.toString()}"

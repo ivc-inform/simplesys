@@ -13,7 +13,7 @@ import com.simplesys.servlet.http.HttpServletRequest
 import com.simplesys.servlet.http.sse.SseServletRequest
 import com.simplesys.xml.Elem
 
-import scala.collection.JavaConversions._
+import scala.collection.JavaConverters._
 import scala.collection.immutable.SortedMap
 import scala.io.Codec._
 import scala.io.{Codec, Source}
@@ -21,6 +21,9 @@ import scala.xml.XML
 
 object ServletRequest {
     def apply(request: JServletRequest) = new ServletRequest(request)
+
+    implicit def jServletRequest2ServletRequest(request: ServletRequest): JServletRequest = request.proxy
+    implicit def servletRequest2JServletRequest(request: JServletRequest): JServletRequest = new ServletRequest(request)
 }
 
 class ServletRequest(protected[servlet] val proxy: JServletRequest) extends Logging {
@@ -37,12 +40,12 @@ class ServletRequest(protected[servlet] val proxy: JServletRequest) extends Logg
     def RequestDispatcher(path: String) = new RequestDispatcher(proxy getRequestDispatcher (path))
 
     def Parameters: SortedMap[String, Option[String]] =
-        (proxy.getParameterNames map {
+        (proxy.getParameterNames.asScala map {
             case param: String => param -> Parameter(param)
         } toMap) To
 
     def Attributes: SortedMap[String, Option[Any]] =
-        (proxy.getAttributeNames map {
+        (proxy.getAttributeNames.asScala map {
             case attr: String => attr -> Attribute(attr)
         } toMap) To
 
@@ -130,7 +133,7 @@ class ServletRequest(protected[servlet] val proxy: JServletRequest) extends Logg
     def LocalAddr = proxy getLocalAddr
     def Locale = proxy getLocale
     def LocalName = proxy getLocalName
-    def Locales: List[Locale] = proxy.getLocales.toList
+    def Locales: List[Locale] = proxy.getLocales.asScala.toList
     def LocalPort = proxy getLocalPort
     def Protocol = proxy getProtocol
     def RemoteAddr = proxy getRemoteAddr
@@ -143,7 +146,7 @@ class ServletRequest(protected[servlet] val proxy: JServletRequest) extends Logg
 
     lazy val InputStream: String = Source.fromInputStream(proxy.getInputStream)(UTF8).getLines() mkString
 
-    def ParameterMap: Map[String, Array[String]] = proxy.getParameterMap.toMap
+    def ParameterMap: Map[String, Array[String]] = proxy.getParameterMap.asScala.toMap
     @throws(classOf[IOException])
     def Reader = proxy getReader
 

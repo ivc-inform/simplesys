@@ -1,7 +1,6 @@
 package com.simplesys.isc.system.typesDyn
 
 import ru.simplesys.coreutil.SealedEnumRuntime
-import com.simplesys.common.Strings._
 
 sealed abstract trait TextMatchStyle {
     def toSQL: String
@@ -36,7 +35,7 @@ case object txtMchStyleStartWith extends TextMatchStyle {
 }
 
 object TextMatchStyle {
-    private val values = SealedEnumRuntime.values[TextMatchStyle]
+    val values = SealedEnumRuntime.values[TextMatchStyle]
     private val mappedKeys: Map[String, TextMatchStyle] = values.map(x => (x.toString, x))(collection.breakOut)
     def getObject(objName: String): TextMatchStyle = mappedKeys(objName)
 }

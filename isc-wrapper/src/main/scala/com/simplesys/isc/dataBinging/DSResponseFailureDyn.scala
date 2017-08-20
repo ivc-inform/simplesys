@@ -15,6 +15,9 @@ class DSResponseFailureDyn(error: Throwable, status: Int = RPCResponseDyn.status
     val stackTrace = new StringWriter()
     error.printStackTrace(new PrintWriter(stackTrace))
 
+    logger error s"message: ${error.getMessage}"
+    logger error s"stackTrace: ${stackTrace.toString}"
+
     Data = JsonObject("error" ->
       JsonObject(
           ("message" -> error.getMessage),
@@ -30,6 +33,9 @@ class DSResponseFailureExDyn(result: ValidationEx[_], _status: Int = RPCResponse
 
         case Some(ValidationResult(message, stackTrace)) =>
             Status = _status
+
+            logger error s"message: $message"
+            logger error s"stackTrace: $stackTrace"
 
             Data = JsonObject("error" ->
               JsonObject(
@@ -50,6 +56,9 @@ class DSResponseFailureNelExDyn(result: ValidationNelEx[_], status: Int = RPCRes
 
             Data = JsonObject("error" -> JsonList(list.list.map {
                 case ValidationResult(message, stackTrace) =>
+                    logger error s"message: $message"
+                    logger error s"stackTrace: $stackTrace"
+
                     JsonObject(
                         ("message" -> message),
                         ("stackTrace" -> stackTrace))

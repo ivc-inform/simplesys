@@ -39,7 +39,7 @@ trait AkkaMap {
                 onSystemDestroy(system, endpoints)
                 //endpoints.close()
                 //system.terminate()
-                system.awaitTermination()
+                system.terminate()
         }
         _httpSystem = None
     }

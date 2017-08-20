@@ -19,7 +19,9 @@ object SealedEnumRuntime {
             throw new RuntimeException("Can only enumerate values of a sealed trait or class.")
         else {
             val children = symbol.asClass.knownDirectSubclasses.toList
-            children.filter(_.isModuleClass).map(x => rm.reflectModule(x.companionSymbol.asModule).instance.asInstanceOf[T]).toSet
+            // companionSymbol не убирать !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            val res = children.filter(_.isModuleClass).map(x => rm.reflectModule(x.companionSymbol.asModule).instance.asInstanceOf[T]).toSet
+            res
         }
     }
 }

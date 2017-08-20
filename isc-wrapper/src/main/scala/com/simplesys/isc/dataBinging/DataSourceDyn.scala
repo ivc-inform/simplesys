@@ -2,8 +2,7 @@ package com.simplesys.isc.dataBinging
 
 import java.sql.Connection
 
-import com.simplesys.SQL.Gen.SQLTable
-import com.simplesys.bonecp.BoneCPDataSource
+import com.simplesys.db.pool.PoolDataSource
 import com.simplesys.isc.dataBinging.dataSource.OperationBindingDyn
 import com.simplesys.isc.system.misc._
 import com.simplesys.isc.system.typesDyn._
@@ -36,7 +35,7 @@ class DataSourceDyn(override val inJson: JsonObject = null,
         _tableName = value
     }
 
-    def MakeFields(tableName: String)(implicit connection: Connection, dataSource: BoneCPDataSource): ArrayDyn[DataSourceFieldDyn] = {
+    def MakeFields(tableName: String)(implicit connection: Connection, dataSource: PoolDataSource): ArrayDyn[DataSourceFieldDyn] = {
         Fields
     }
 

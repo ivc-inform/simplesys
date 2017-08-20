@@ -1,10 +1,10 @@
 package com.simplesys.bonecp
 
-import com.jolbox.bonecp.{BoneCPDataSource => JBoneCPDataSource}
-import java.sql.{ResultSet, Connection}
+import java.sql.{Connection, ResultSet}
+
+import com.jolbox.bonecp.{BoneCPDataSource ⇒ JBoneCPDataSource}
 import com.simplesys.log.Logging
-import com.simplesys.sql.{OracleDialect, SQLDialect}
-import ch.qos.logback.core.db.dialect.PostgreSQLDialect
+import com.simplesys.sql.SQLDialect
 import doobie.util.transactor.DataSourceTransactor
 
 import scalaz.concurrent.Task
@@ -20,7 +20,7 @@ class BoneCPDataSource(/*protected[bonecp]*/ val proxy: JBoneCPDataSource, val c
 
     def Close() = proxy.close()
 
-    val DoobieDataSourceTransactor: DataSourceTransactor[Task, JBoneCPDataSource] = DataSourceTransactor[Task](proxy)
+    lazy val DoobieDataSourceTransactor: DataSourceTransactor[Task, JBoneCPDataSource] = DataSourceTransactor[Task](proxy)
 
     def Connection: Connection = {
         val connection = proxy.getConnection

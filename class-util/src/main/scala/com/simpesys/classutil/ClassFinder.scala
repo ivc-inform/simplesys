@@ -1,14 +1,14 @@
 package com.simpesys.classutil
 
 import java.io.File
-import java.util.jar.{JarFile, Manifest => JarManifest}
+import java.util.jar.{JarFile, Manifest ⇒ JarManifest}
 import java.util.zip.{ZipEntry, ZipFile}
 
 import com.simpesys.file.util._
+import com.simplesys.file.{Path, PathSet}
 import com.simplesys.log.Logging
 
 import scala.reflect.runtime.universe._
-import scalax.file.{Path, PathSet}
 
 object ClassFinder {
 
@@ -153,10 +153,10 @@ class ClassFinder(val path: Seq[File]) extends Logging {
     }
 
     private def processZip(file: File): Stream[Option[ClassSymbol]] = {
-        import scala.collection.JavaConversions._
+        import scala.collection.JavaConverters._
         val zipFile = new ZipFile(file)
 
-        zipFile.entries.
+        zipFile.entries.asScala.
           toStream.
           filter((entry: ZipEntry) => isClass(entry)).
           map {

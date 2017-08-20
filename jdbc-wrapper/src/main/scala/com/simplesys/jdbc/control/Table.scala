@@ -1,29 +1,25 @@
 package com.simplesys.jdbc.control
 
-import java.io.{ByteArrayInputStream, InputStream, StringReader}
-import java.util.{Date => JDate}
+import java.io.{InputStream, StringReader}
+import java.sql.{Connection, Date, PreparedStatement, ResultSet, SQLException, Timestamp}
+import java.util.{Date ⇒ JDate}
 
-import com.simplesys.log.Logging
+import com.simplesys.SQL.Gen._
 import com.simplesys.common.Strings._
+import com.simplesys.common.array.{NotValue, toArray}
+import com.simplesys.db.pool.PoolDataSource
+import com.simplesys.isc.system.typesDyn.IsInList
+import com.simplesys.jdbc.control.SessionStructures._
+import com.simplesys.jdbc.control.TableSuperTuple._
+import com.simplesys.jdbc.control.table._
+import com.simplesys.log.Logging
+import com.simplesys.sql.{OracleDialect, SQLDialect}
 import com.simplesys.tuple.{TupleSS1, TupleSS2}
 import org.joda.time._
-import com.simplesys.bonecp.BoneCPDataSource
+import ru.simplesys.meta.types.{VarcharDataType, _}
 
-import scala.reflect.ClassTag
 import scala.language.experimental.macros
-import ru.simplesys.meta.types._
-
-import scala.Some
-import ru.simplesys.meta.types.VarcharDataType
-import com.simplesys.jdbc.control.SessionStructures._
-import com.simplesys.jdbc.control.table._
-import java.sql.{Connection, Date, Timestamp, PreparedStatement, ResultSet, SQLException}
-
-import com.simplesys.common.array.{NotValue, toArray}
-import com.simplesys.SQL.Gen._
-import com.simplesys.sql.{OracleDialect, SQLDialect}
-import com.simplesys.isc.system.typesDyn.IsInList
-import com.simplesys.jdbc.control.TableSuperTuple._
+import scala.reflect.ClassTag
 
 trait Table[T <: Table[T]] extends Entity[T] with Logging {
     top =>
@@ -520,7 +516,7 @@ trait Table[T <: Table[T]] extends Entity[T] with Logging {
         val ps = PrepareSelect(columns, where, orderBy)
 
         session(dataSource) {
-            connection => prepareStatement(connection, ps._1.toSQL(), dataSource.Config.FetchSize) {
+            connection => prepareStatement(connection, ps._1.toSQL(), dataSource.settings.fetchSize) {
                 preparedStatement =>
                     var idx = 1
                     ps._2.foreach {
@@ -541,7 +537,7 @@ trait Table[T <: Table[T]] extends Entity[T] with Logging {
         val ps = PrepareSelect(columns, where, orderBy)
 
         session(dataSource) {
-            connection => prepareStatement(connection, ps._1.toSQL(), dataSource.Config.FetchSize) {
+            connection => prepareStatement(connection, ps._1.toSQL(), dataSource.settings.fetchSize) {
                 preparedStatement =>
                     var idx = 1
                     ps._2.foreach {
@@ -627,7 +623,7 @@ trait Table[T <: Table[T]] extends Entity[T] with Logging {
         logger.trace(newLine + s"Constructed sqlInsert is: ${newLine + sqlInsert.toInsertSQL()}")
 
         transaction(dataSource) {
-            connection => prepareStatement(connection, sqlInsert.toInsertSQL(), dataSource.Config.FetchSize) {
+            connection => prepareStatement(connection, sqlInsert.toInsertSQL(), dataSource.settings.fetchSize) {
                 statement =>
                     batch4Insert(statement = statement, values)
                     statement.executeBatch().toList
@@ -666,7 +662,7 @@ trait Table[T <: Table[T]] extends Entity[T] with Logging {
             throw new SQLException("Connection is not valid.")
 
 
-        prepareStatement(connection, sqlInsert.toInsertSQL(), dataSource.Config.FetchSize) {
+        prepareStatement(connection, sqlInsert.toInsertSQL(), dataSource.settings.fetchSize) {
             statement =>
                 PrepareInsert(values = values, statement = statement)
                 statement.executeBatch().toList
@@ -708,7 +704,7 @@ trait Table[T <: Table[T]] extends Entity[T] with Logging {
 
     def update(setters: SetParam, where: WhereParam = null): ValidationEx[List[Int]] = {
         transaction(dataSource) {
-            connection => prepareStatement(connection, MakeUpdateSQL(setters, where), dataSource.Config.FetchSize) {
+            connection => prepareStatement(connection, MakeUpdateSQL(setters, where), dataSource.settings.fetchSize) {
                 preparedStatement =>
                     batch4Update(preparedStatement = preparedStatement, setters = setters, where = where)
                     preparedStatement.executeBatch().toList
@@ -719,7 +715,7 @@ trait Table[T <: Table[T]] extends Entity[T] with Logging {
     def updateWithoutCommit(connection: Connection, setters: SetParam, where: WhereParam = null): List[Int] = {
         val updateStr = MakeUpdateSQL(setters, where)
 
-        prepareStatement(connection, updateStr, dataSource.Config.FetchSize) {
+        prepareStatement(connection, updateStr, dataSource.settings.fetchSize) {
             preparedStatement =>
                 batch4Update(preparedStatement = preparedStatement, setters = setters, where = where)
                 preparedStatement.executeBatch().toList
@@ -754,7 +750,7 @@ trait Table[T <: Table[T]] extends Entity[T] with Logging {
 
     def delete(where: WhereParam = null): ValidationEx[List[Int]] = {
         transaction(dataSource) {
-            connection => prepareStatement(connection, MakeDeleteSQL(where), dataSource.Config.FetchSize) {
+            connection => prepareStatement(connection, MakeDeleteSQL(where), dataSource.settings.fetchSize) {
                 statement =>
                     batch4Delete(statement = statement, where = where)
                     statement.executeBatch().toList
@@ -787,7 +783,7 @@ trait Table[T <: Table[T]] extends Entity[T] with Logging {
     }
 
     def deleteWithoutCommit(connection: Connection, where: WhereParam = null): List[Int] = {
-        prepareStatement(connection, MakeDeleteSQL(where), dataSource.Config.FetchSize) {
+        prepareStatement(connection, MakeDeleteSQL(where), dataSource.settings.fetchSize) {
             statement =>
                 batch4Delete(statement = statement, where = where)
                 statement.executeBatch().toList
@@ -811,6 +807,6 @@ trait Table[T <: Table[T]] extends Entity[T] with Logging {
         statement.executeBatch().toList
     }
 
-    protected def dataSource: BoneCPDataSource
+    protected def dataSource: PoolDataSource
 }
 

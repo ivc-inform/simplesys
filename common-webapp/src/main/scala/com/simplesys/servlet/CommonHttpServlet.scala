@@ -2,11 +2,10 @@ package com.simplesys.servlet
 
 import akka.actor.{ActorSystem, PoisonPill}
 import com.simplesys.akka.http.Endpoints._
-import com.simplesys.akka.http.{Endpoint, AkkaHttpMapServlet, DynamicEndpoints, EndpointsAgentMap}
+import com.simplesys.akka.http.{AkkaHttpMapServlet, DynamicEndpoints, Endpoint, EndpointsAgentMap}
 import com.simplesys.log.Logging
 
 import scala.collection.mutable.Map
-import scala.reflect.runtime.{universe => ru}
 
 class CommonHttpServlet extends AkkaHttpMapServlet with DynamicEndpoints with Logging {
 

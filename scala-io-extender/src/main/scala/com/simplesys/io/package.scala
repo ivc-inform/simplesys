@@ -4,14 +4,17 @@ import java.io.{File, PrintWriter, StringWriter}
 import java.net.URI
 import javax.xml.transform.stream.StreamSource
 
+import com.simplesys.file.{Path, PathSet}
 import com.simplesys.log.Logging
 
 import scala.collection.mutable.ArrayBuffer
+import scala.concurrent.ExecutionContext
 import scala.io.Codec._
 import scala.io.Source
-import scalax.file.{Path, PathSet}
 
 package object io extends Logging {
+    protected[io] lazy val executionContext = ExecutionContext.global
+
     private def _onlyFileName(path: String): String = {
         val res = path.substring(path.lastIndexOf("/") + 1)
         val index = res.indexOf(".")
@@ -91,17 +94,12 @@ package object io extends Logging {
         def onlyFileName: String = _onlyFileName(path.path)
 
         def relativePath = {
-            import scalax.file.ImplicitConversions._
+            import com.simplesys.file.ImplicitConversions._
             path.relativize(new File("."))
         }
     }
 
     implicit class PathSetOpts(ps: PathSet[Path]) {
-        /*def pathes: Seq[String] = {
-            val res = ArrayBuffer.empty[String]
-            ps foreach (res += _.path)
-            res
-        }*/
 
         def log = {
             ps foreach {

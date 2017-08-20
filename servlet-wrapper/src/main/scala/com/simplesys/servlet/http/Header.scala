@@ -4,7 +4,7 @@ import scala.collection.immutable.SortedMap
 import javax.servlet.http.{HttpServletResponse => JHttpServletResponse}
 import com.simplesys.common.Strings._
 import com.simplesys.common._
-import scala.collection.JavaConversions._
+import scala.collection.JavaConverters._
 
 sealed trait Header {
     val name: String
@@ -45,14 +45,14 @@ case class HeaderLocalDateTime(name: String, valuesLDT: Seq[org.joda.time.LocalD
 trait Headers {
     protected val proxy: JHttpServletResponse
 
-    protected lazy val headersMap: SortedMap[String, Seq[String]] = (proxy.getHeaderNames map {
-        case headerName: String => headerName -> proxy.getHeaders(headerName).toSeq.sortWith(_ < _)
+    protected lazy val headersMap: SortedMap[String, Seq[String]] = (proxy.getHeaderNames.asScala map {
+        case headerName: String => headerName -> proxy.getHeaders(headerName).asScala.toSeq.sortWith(_ < _)
     } toMap).To
 
     private def containsHeader(name: String, value: String): Boolean = {
         (proxy containsHeader name) match {
             case false => false
-            case true => proxy.getHeaders(name).exists(_ == value)
+            case true => proxy.getHeaders(name).asScala.exists(_ == value)
         }
     }
 

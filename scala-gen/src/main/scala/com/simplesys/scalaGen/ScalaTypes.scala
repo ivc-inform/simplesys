@@ -91,3 +91,7 @@ case object ScalaResultSet extends AbstractScalaType {
 case object ScalaBoneCPDataSource extends AbstractScalaType {
     def serrialize(indent: Int = 0) = spaces(indent) + "BoneCPDataSource"
 }
+
+case object ScalaPoolDataSource extends AbstractScalaType {
+    def serrialize(indent: Int = 0) = spaces(indent) + "PoolDataSource"
+}

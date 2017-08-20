@@ -8,7 +8,7 @@ import javax.servlet.{ServletException, SessionTrackingMode, FilterRegistration 
 import com.simplesys.common._
 import com.simplesys.log.Logging
 
-import scala.collection.JavaConversions._
+import scala.collection.JavaConverters._
 import scala.collection.SortedMap
 import scala.collection.immutable.SortedSet
 
@@ -21,7 +21,7 @@ object ServletContext {
 class ServletContext(protected[servlet] val proxy: JServletContext) extends Logging {
 
     def Attributes: SortedMap[String, Option[Any]] =
-        (proxy.getAttributeNames map {
+        (proxy.getAttributeNames.asScala map {
             case attr: String => attr -> Attribute(attr)
         } toMap) To
 
@@ -67,10 +67,10 @@ class ServletContext(protected[servlet] val proxy: JServletContext) extends Logg
         proxy removeAttribute name
     }
 
-    def ResourcePaths(path: String): SortedSet[String] = ((proxy getResourcePaths path).toSet) To
+    def ResourcePaths(path: String): SortedSet[String] = ((proxy getResourcePaths path).asScala.toSet) To
 
     def LogResourcePaths(path: String) {
-        (proxy getResourcePaths path) foreach (x => logger trace (s"path: ${x}"))
+        (proxy getResourcePaths path).asScala foreach (x => logger trace (s"path: ${x}"))
     }
 
     def ResourceAsStream(path: String): InputStream = proxy getResourceAsStream path
@@ -108,7 +108,7 @@ class ServletContext(protected[servlet] val proxy: JServletContext) extends Logg
     def ServerInfo = proxy getServerInfo()
 
     def InitParameters: SortedMap[String, Any] =
-        (proxy.getInitParameterNames map {
+        (proxy.getInitParameterNames.asScala map {
             case parameter: String => parameter -> proxy.getInitParameter(parameter)
         } toMap) To
 
@@ -119,19 +119,19 @@ class ServletContext(protected[servlet] val proxy: JServletContext) extends Logg
 
     def ServletContextName = proxy getServletContextName
 
-    def AddServlet(servletName: String, className: String): JServletRegistration.Dynamic = proxy addServlet(servletName, className)
-    def AddServlet(servletName: String, className: String, asynSupport: Boolean, urlPatterns: String*): JServletRegistration.Dynamic = {
-        val res = proxy addServlet(servletName, className)
-        res setAsyncSupported asynSupport
-        urlPatterns foreach (res.addMapping(_))
+    def AddServlet(servletName: String, className: String): Option[JServletRegistration.Dynamic] = Option(proxy addServlet(servletName, className))
+    def AddServlet(servletName: String, className: String, asynSupport: Boolean, urlPatterns: String*): Option[JServletRegistration.Dynamic] = {
+        val res = Option(proxy addServlet(servletName, className))
+        res.foreach(_ setAsyncSupported asynSupport)
+        res.foreach(res ⇒ urlPatterns foreach (res.addMapping(_)))
         res
     }
 
-    def AddServlet[T <: Class[_ <: JServlet]](servletName: String, clazz: T): JServletRegistration.Dynamic = proxy addServlet(servletName, clazz)
-    def AddServlet[T <: Class[_ <: JServlet]](servletName: String, clazz: T, asynSupport: Boolean, urlPatterns: String*): JServletRegistration.Dynamic = {
-        val res = proxy addServlet(servletName, clazz)
-        res setAsyncSupported asynSupport
-        urlPatterns foreach (res.addMapping(_))
+    def AddServlet[T <: Class[_ <: JServlet]](servletName: String, clazz: T): Option[JServletRegistration.Dynamic] = Option(proxy addServlet(servletName, clazz))
+    def AddServlet[T <: Class[_ <: JServlet]](servletName: String, clazz: T, asynSupport: Boolean, urlPatterns: String*): Option[JServletRegistration.Dynamic] = {
+        val res = Option(proxy addServlet(servletName, clazz))
+        res.foreach(_ setAsyncSupported asynSupport)
+        res.foreach(res ⇒ urlPatterns foreach (res.addMapping(_)))
         res
     }
 
@@ -139,7 +139,7 @@ class ServletContext(protected[servlet] val proxy: JServletContext) extends Logg
     def CreateServlet[T <: JServlet](c: Class[T]) = proxy createServlet c
 
     def ServletRegistration(servletName: String): JServletRegistration = proxy getServletRegistration servletName
-    def ServletRegistrations: Map[String, _ <: JServletRegistration] = proxy.getServletRegistrations.toMap
+    def ServletRegistrations: Map[String, _ <: JServletRegistration] = proxy.getServletRegistrations.asScala.toMap
 
     def AddFilter(filterName: String, className: String): JFilterRegistration.Dynamic = proxy addFilter(filterName, className)
     def AddFilter(filterName: String, filter: Filter): JFilterRegistration.Dynamic = proxy addFilter(filterName, filter)
@@ -149,18 +149,18 @@ class ServletContext(protected[servlet] val proxy: JServletContext) extends Logg
     def CreateFilter[T <: Filter](c: Class[T]) = proxy createFilter (c)
 
     def FilterRegistration(filterName: String): JFilterRegistration = proxy getFilterRegistration filterName
-    def FilterRegistrations: Map[String, _ <: JFilterRegistration] = proxy.getFilterRegistrations.toMap
+    def FilterRegistrations: Map[String, _ <: JFilterRegistration] = proxy.getFilterRegistrations.asScala.toMap
 
     def SessionCookieConfig = proxy getSessionCookieConfig()
 
     @throws(classOf[IllegalStateException])
     @throws(classOf[IllegalArgumentException])
     def SessionTrackingModes(sessionTrackingModes: Set[SessionTrackingMode]) {
-        proxy setSessionTrackingModes sessionTrackingModes
+        proxy setSessionTrackingModes sessionTrackingModes.asJava
     }
 
-    def DefaultSessionTrackingModes: SortedSet[SessionTrackingMode] = proxy.getDefaultSessionTrackingModes.toSet.To
-    def EffectiveSessionTrackingModes: SortedSet[SessionTrackingMode] = proxy.getEffectiveSessionTrackingModes.toSet.To
+    def DefaultSessionTrackingModes: SortedSet[SessionTrackingMode] = proxy.getDefaultSessionTrackingModes.asScala.toSet.To
+    def EffectiveSessionTrackingModes: SortedSet[SessionTrackingMode] = proxy.getEffectiveSessionTrackingModes.asScala.toSet.To
     def AddListener(className: String) {
         proxy addListener className
     }

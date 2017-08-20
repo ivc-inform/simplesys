@@ -25,9 +25,8 @@ import com.simplesys.xml.factory.XMLLoader
 
 import scala.annotation.StaticAnnotation
 import scala.collection.mutable.ListBuffer
-import scala.io.Codec
 import scala.reflect.runtime.universe._
-import scala.reflect.runtime.{universe => ru}
+import scala.reflect.runtime.{universe ⇒ ru}
 
 object CommonWebAppListener extends Logging {
     def minPath(paths: Seq[String], path: String): String = {
@@ -232,6 +231,9 @@ trait CommonWebAppListener extends ServletContextListener with ServletContextIni
 
                     val classSymbol = ru.typeOf[C].typeSymbol.asClass
                     val className = classSymbol.fullName
+
+                    logger trace (s"servletName: $servletName, className: $className, servletesPath: $servletesPath")
+
                     sce.ServletContext.AddServlet(servletName, className, true, servletesPath) match {
                         case null ⇒
                             logger error newLine.newLine + s"Not Regitred servlet: $servletName ($className), with actors: ${providerMap.map(_._1).toSeq.sortWith(_ < _).mkString(newLine.newLine + "[".newLine, newLine, s"${newLine}]:${providerMap.size}")}".newLine
@@ -254,7 +256,7 @@ trait CommonWebAppListener extends ServletContextListener with ServletContextIni
             schemasFiles.foreach {
                 file =>
                     val componentName = file.getName.replace(".ds.xml", "")
-                    val json = Xml.getJS(loadFile(file)(Codec.UTF8), componentName, getBoolean("app.jsonSchemaPrettyPrint")).trim
+                    val json = Xml.getJS(loadFile(file)(scala.io.Codec.UTF8), componentName, getBoolean("app.jsonSchemaPrettyPrint")).trim
 
                     if (json != "") {
                         list += JsonObject("component" -> componentName, "jsonStr" -> json)
