@@ -5,6 +5,7 @@ import com.simplesys.akka.http.Endpoints._
 import com.simplesys.akka.http.{AkkaHttpMapServlet, DynamicEndpoints, Endpoint, EndpointsAgentMap}
 import com.simplesys.log.Logging
 
+import scala.collection.mutable
 import scala.collection.mutable.Map
 
 class CommonHttpServlet extends AkkaHttpMapServlet with DynamicEndpoints with Logging {
@@ -12,8 +13,8 @@ class CommonHttpServlet extends AkkaHttpMapServlet with DynamicEndpoints with Lo
     protected lazy val providerMap: ProviderMap = ServletContext.Attribute("ProviderMap" + ServletConfig.ServletName) match {
         case None =>
             Map.empty[String, Endpoint]
-        case Some(providerMapSeq: ProviderMap) =>
-            providerMapSeq
+        case Some(providerMapSeq: mutable.Map[_, _]) =>
+            providerMapSeq.asInstanceOf[ProviderMap]
         case any =>
             logger warn s"ProviderMap not exist type: $any"
             Map.empty[String, Endpoint]

@@ -2,7 +2,7 @@ import sbt.Setting
 
 object CommonSettings {
   object settingValues {
-    val baseVersion = "1.3"
+    val baseVersion = "1.4"
 
     val organization = "com.simplesys.core"
     val scalacOptions = Seq(

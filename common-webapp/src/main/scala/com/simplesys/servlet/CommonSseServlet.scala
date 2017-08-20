@@ -13,8 +13,15 @@ class CommonSseServlet extends AkkaSseMapServlet with DynamicEndpoints with Logg
     protected lazy val providerMap: ProviderMap = ServletContext.Attribute("ProviderMap" + ServletConfig.ServletName) match {
         case None =>
             Map.empty[String, Endpoint]
-        case Some(providerMapSeq: ProviderMap) =>
-            providerMapSeq
+        case Some(providerMapSeq) ⇒
+            providerMap match {
+                case providerMapSeq: ProviderMap ⇒
+                    providerMapSeq
+                case any =>
+                    logger warn s"ProviderMap not exist type: $any"
+                    Map.empty[String, Endpoint]
+
+            }
         case any =>
             logger warn s"ProviderMap not exist type: $any"
             Map.empty[String, Endpoint]
