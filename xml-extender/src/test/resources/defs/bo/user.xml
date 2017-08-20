@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<objectSchema xmlns="http://simpleSys.ru/xml/library/bo" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://simpleSys.ru/xml/library/bo schema.xsd">
+  <group prefix="A" name="user" caption="Пользователи и доступа">
+    <classes>
+
+      <classSimple name="User" autoTableMapping="true" caption="Пользователи">
+        <attrs>
+          <attr name="di" type="di" mandatory="true"/>
+          <attr name="login" type="sCode" caption="Логин" mandatory="true"/>
+          <attr name="firstName" caption="Имя" type="sCaption" mandatory="false"/>
+          <attr name="secondName" caption="Отчество" type="sCaption" mandatory="false"/>
+          <attr name="lastName" caption="Фамилия" type="sCaption" mandatory="true"/>
+          <attr name="caption" type="sCaption" caption="Имя пользователя" mandatory="true" calculated="true" formula="lastName + firstName.map(&quot; &quot; + _).getOrElse(&quot;&quot;) + secondName.map(&quot; &quot; + _).getOrElse(&quot;&quot;)"/>
+          <attr name="password" type="sCode" caption="Пароль" mandatory="true"/>
+        </attrs>
+        <constraints>
+          <uc uniqueType="pk">
+            <attrName>di</attrName>
+          </uc>
+          <uc uniqueType="uq">
+            <attrName>login</attrName>
+          </uc>
+        </constraints>
+      </classSimple>
+
+    </classes>
+
+  </group>
+</objectSchema>

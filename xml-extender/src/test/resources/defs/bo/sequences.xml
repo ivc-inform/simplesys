@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objectSchema xmlns="http://simpleSys.ru/xml/library/bo" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://simpleSys.ru/xml/library/bo schema.xsd">
+  <group prefix="SVC" name="systemservice" caption="Сиквенсы и прочее">
+    <classes>
+      <classSimple name="SeqGenerator" autoTableMapping="true" caption="Учет последовательных идентификаторов (ID)">
+        <attrs>
+          <attr name="nameSeq" type="sCode" mandatory="true"/>
+          <attr name="maxValue" type="nInt" mandatory="true"/>
+        </attrs>
+        <constraints>
+          <uc uniqueType="pk">
+            <attrName>nameSeq</attrName>
+          </uc>
+        </constraints>
+      </classSimple>
+    </classes>
+  </group>
+</objectSchema>

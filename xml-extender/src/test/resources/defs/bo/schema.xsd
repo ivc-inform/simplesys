@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0.0" targetNamespace="http://simpleSys.ru/xml/library/bo" xmlns="http://simpleSys.ru/xml/library/bo" attributeFormDefault="unqualified" elementFormDefault="qualified">
+
+  <xs:simpleType name="domain">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="di"/>
+      <xs:enumeration value="id"/>
+      <xs:enumeration value="ss"/>
+      <xs:enumeration value="bBoolean"/>
+      <xs:enumeration value="dDate"/>
+      <xs:enumeration value="dDateOptTime"/>
+      <xs:enumeration value="dDateTime"/>
+      <xs:enumeration value="dTimestamp"/>
+      <xs:enumeration value="dTimestampWithTZ"/>
+      <xs:enumeration value="sCode"/>
+      <xs:enumeration value="sCaption"/>
+      <xs:enumeration value="sDescription"/>
+      <xs:enumeration value="sBarCode"/>
+      <xs:enumeration value="sPostalIndex"/>
+      <xs:enumeration value="sAddress"/>
+      <xs:enumeration value="sPhone"/>
+      <xs:enumeration value="sEMail"/>
+      <xs:enumeration value="sURL"/>
+      <xs:enumeration value="sURLDomain"/>
+      <xs:enumeration value="nInt"/>
+      <xs:enumeration value="fDouble"/>
+      <xs:enumeration value="fSum"/>
+      <xs:enumeration value="fPrice"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="hierarchyMapping">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="oneTablePerHierarchy"/>
+      <xs:enumeration value="tablePerClass"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="uniqueList">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="pk"/>
+      <xs:enumeration value="uq"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="linkList">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="assoc"/>
+      <xs:enumeration value="refIsOwned"/>
+      <xs:enumeration value="refIsOwner"/>
+      <xs:enumeration value="refIsParent"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:element name="objectSchema">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element type="groupType" name="group" maxOccurs="unbounded" minOccurs="1"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+
+  <xs:complexType name="groupType">
+    <xs:sequence>
+      <xs:element type="classesType" name="classes" minOccurs="0" maxOccurs="1"/>
+      <xs:element type="tablesType" name="tables" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute type="xs:string" name="prefix" use="required"/>
+    <xs:attribute type="xs:string" name="name" use="required"/>
+    <xs:attribute type="xs:string" name="caption" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="classesType">
+    <xs:sequence>
+      <xs:element type="classSimpleType" name="classSimple" maxOccurs="unbounded" minOccurs="0"/>
+      <xs:element type="systemEnumClassType" name="classEnum" maxOccurs="unbounded" minOccurs="0"/>
+      <xs:element type="classInHierarchyType" name="classInHierarchy" maxOccurs="unbounded" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="tablesType">
+    <xs:sequence>
+      <xs:element type="tableType" name="table" maxOccurs="unbounded" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="tableType">
+    <xs:sequence>
+      <xs:element type="columnsType" name="columns" maxOccurs="1" minOccurs="1"/>
+      <xs:element type="constraintsType" name="constraints" maxOccurs="1" minOccurs="1"/>
+    </xs:sequence>
+    <xs:attributeGroup ref="basicTableGroup"/>
+  </xs:complexType>
+
+
+  <xs:attributeGroup name="basicTableGroup">
+    <xs:attribute type="xs:string" name="name" use="required"/>
+    <xs:attribute type="xs:boolean" name="useNameAsIs" use="optional"/>
+  </xs:attributeGroup>
+
+  <xs:complexType name="columnsType">
+    <xs:sequence>
+      <xs:element type="columnType" name="column" maxOccurs="unbounded" minOccurs="1"/>
+    </xs:sequence>
+  </xs:complexType>
+
+
+  <xs:complexType name="columnType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:string" name="name" use="required"/>
+        <xs:attribute type="xs:string" name="caption" use="optional"/>
+        <xs:attribute type="domain" name="type" use="required"/>
+        <xs:attribute type="xs:boolean" name="mandatory" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+
+  <xs:attributeGroup name="basicClassGroup">
+    <xs:attribute type="xs:string" name="name" use="required"/>
+    <xs:attribute type="xs:string" name="caption" use="optional"/>
+    <xs:attribute type="xs:boolean" name="autoTableMapping" use="required"/>
+  </xs:attributeGroup>
+
+
+  <xs:attributeGroup name="hierarchyGroup">
+    <xs:attribute type="hierarchyMapping" name="hierarchyMapping" use="optional"/>
+    <xs:attribute type="xs:string" name="discriminatorField" use="optional"/>
+  </xs:attributeGroup>
+
+  <xs:attributeGroup name="refToParentGroup">
+    <xs:attribute type="xs:string" name="parent" use="optional"/>
+    <xs:attribute type="xs:string" name="parentGroup" use="optional"/>
+    <xs:attribute type="xs:string" name="discriminatorValue" use="optional"/>
+  </xs:attributeGroup>
+
+
+  <xs:complexType name="classSimpleType">
+    <xs:sequence>
+      <xs:element type="attrsType" name="attrs" maxOccurs="1" minOccurs="0"/>
+      <xs:element type="constraintsType" name="constraints" maxOccurs="1" minOccurs="1"/>
+    </xs:sequence>
+    <xs:attributeGroup ref="basicClassGroup"/>
+  </xs:complexType>
+
+  <xs:complexType name="classInHierarchyType">
+    <xs:sequence>
+      <xs:element type="childClassType" name="referenceToParent" maxOccurs="1" minOccurs="0"/>
+      <xs:element type="parentClassType" name="hierarchySettings" maxOccurs="1" minOccurs="0"/>
+      <xs:element type="attrsType" name="attrs" maxOccurs="1" minOccurs="0"/>
+      <xs:element type="constraintsForHierarchiesType" name="constraints" maxOccurs="1" minOccurs="0"/>
+    </xs:sequence>
+    <xs:attributeGroup ref="basicClassGroup"/>
+    <xs:attribute type="xs:boolean" name="abstract" use="optional"/>
+  </xs:complexType>
+
+
+  <xs:complexType name="childClassType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attributeGroup ref="refToParentGroup"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="parentClassType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attributeGroup ref="hierarchyGroup"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="attrType">
+    <xs:sequence>
+      <xs:element type="valueType" name="value" maxOccurs="unbounded" minOccurs="0"/>
+    </xs:sequence>
+    <xs:attribute type="xs:string" name="name" use="required"/>
+    <xs:attribute type="domain" name="type" use="required"/>
+    <xs:attribute type="xs:boolean" name="mandatory" use="required"/>
+    <xs:attribute type="xs:boolean" name="calculated" use="optional"/>
+    <xs:attribute type="xs:string" name="formula" use="optional"/>
+    <xs:attribute type="xs:boolean" name="isSimpleEnum" use="optional"/>
+    <xs:attribute name="useInDataSorces" type="xs:boolean" use="optional"/>
+    <xs:attributeGroup ref="attrTypeAttributeGroup"/>
+  </xs:complexType>
+
+
+  <xs:complexType name="attrsType">
+    <xs:sequence>
+      <xs:element type="attrType" name="attr" maxOccurs="unbounded" minOccurs="1"/>
+    </xs:sequence>
+  </xs:complexType>
+
+
+  <xs:complexType name="valueType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:string" name="key" use="required"/>
+        <xs:attribute type="xs:string" name="name" use="required"/>
+        <xs:attribute type="xs:string" name="caption" use="required"/>
+        <xs:attribute type="xs:string" name="description" use="optional"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="systemEnumClassType">
+    <xs:sequence>
+      <xs:element type="valueType" name="value" maxOccurs="unbounded" minOccurs="1"/>
+    </xs:sequence>
+    <xs:attributeGroup ref="basicClassGroup"/>
+    <xs:attribute type="xs:string" name="keyAttr" use="required"/>
+    <xs:attribute type="xs:string" name="nameAttr" use="required"/>
+    <xs:attribute type="xs:string" name="captionAttr" use="required"/>
+    <xs:attribute type="xs:string" name="descriptionAttr" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="constraintsType">
+    <xs:sequence>
+      <xs:element type="uniqueType" name="uc" maxOccurs="unbounded" minOccurs="1"/>
+      <xs:element type="foreignType" name="fk" maxOccurs="unbounded" minOccurs="0"/>
+      <!--            <xs:element type="foreignTypeWeak" name="fkWeak" maxOccurs="unbounded" minOccurs="0"/>-->
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="constraintsForHierarchiesType">
+    <xs:sequence>
+      <xs:element type="uniqueType" name="uc" maxOccurs="unbounded" minOccurs="0"/>
+      <xs:element type="foreignType" name="fk" maxOccurs="unbounded" minOccurs="0"/>
+      <!--            <xs:element type="foreignTypeWeak" name="fkWeak" maxOccurs="unbounded" minOccurs="0"/>-->
+    </xs:sequence>
+  </xs:complexType>
+
+
+  <xs:attributeGroup name="constraintGroup">
+    <xs:attribute type="xs:string" name="name" use="optional"/>
+    <!--
+        <xs:attribute type="xs:string" name="suffix" use="optional"/>
+-->
+  </xs:attributeGroup>
+
+  <xs:complexType name="uniqueType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="attrName" maxOccurs="unbounded" minOccurs="1"/>
+    </xs:sequence>
+    <xs:attributeGroup ref="constraintGroup"/>
+    <xs:attribute type="uniqueList" name="uniqueType" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="foreignType">
+    <xs:sequence>
+      <xs:element type="foreignFieldType" name="mapping" maxOccurs="unbounded" minOccurs="1"/>
+    </xs:sequence>
+    <xs:attributeGroup ref="constraintGroup"/>
+    <xs:attribute type="xs:string" name="parent" use="required"/>
+    <xs:attribute type="xs:string" name="parentGroup" use="optional"/>
+    <xs:attribute type="linkList" name="linkType" use="required"/>
+  </xs:complexType>
+
+  <!--    <xs:complexType name="foreignTypeWeak">
+        <xs:attributeGroup ref="constraintGroup"/>
+        <xs:attribute type="xs:string" name="parent" use="required"/>
+        <xs:attribute type="xs:string" name="parentGroup" use="optional"/>
+        <xs:attribute type="linkList" name="linkType" use="required"/>
+        <xs:attribute type="xs:string" name="columnPrefix" use="optional"/>
+        <xs:attribute type="xs:boolean" name="mandatory" use="required"/>
+    </xs:complexType>-->
+
+
+  <xs:complexType name="foreignFieldType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:string" name="attrNameLocal" use="required"/>
+        <xs:attribute type="xs:string" name="attrNameRemote" use="required"/>
+        <xs:attribute type="xs:string" name="caption" use="optional"/>
+        <xs:attribute type="xs:boolean" name="mandatory" use="optional"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+
+  <xs:attributeGroup name="attrTypeAttributeGroup">
+    <xs:attribute type="xs:string" name="caption" use="optional"/>
+    <xs:attribute name="hidden" type="xs:boolean" use="optional"/>
+  </xs:attributeGroup>
+</xs:schema>

@@ -1,0 +1,59 @@
+
+<project type="cont" name="BO" expanded="yes" catalog="no" pluginOwner="-1">
+	<file plugId="3" URL="..\bo\schema.xsd" catalog="no">
+		<queries/>
+		<namespaces/>
+	</file>
+	<file plugId="3" URL="..\bo\common.xml" catalog="no">
+		<queries/>
+		<namespaces/>
+	</file>
+	<file plugId="3" URL="..\bo\currency.xml" catalog="no">
+		<queries/>
+		<namespaces/>
+	</file>
+	<file plugId="3" URL="..\bo\gdsandservice.xml" catalog="no">
+		<queries/>
+		<namespaces/>
+	</file>
+	<file plugId="3" URL="..\bo\invoice.xml" catalog="no">
+		<queries/>
+		<namespaces/>
+	</file>
+	<file plugId="3" URL="..\bo\measure.xml" catalog="no">
+		<queries/>
+		<namespaces/>
+	</file>
+	<file plugId="3" URL="..\bo\organizational.xml" catalog="no">
+		<queries/>
+		<namespaces/>
+	</file>
+	<file plugId="3" URL="..\bo\refs.xml" catalog="no">
+		<queries/>
+		<namespaces/>
+	</file>
+	<file plugId="3" URL="..\bo\sequences.xml" catalog="no">
+		<queries/>
+		<namespaces/>
+	</file>
+	<file plugId="3" URL="..\bo\setting.xml" catalog="no">
+		<queries/>
+		<namespaces/>
+	</file>
+	<file plugId="3" URL="..\bo\stock.xml" catalog="no">
+		<queries/>
+		<namespaces/>
+	</file>
+	<file plugId="3" URL="..\bo\test.xml" catalog="no">
+		<queries/>
+		<namespaces/>
+	</file>
+	<file plugId="3" URL="..\bo\ui.xml" catalog="no">
+		<queries/>
+		<namespaces/>
+	</file>
+	<file plugId="3" URL="..\bo\user.xml" catalog="no">
+		<queries/>
+		<namespaces/>
+	</file>
+</project>

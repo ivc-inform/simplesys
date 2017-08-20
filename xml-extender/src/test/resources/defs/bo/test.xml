@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE objectSchema []>
+<objectSchema xmlns="http://simpleSys.ru/xml/library/bo" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://simpleSys.ru/xml/library/bo schema.xsd">
+  <group prefix="TST" name="test" caption="Тесты">
+    <classes>
+      <classSimple name="TestDataTypes" autoTableMapping="true" caption="Тесты типов данных">
+        <attrs>
+          <attr name="di" type="di" mandatory="true"/>
+          <attr name="nInt" type="nInt" mandatory="true"/>
+
+          <attr name="testRef" type="ss" mandatory="true"/>
+          <attr name="testRefOpt" type="ss" mandatory="false"/>
+
+        </attrs>
+        <constraints>
+          <uc uniqueType="pk">
+            <attrName>di</attrName>
+          </uc>
+
+          <!--                    <fk parentGroup="refs" parent="DocState" linkType="assoc">
+                                  <mapping attrName="testRef" attrNameFK="ss"/>
+                              </fk>
+                              <fk parentGroup="refs" parent="DocState"  linkType="assoc">
+                                  <mapping attrName="testRefOpt" attrNameFK="ss"/>
+                              </fk>-->
+
+
+        </constraints>
+      </classSimple>
+      <classSimple name="TestDoc" autoTableMapping="true" caption="Тестовый документ">
+        <attrs>
+          <attr name="di" type="di" mandatory="true"/>
+          <attr name="numDoc" type="sCode" mandatory="true" caption="Номер документа"/>
+          <attr name="dateExec" type="dDateTime" mandatory="false" caption="Дата исполнения"/>
+          <!--attr name="state" type="ss" mandatory="true" caption="Состояние документа"/-->
+          <attr name="fsmState" type="ss" mandatory="false" isSimpleEnum="true">
+            <value key="D" name="draft" caption="Черновик"/>
+            <value key="E" name="executing" caption="Исполняется"/>
+            <value key="EW" name="executingWWrnt" caption="Исполняется, есть СО"/>
+            <value key="C" name="closed" caption="Закрыт"/>
+            <value key="CC" name="closedAndCostCalc" caption="Закрыт, участвует в распр.себестоимости"/>
+            <value key="A" name="archived" caption="В архиве"/>
+            <value key="AN" name="annulled" caption="Аннулирован"/>
+            <value key="DR" name="dropped" caption="Удален"/>
+          </attr>
+        </attrs>
+        <constraints>
+          <uc uniqueType="pk">
+            <attrName>di</attrName>
+          </uc>
+          <!--fk parent="DocState" parentGroup="refs" linkType="assoc">
+              <mapping attrName="state" attrNameFK="ss"/>
+          </fk-->
+          <fk parent="DocState" parentGroup="refs" linkType="assoc">
+            <mapping attrNameLocal="docState" attrNameRemote="ss" mandatory="true" caption="Состояние теста"/>
+          </fk>
+
+        </constraints>
+      </classSimple>
+    </classes>
+  </group>
+</objectSchema>

@@ -1,0 +1,19 @@
+
+<project type="cont" name="DS" expanded="yes" catalog="no" pluginOwner="-1">
+	<file plugId="3" URL="..\app\ds\schemaDS.xsd" catalog="no">
+		<queries/>
+		<namespaces/>
+	</file>
+	<file plugId="3" URL="..\app\schemaISC.xsd" catalog="no">
+		<queries/>
+		<namespaces/>
+	</file>
+	<file plugId="3" URL="..\bo\schema.xsd" catalog="no">
+		<queries/>
+		<namespaces/>
+	</file>
+	<file plugId="3" URL="..\app\ds\userDS.xml" catalog="no">
+		<queries/>
+		<namespaces/>
+	</file>
+</project>

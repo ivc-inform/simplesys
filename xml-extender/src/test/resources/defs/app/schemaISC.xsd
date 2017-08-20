@@ -1,0 +1,133 @@
+<?xml version="1.0"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://simpleSys.ru/xml/library/ISC" xmlns="http://simpleSys.ru/xml/library/ISC" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xsd:element name="Bool">
+    <xsd:simpleType>
+      <xsd:restriction base="xsd:string">
+        <xsd:enumeration value="true"/>
+        <xsd:enumeration value="false"/>
+        <xsd:enumeration value="null"/>
+      </xsd:restriction>
+    </xsd:simpleType>
+  </xsd:element>
+  <xsd:simpleType name="enum">
+    <xsd:restriction base="xsd:string"/>
+  </xsd:simpleType>
+  <xsd:element name="ClassDyn"/>
+  <xsd:element name="DSDataFormat" nillable="true" type="enum"/>
+  <xsd:element name="dtftJSON" substitutionGroup="DSDataFormat">
+  </xsd:element>
+  <xsd:element name="DataSourceFieldDyn" substitutionGroup="ClassDyn">
+    <xsd:complexType>
+      <xsd:all>
+        <xsd:element name="Hidden" type="xsd:boolean" default="false" minOccurs="0"/>
+        <xsd:element name="Required" type="xsd:boolean" default="false" minOccurs="0"/>
+        <xsd:element name="Length" type="xsd:integer" minOccurs="0"/>
+        <xsd:element name="Name" type="xsd:string"/>
+        <xsd:element name="PrimaryKey" type="xsd:boolean" default="false" minOccurs="0"/>
+        <xsd:element name="Title" type="xsd:string" minOccurs="0"/>
+        <xsd:element name="Type">
+          <xsd:complexType>
+            <xsd:sequence>
+              <xsd:element ref="FieldType"/>
+            </xsd:sequence>
+          </xsd:complexType>
+        </xsd:element>
+      </xsd:all>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="DSProtocol" nillable="true" type="enum"/>
+  <xsd:element name="dsprtNull" substitutionGroup="DSProtocol"/>
+  <xsd:element name="dsprtGetParams" substitutionGroup="DSProtocol"/>
+  <xsd:element name="dsprtPostParams" substitutionGroup="DSProtocol"/>
+  <xsd:element name="dsprtPostXML" substitutionGroup="DSProtocol"/>
+  <xsd:element name="dsprtSoap" substitutionGroup="DSProtocol"/>
+  <xsd:element name="dsprtPostMessage" substitutionGroup="DSProtocol"/>
+  <xsd:element name="dsprtClientCustom" substitutionGroup="DSProtocol"/>
+  <xsd:element name="DSOperationType" nillable="true"/>
+  <xsd:element name="dsOptTypeNull" substitutionGroup="DSOperationType"/>
+  <xsd:element name="dsOptTypeFetch" substitutionGroup="DSOperationType"/>
+  <xsd:element name="dsOptTypeAdd" substitutionGroup="DSOperationType"/>
+  <xsd:element name="dsOptTypeUpdate" substitutionGroup="DSOperationType"/>
+  <xsd:element name="dsOptTypeRemove" substitutionGroup="DSOperationType"/>
+  <xsd:element name="dsOptTypeValidate" substitutionGroup="DSOperationType"/>
+  <xsd:element name="dsOptTypeCustom" substitutionGroup="DSOperationType"/>
+  <xsd:element name="FieldType" nillable="true" type="enum"/>
+  <xsd:element name="ftNull" substitutionGroup="FieldType"/>
+  <xsd:element name="ftText" substitutionGroup="FieldType"/>
+  <xsd:element name="ftBoolean" substitutionGroup="FieldType"/>
+  <xsd:element name="ftInteger" substitutionGroup="FieldType"/>
+  <xsd:element name="ftFloat" substitutionGroup="FieldType"/>
+  <xsd:element name="ftDate" substitutionGroup="FieldType"/>
+  <xsd:element name="ftTime" substitutionGroup="FieldType"/>
+  <xsd:element name="ftDateTime" substitutionGroup="FieldType"/>
+  <xsd:element name="ftEnum" substitutionGroup="FieldType"/>
+  <xsd:element name="ftIntEnum" substitutionGroup="FieldType"/>
+  <xsd:element name="ftSequence" substitutionGroup="FieldType"/>
+  <xsd:element name="ftLink" substitutionGroup="FieldType"/>
+  <xsd:element name="ftImage" substitutionGroup="FieldType"/>
+  <xsd:element name="ftBinary" substitutionGroup="FieldType"/>
+  <xsd:element name="ftImageFile" substitutionGroup="FieldType"/>
+  <xsd:element name="ftAny" substitutionGroup="FieldType"/>
+  <xsd:element name="ftModifier" substitutionGroup="FieldType"/>
+  <xsd:element name="ftModifierTimestamp" substitutionGroup="FieldType"/>
+  <xsd:element name="ftCreator" substitutionGroup="FieldType"/>
+  <xsd:element name="ftCreatorTimestamp" substitutionGroup="FieldType"/>
+  <xsd:element name="ftPassword" substitutionGroup="FieldType"/>
+  <xsd:element name="ftCustom" substitutionGroup="FieldType"/>
+  <xsd:element name="ftNtext" substitutionGroup="FieldType"/>
+  <xsd:element name="OperationBindingDyn" substitutionGroup="ClassDyn">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="DataFormat">
+          <xsd:complexType>
+            <xsd:sequence>
+              <xsd:element ref="DSDataFormat"/>
+            </xsd:sequence>
+          </xsd:complexType>
+        </xsd:element>
+        <xsd:element name="DataProtocol">
+          <xsd:complexType>
+            <xsd:sequence>
+              <xsd:element ref="DSProtocol"/>
+            </xsd:sequence>
+          </xsd:complexType>
+        </xsd:element>
+        <xsd:element name="OperationType">
+          <xsd:complexType>
+            <xsd:sequence>
+              <xsd:element ref="DSOperationType"/>
+            </xsd:sequence>
+          </xsd:complexType>
+        </xsd:element>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="RestDataSourceDyn" substitutionGroup="ClassDyn">
+    <xsd:complexType>
+      <xsd:all>
+        <xsd:element name="AddDataURL" type="xsd:anyURI" minOccurs="0"/>
+        <xsd:element minOccurs="0" ref="DSDataFormat"/>
+        <xsd:element name="FetchDataURL" type="xsd:anyURI"/>
+        <xsd:element name="Fields" minOccurs="0">
+          <xsd:complexType>
+            <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+              <xsd:element ref="DataSourceFieldDyn" minOccurs="0" maxOccurs="unbounded"/>
+            </xsd:sequence>
+          </xsd:complexType>
+        </xsd:element>
+        <xsd:element name="JSONPrefix" type="xsd:string" minOccurs="0"/>
+        <xsd:element name="JSONSuffix" type="xsd:string" minOccurs="0"/>
+        <xsd:element name="OperationBindings" minOccurs="0">
+          <xsd:complexType>
+            <xsd:sequence maxOccurs="4">
+              <xsd:element ref="OperationBindingDyn"/>
+            </xsd:sequence>
+          </xsd:complexType>
+        </xsd:element>
+        <xsd:element name="RemoveDataURL" type="xsd:anyURI" minOccurs="0"/>
+        <xsd:element name="UpdateDataURL" type="xsd:anyURI" minOccurs="0"/>
+        <xsd:element name="useSelfName" type="xsd:boolean" default="false"/>
+      </xsd:all>
+    </xsd:complexType>
+  </xsd:element>
+</xsd:schema>

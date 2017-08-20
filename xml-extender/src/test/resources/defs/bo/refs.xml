@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objectSchema xmlns="http://simpleSys.ru/xml/library/bo" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://simpleSys.ru/xml/library/bo schema.xsd">
+  <group prefix="REF" name="refs" caption="Системные справочники">
+    <classes>
+
+      <classSimple name="GdsMovementTypeGroup" autoTableMapping="true" caption="Группа типа товародвижения">
+        <attrs>
+          <attr name="di" type="di" mandatory="true"/>
+          <attr name="code" type="sCode" mandatory="false" caption="Код"/>
+          <attr name="caption" type="sCaption" mandatory="true" caption="Наименование"/>
+        </attrs>
+        <constraints>
+          <uc uniqueType="pk">
+            <attrName>di</attrName>
+          </uc>
+          <fk parent="GdsMovementTypeGroup" linkType="refIsOwner">
+            <mapping attrNameLocal="parent" attrNameRemote="di" mandatory="false" caption="Родитель"/>
+          </fk>
+        </constraints>
+      </classSimple>
+
+      <classSimple name="GdsMovementType" autoTableMapping="true" caption="Тип товародвижения">
+        <attrs>
+          <attr name="di" type="di" mandatory="true"/>
+          <attr name="code" type="sCode" mandatory="false" caption="Код"/>
+          <attr name="caption" type="sCaption" mandatory="false" caption="Наименование"/>
+        </attrs>
+        <constraints>
+          <uc uniqueType="pk">
+            <attrName>di</attrName>
+          </uc>
+          <fk parent="GdsMovementTypeGroup" linkType="assoc">
+            <mapping attrNameLocal="group" attrNameRemote="di" mandatory="true"
+                     caption="Группа типа товародвижения"/>
+          </fk>
+        </constraints>
+      </classSimple>
+
+      <classEnum name="DocState" caption="Состояние документа" autoTableMapping="true" keyAttr="ss"
+                 nameAttr="name" captionAttr="caption"
+                 descriptionAttr="description">
+        <value key="D" name="draft" caption="Черновик"/>
+        <value key="E" name="executing" caption="Исполняется"/>
+        <value key="C" name="closed" caption="Закрыт" description="Совсем закрыт"/>
+        <value key="A" name="archived" caption="В архиве"/>
+        <value key="AN" name="annulled" caption="Аннулирован"/>
+
+      </classEnum>
+
+
+      <classEnum name="StkDocType" caption="Тип товарного документа" autoTableMapping="true" keyAttr="ss"
+                 nameAttr="name" captionAttr="caption"
+                 descriptionAttr="description">
+        <value key="INV" name="invoice" caption="Накладная"/>
+        <value key="MV" name="executing" caption="Внутреннее перемещение"/>
+        <value key="SH" name="closed" caption="Недостача"/>
+        <value key="OV" name="archived" caption="Переизбыток"/>
+        <value key="INT" name="invent" caption="Инвентаризация"/>
+        <value key="CRT" name="correct" caption="Корректировочные документы"/>
+
+      </classEnum>
+      <classEnum name="StkDocItemDsc" caption="Тип скидки строки товарного документа" autoTableMapping="true"
+                 keyAttr="ss" nameAttr="name" captionAttr="caption"
+                 descriptionAttr="description">
+        <value key="PR" name="draft" caption="Процентная"/>
+        <value key="QTY" name="executing" caption="Натуральная"/>
+        <value key="SUM" name="closed" caption="Суммовая"/>
+      </classEnum>
+      <classEnum name="SizeType" caption="Тип скидки строки товарного документа" autoTableMapping="true"
+                 keyAttr="ss" nameAttr="name" captionAttr="caption"
+                 descriptionAttr="description">
+        <value key="EW" name="euroman" caption="Европейская мужская"/>
+        <value key="EM" name="eurowoman" caption="Европейская женская"/>
+        <value key="GW" name="germman" caption="Немецкая мужская"/>
+        <value key="GM" name="germwoman" caption="Немецкая женская"/>
+      </classEnum>
+
+
+    </classes>
+  </group>
+</objectSchema>

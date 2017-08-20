@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://simpleSys.ru/xml/library/ds" xmlns="http://simpleSys.ru/xml/library/ds" version="1.0.0" attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:isc="http://simpleSys.ru/xml/library/ISC" xmlns:meta="http://simpleSys.ru/xml/library/bo">
+  <xsd:import schemaLocation="../../bo/schema.xsd" namespace="http://simpleSys.ru/xml/library/bo"/>
+  <xsd:import schemaLocation="../schemaISC.xsd" namespace="http://simpleSys.ru/xml/library/ISC"/>
+  <xsd:element name="DataSource">
+    <xsd:complexType>
+      <xsd:all>
+        <xsd:element name="BoName" type="xsd:string"/>
+        <xsd:element name="GroupName" type="xsd:string"/>
+        <xsd:element name="Fields" maxOccurs="1" minOccurs="0">
+          <xsd:complexType>
+            <xsd:sequence>
+              <xsd:element minOccurs="0" maxOccurs="unbounded" ref="Field"/>
+            </xsd:sequence>
+          </xsd:complexType>
+        </xsd:element>
+        <xsd:element name="Native" minOccurs="0">
+          <xsd:complexType>
+            <xsd:sequence minOccurs="1">
+              <xsd:element ref="isc:RestDataSourceDyn"/>
+            </xsd:sequence>
+          </xsd:complexType>
+        </xsd:element>
+      </xsd:all>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="Field">
+    <xsd:complexType>
+      <xsd:all>
+        <xsd:element name="Caption" minOccurs="0" type="xsd:string"/>
+        <xsd:element name="Hidden" type="xsd:boolean" minOccurs="0" default="false"/>
+        <xsd:element name="Mantadory" type="xsd:boolean" minOccurs="0" default="false"/>
+        <xsd:element name="Name" type="xsd:string"/>
+        <xsd:element name="Type" type="meta:domain" maxOccurs="1" minOccurs="0"/>
+        <xsd:element name="Width" type="xsd:string" minOccurs="0" default="*"/>
+      </xsd:all>
+    </xsd:complexType>
+  </xsd:element>
+</xsd:schema>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<objectSchema xmlns="http://simpleSys.ru/xml/library/bo" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://simpleSys.ru/xml/library/bo schema.xsd">
+  <group prefix="SET" name="setting" caption="Хранение настроек">
+    <classes>
+
+      <classSimple name="SettingStore" caption="Хранилище настроек" autoTableMapping="true">
+        <attrs>
+          <attr name="di" type="di" mandatory="true"/>
+        </attrs>
+        <constraints>
+          <uc uniqueType="pk">
+            <attrName>di</attrName>
+          </uc>
+
+          <fk parent="Branch" parentGroup="organizational" linkType="assoc">
+            <mapping attrNameLocal="branch" attrNameRemote="di" caption="Балансовая единица" mandatory="false"/>
+          </fk>
+
+          <fk parent="Jur" parentGroup="organizational" linkType="assoc">
+            <mapping attrNameLocal="jur" attrNameRemote="di" caption="Юр.лицо" mandatory="false"/>
+          </fk>
+
+          <fk parent="Division" parentGroup="organizational" linkType="assoc">
+            <mapping attrNameLocal="division" attrNameRemote="di" caption="Подразделение" mandatory="false"/>
+          </fk>
+        </constraints>
+      </classSimple>
+
+      <classSimple name="NamedSetting" caption="Поименованные наборы настроек" autoTableMapping="true">
+        <attrs>
+          <attr name="di" type="di" mandatory="true"/>
+          <attr name="name" type="sCode" caption="Код" mandatory="false"/>
+          <attr name="caption" type="sCaption" caption="Наименование" mandatory="true"/>
+        </attrs>
+        <constraints>
+          <uc uniqueType="pk">
+            <attrName>di</attrName>
+          </uc>
+          <fk parent="SettingStore" linkType="refIsOwned">
+            <mapping attrNameLocal="setting" attrNameRemote="di" caption="Настройка" mandatory="true"/>
+          </fk>
+        </constraints>
+      </classSimple>
+
+      <classSimple name="UserCurrSetting" autoTableMapping="true">
+        <constraints>
+          <uc uniqueType="pk">
+            <attrName>user</attrName>
+          </uc>
+          <fk parent="User" parentGroup="user" linkType="refIsOwner">
+            <mapping attrNameLocal="user" attrNameRemote="di" caption="Пользователь" mandatory="true"/>
+          </fk>
+          <fk parent="SettingStore" linkType="refIsOwned">
+            <mapping attrNameLocal="setting" attrNameRemote="di" caption="Per-user настройка" mandatory="false"/>
+          </fk>
+          <fk parent="NamedSetting" linkType="assoc">
+            <mapping attrNameLocal="namedSetting" attrNameRemote="di" caption="Named настройка" mandatory="false"/>
+          </fk>
+        </constraints>
+      </classSimple>
+
+    </classes>
+  </group>
+</objectSchema>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<objectSchema xmlns="http://simpleSys.ru/xml/library/bo" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://simpleSys.ru/xml/library/bo schema.xsd">
+  <group prefix="STK" name="stock" caption="Склады и СО">
+    <classes>
+      <classSimple name="Stock" autoTableMapping="true" caption="Склад">
+        <attrs>
+          <attr name="di" type="di" mandatory="true"/>
+          <attr name="code" type="sCode" mandatory="false" caption="Код"/>
+          <attr name="caption" type="sCaption" mandatory="false" caption="Наименование"/>
+        </attrs>
+        <constraints>
+          <uc uniqueType="pk">
+            <attrName>di</attrName>
+          </uc>
+          <fk parent="Division" parentGroup="organizational" linkType="assoc">
+            <mapping attrNameLocal="division" attrNameRemote="di" mandatory="true" caption="Подразделение"/>
+          </fk>
+        </constraints>
+      </classSimple>
+
+    </classes>
+  </group>
+</objectSchema>

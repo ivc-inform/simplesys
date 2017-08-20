@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<objectSchema xmlns="http://simpleSys.ru/xml/library/bo" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://simpleSys.ru/xml/library/bo schema.xsd">
+  <group prefix="ORG" name="organizational" caption="Орг.структура">
+    <classes>
+      <classSimple name="Division" caption="Подразделение" autoTableMapping="true">
+        <attrs>
+          <attr name="di" type="di" mandatory="true"/>
+          <attr name="code" type="sCode" caption="Мнемокод" mandatory="false"/>
+          <attr name="caption" type="sCaption" caption="Наименование" mandatory="true"/>
+          <attr name="description" type="sDescription" caption="Описание" mandatory="false"/>
+        </attrs>
+        <constraints>
+          <uc uniqueType="pk">
+            <attrName>di</attrName>
+          </uc>
+          <fk parent="Division" linkType="refIsOwner">
+            <mapping attrNameLocal="parent" attrNameRemote="di" caption="Родительское подразделение" mandatory="false"/>
+          </fk>
+        </constraints>
+      </classSimple>
+
+      <classSimple name="Jur" caption="Юр.лицо" autoTableMapping="true">
+        <attrs>
+          <attr name="di" type="di" mandatory="true"/>
+          <attr name="code" type="sCode" caption="Мнемокод" mandatory="false"/>
+          <attr name="caption" type="sCaption" caption="Наименование" mandatory="true"/>
+          <!--attr name="jurContractor" type="di" caption="Контрагент юр.лица" mandatory="true"/-->
+          <attr name="description" type="sDescription" caption="Описание" mandatory="false"/>
+        </attrs>
+        <constraints>
+          <uc uniqueType="pk">
+            <attrName>di</attrName>
+          </uc>
+          <fk linkType="assoc" parent="JurContractor" parentGroup="common">
+            <mapping attrNameLocal="jurContractor" attrNameRemote="di" mandatory="true"/>
+          </fk>
+        </constraints>
+      </classSimple>
+
+      <classInHierarchy name="Branch" abstract="true" autoTableMapping="true">
+        <hierarchySettings discriminatorField="isExternal" hierarchyMapping="oneTablePerHierarchy"/>
+        <attrs>
+          <attr name="di" type="di" mandatory="true"/>
+          <attr name="code" type="sCode" caption="Код" mandatory="false"/>
+          <attr name="caption" type="sCaption" caption="Наименование" mandatory="true"/>
+          <attr name="isExternal" type="bBoolean" caption="Внешняя БЕ" mandatory="true"/>
+          <attr name="description" type="sDescription" caption="Описание" mandatory="false"/>
+        </attrs>
+        <constraints>
+          <uc uniqueType="pk">
+            <attrName>di</attrName>
+          </uc>
+        </constraints>
+      </classInHierarchy>
+      <classInHierarchy name="BranchInt" autoTableMapping="true">
+        <referenceToParent parent="Branch" discriminatorValue="false"/>
+        <attrs>
+          <attr name="hzz" type="sCaption" mandatory="true"/>
+        </attrs>
+      </classInHierarchy>
+      <classInHierarchy name="BranchExt" autoTableMapping="true">
+        <referenceToParent parent="Branch" discriminatorValue="true"/>
+        <attrs>
+          <attr name="hzzzzz2" type="sCaption" mandatory="true"/>
+        </attrs>
+      </classInHierarchy>
+
+    </classes>
+  </group>
+</objectSchema>

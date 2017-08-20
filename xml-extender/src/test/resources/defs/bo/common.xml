@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objectSchema xmlns="http://simpleSys.ru/xml/library/bo" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://simpleSys.ru/xml/library/bo schema.xsd">
+  <group prefix="CMN" name="common" caption="Общие объекты">
+    <classes>
+      <classSimple name="ContractorGroup" autoTableMapping="true">
+        <attrs>
+          <attr name="di" type="di" mandatory="true"/>
+          <attr name="caption" type="sCaption" mandatory="true"/>
+          <attr name="description" type="sDescription" mandatory="false"/>
+        </attrs>
+        <constraints>
+          <uc uniqueType="pk">
+            <attrName>di</attrName>
+          </uc>
+          <fk parent="ContractorGroup" linkType="refIsOwner">
+            <mapping attrNameLocal="parent" attrNameRemote="di" mandatory="false"/>
+          </fk>
+        </constraints>
+      </classSimple>
+      <classInHierarchy name="Contractor" abstract="true" autoTableMapping="true" caption="Контрагенты">
+        <hierarchySettings discriminatorField="isJur" hierarchyMapping="tablePerClass"/>
+        <attrs>
+          <attr name="di" type="di" mandatory="true"/>
+          <attr name="isJur" type="bBoolean" mandatory="true"/>
+          <attr name="caption" type="sCaption" caption="Наименование" mandatory="true"/>
+          <attr name="description" type="sDescription" caption="Описание" mandatory="false"/>
+        </attrs>
+        <constraints>
+          <uc uniqueType="pk">
+            <attrName>di</attrName>
+          </uc>
+          <fk parent="ContractorGroup" linkType="assoc">
+            <mapping attrNameLocal="group" attrNameRemote="di" mandatory="true" caption="Группа"/>
+          </fk>
+        </constraints>
+      </classInHierarchy>
+
+      <classInHierarchy name="JurContractor" autoTableMapping="true" caption="Юридические лица">
+        <referenceToParent parent="Contractor" discriminatorValue="true"/>
+        <attrs>
+          <attr name="jurName" caption="Юр.лицо" type="sCaption" mandatory="true"/>
+          <attr name="caption" type="sCaption" caption="Наименование" mandatory="true" calculated="true" formula="jurName"/>
+        </attrs>
+      </classInHierarchy>
+
+      <classInHierarchy name="PhysContractor" autoTableMapping="true" caption="Физические лица">
+        <referenceToParent parent="Contractor" discriminatorValue="false"/>
+        <attrs>
+          <attr name="lastName" caption="Фамилия" type="sCaption" mandatory="true"/>
+          <attr name="firstName" caption="Имя" type="sCaption" mandatory="true"/>
+          <attr name="secondName" caption="Отчество" type="sCaption" mandatory="false"/>
+          <attr name="caption" type="sCaption" caption="Наименование" mandatory="true" calculated="true"
+                formula="lastName + &quot; &quot; + firstName + secondName.map(&quot; &quot; + _).getOrElse(&quot;&quot;)"/>
+        </attrs>
+      </classInHierarchy>
+    </classes>
+  </group>
+</objectSchema>

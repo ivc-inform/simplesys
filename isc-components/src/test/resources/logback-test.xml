@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+  <property name="LOG_HOME" value="C:/Program Files/apache-tomcat-7.0.26/webapps/MyAppsSC/templates/"/>
+
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <withJansi>true</withJansi>
+    <encoder>
+      <pattern>%d{HH:mm:ss.SSS} [%t] %-5p %logger{255} - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <logger name="com.simplesys.isc.system.IscDyn" level="warn"/>
+  <logger name="com.simplesys.isc.RPC.RPCManagerDyn" level="warn"/>
+
+  <root level="debug">
+    <appender-ref ref="STDOUT"/>
+  </root>
+</configuration>

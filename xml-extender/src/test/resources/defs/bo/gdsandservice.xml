@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<objectSchema xmlns="http://simpleSys.ru/xml/library/bo" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://simpleSys.ru/xml/library/bo schema.xsd">
+  <group prefix="GS" name="gdsandservice" caption="Справочники ТМЦ">
+    <classes>
+
+      <classInHierarchy name="GdsAndSrv" autoTableMapping="true" caption="Товар/Услуга" abstract="true">
+        <hierarchySettings discriminatorField="isGds" hierarchyMapping="tablePerClass"/>
+        <attrs>
+          <attr name="di" type="di" mandatory="true"/>
+          <attr name="code" type="sCode" mandatory="false" caption="Код"/>
+          <attr name="caption" type="sCaption" mandatory="true" caption="Наименование"/>
+          <attr name="isGds" type="bBoolean" mandatory="true"/>
+        </attrs>
+        <constraints>
+          <uc uniqueType="pk">
+            <attrName>di</attrName>
+          </uc>
+          <fk parent="Measure" parentGroup="measure" linkType="assoc">
+            <mapping attrNameLocal="baseMsm" attrNameRemote="di" mandatory="true" caption="Базовая ЕИ"/>
+          </fk>
+        </constraints>
+      </classInHierarchy>
+
+      <classInHierarchy name="Gds" autoTableMapping="true" caption="Товар">
+        <referenceToParent discriminatorValue="true" parent="GdsAndSrv"/>
+        <attrs>
+          <attr name="hzzz" type="sCaption" mandatory="true"/>
+        </attrs>
+      </classInHierarchy>
+
+      <classInHierarchy name="Service" autoTableMapping="true" caption="Услуга">
+        <referenceToParent discriminatorValue="true" parent="GdsAndSrv"/>
+        <attrs>
+          <attr name="hzzz2" type="sCaption" mandatory="true"/>
+        </attrs>
+      </classInHierarchy>
+
+    </classes>
+  </group>
+</objectSchema>

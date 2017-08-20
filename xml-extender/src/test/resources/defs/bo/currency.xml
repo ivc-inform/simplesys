@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<objectSchema xmlns="http://simpleSys.ru/xml/library/bo" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://simpleSys.ru/xml/library/bo schema.xsd">
+  <group prefix="CUR" name="currency" caption="Валюта и связанные объекты">
+    <classes>
+      <classSimple name="Currency" caption="Валюта" autoTableMapping="true">
+        <attrs>
+          <attr name="di" type="di" mandatory="true"/>
+          <attr name="caption" type="sCaption" mandatory="true"/>
+          <attr name="description" type="sDescription" mandatory="false"/>
+        </attrs>
+        <constraints>
+          <uc uniqueType="pk">
+            <attrName>di</attrName>
+          </uc>
+        </constraints>
+      </classSimple>
+    </classes>
+  </group>
+</objectSchema>

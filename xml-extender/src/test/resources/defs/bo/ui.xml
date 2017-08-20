@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<objectSchema xmlns="http://simpleSys.ru/xml/library/bo" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://simpleSys.ru/xml/library/bo schema.xsd">
+  <group prefix="UI" name="ui" caption="Карта сайта">
+    <classes>
+
+      <classSimple name="SiteMap" autoTableMapping="true" caption="Карта сайта">
+        <attrs>
+          <attr name="di" type="di" mandatory="true"/>
+          <attr name="code" type="sCode" mandatory="true"/>
+          <attr name="caption" type="sCaption" mandatory="true"/>
+          <attr name="icon" type="sURL" mandatory="false"/>
+        </attrs>
+        <constraints>
+          <uc uniqueType="pk">
+            <attrName>di</attrName>
+          </uc>
+          <uc uniqueType="uq">
+            <attrName>code</attrName>
+          </uc>
+          <fk parent="SiteMap" linkType="refIsOwner">
+            <mapping attrNameLocal="parent" attrNameRemote="di" mandatory="false"/>
+          </fk>
+        </constraints>
+      </classSimple>
+    </classes>
+
+  </group>
+</objectSchema>

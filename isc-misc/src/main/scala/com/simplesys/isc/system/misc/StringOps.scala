@@ -1,0 +1,27 @@
+package com.simplesys.isc.system.misc
+
+class Str_str(string: String) {
+  def cptlz: String = {
+    string match {
+      case null => ""
+      case "" => ""
+      case any =>
+        val chars = string.toCharArray
+        chars(0) = chars(0).toUpper
+        new String(chars)
+    }
+  }
+
+  def uncptlz: String = {
+    string match {
+      case null => ""
+      case "" => ""
+      case any =>
+        val chars = string.toCharArray
+        chars(0) = chars(0) //.toLower   // ????
+        new String(chars)
+    }
+  }
+
+  def ellps: String = if (string.isEmpty) "..." else string + " ..."
+}

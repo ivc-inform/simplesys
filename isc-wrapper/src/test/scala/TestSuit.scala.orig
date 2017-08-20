@@ -1,0 +1,91 @@
+import com.simplesys.isc.dataBinging.dataSource.Record
+import com.simplesys.isc.dataBinging.DSResponse
+import com.simplesys.isc.dataBinging.RPC.RPCResponse._
+import com.simplesys.log.Logging
+import org.scalatest.FunSuite
+import com.simplesys.isc.control.IButton
+import com.simplesys.isc.system.types.{sknTreeFrog, IoRight}
+import com.simplesys.isc.system.{IscArray, Page, Isc}
+import com.simplesys.isc.system.global._
+
+class TestSuit extends FunSuite with Logging {
+  val skin = sknTreeFrog
+
+  /*test("IscEmptyPage") {
+    logger trace HTMLBeautifiler(IscEmptyPage.toString())
+  }*/
+
+  test("HelloWorld") {
+    val _Isc = Isc()
+    ModeNames = PortalMode
+
+    _Isc componentEnqueue new Page {
+      setAppImgDir("imgs/")
+    }
+
+    val buttonWidth = 150
+
+    _Isc componentEnqueue new IButton {
+      Click = _Isc.declareJSFunction(this, "funcClick", "{" + ModeNames + "say(\"Hello Dolly\")" + "}")
+      Icon = "icons/16/world.png"
+      IconOrientation = IoRight
+      Title = "Hello Dolly"
+      Width = buttonWidth
+    }
+
+    _Isc componentEnqueue new IButton {
+      Click = _Isc.declareJSFunction(this, "funcClick", "{" + ModeNames + "say(\"Hello Dolly1\")" + "}", true)
+      Icon = "icons/16/world.png"
+      IconOrientation = IoRight
+      Top = 30
+      Title = "Hello Dolly1"
+      Width = buttonWidth
+    }
+
+    _Isc componentEnqueue new IButton {
+      Click = _Isc.declareJSFunctionExpr(this, "clickDolly2", "{" + ModeNames + "say(\"Hello Dolly2\")" + "}", true)
+      Icon = "icons/16/world.png"
+      IconOrientation = IoRight
+      Top = 60
+      Title = "Hello Dolly2"
+      Width = buttonWidth
+    }
+
+    _Isc componentEnqueue new IButton {
+      Click = (ModeNames + "say(\"Hello Dolly3\")")
+      Icon = "icons/16/world.png"
+      IconOrientation = IoRight
+      Top = 90
+      Title = "Hello Dolly3"
+      Width = buttonWidth
+    }
+
+    _Isc logCommandLine()
+  }
+
+  test("DSResponse") {
+    val _Isc = Isc()
+    ModeNames = PortalMode
+
+<<<<<<< local
+    var res = new Record("FIELD1" -> "value1")
+    res("FIELD2") = 100
+    res("FIELD3") = 10.26
+    res("FIELD4") = "field4"
+=======
+    var res = Record("FIELD1" -> 1.23, "FIELD2" -> "field2", "FIELD3" -> 10)
+>>>>>>> other
+
+    val resp = new DSResponse {
+      Status = STATUS_SUCCESS
+      StartRow = 0
+      EndRow = 1
+      TotalRows = 1
+      Data = IscArray(
+        res
+      )
+    }
+
+    logger debug("%s", resp.toString)
+  }
+}

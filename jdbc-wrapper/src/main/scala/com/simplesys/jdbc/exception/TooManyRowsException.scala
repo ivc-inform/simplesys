@@ -1,0 +1,3 @@
+package com.simplesys.jdbc.exception
+
+class TooManyRowsException extends RuntimeException

@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<objectSchema xmlns="http://simpleSys.ru/xml/library/bo" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://simpleSys.ru/xml/library/bo schema.xsd">
+  <group prefix="INV" name="invoice" caption="Товарный документ">
+    <classes>
+      <classSimple name="TestDoc" autoTableMapping="true" caption="Тестовый документ">
+        <attrs>
+          <attr name="di" type="di" mandatory="true"/>
+          <attr name="numDoc" type="sCode" mandatory="true" caption="Номер документа"/>
+          <attr name="dateExec" type="dDateTime" mandatory="false" caption="Дата исполнения"/>
+          <!--attr name="state" type="ss" mandatory="true" caption="Состояние документа"/-->
+          <attr name="fsmState" type="ss" mandatory="true" isSimpleEnum="true">
+            <value key="D" name="draft" caption="Черновик"/>
+            <value key="E" name="executing" caption="Исполняется"/>
+            <value key="EW" name="executingWWrnt" caption="Исполняется, есть СО"/>
+            <value key="C" name="closed" caption="Закрыт"/>
+            <value key="CC" name="closedAndCostCalc" caption="Закрыт, участвует в распр.себестоимости"/>
+            <value key="A" name="archived" caption="В архиве"/>
+            <value key="AN" name="annulled" caption="Аннулирован"/>
+            <value key="DR" name="dropped" caption="Удален"/>
+          </attr>
+        </attrs>
+        <constraints>
+          <uc uniqueType="pk">
+            <attrName>di</attrName>
+          </uc>
+          <fk parent="DocState" parentGroup="refs" linkType="assoc">
+            <mapping attrNameLocal="state" attrNameRemote="ss" mandatory="true"/>
+          </fk>
+        </constraints>
+      </classSimple>
+
+      <classSimple name="StkDocItemInv" autoTableMapping="true" caption="Строка инвентаризации">
+        <attrs>
+          <attr name="di" type="di" mandatory="true"/>
+          <attr name="qtyPlanGds" type="nInt" mandatory="true" caption="Количество плановое"/>
+          <attr name="qtyFactGds" type="nInt" mandatory="true" caption="Количество факт"/>
+          <attr name="qtyDeltaGds" type="nInt" mandatory="true" caption="Расхождение"/>
+          <attr name="prcGds" type="nInt" mandatory="true" caption="Цена"/>
+          <attr name="sumDeltaDocCur" type="nInt" mandatory="false" caption="Сумма расхождения ВД"/>
+          <attr name="sumDeltaMainCur" type="nInt" mandatory="false" caption="Сумма расхождения НВ"/>
+        </attrs>
+        <constraints>
+          <uc uniqueType="pk">
+            <attrName>di</attrName>
+          </uc>
+          <fk parent="StkDoc" parentGroup="invoice" linkType="assoc">
+            <mapping attrNameLocal="doc" attrNameRemote="di" mandatory="true" caption="Документ"/>
+          </fk>
+          <fk parent="GdsAndSrv" parentGroup="gdsandservice" linkType="assoc">
+            <mapping attrNameLocal="gds" attrNameRemote="di" mandatory="true" caption="Товар"/>
+          </fk>
+          <fk parent="Measures" parentGroup="measures" linkType="assoc">
+            <mapping attrNameLocal="measures" attrNameRemote="di" mandatory="true" caption="ЕИ"/>
+          </fk>
+        </constraints>
+      </classSimple>
+
+      <classSimple name="StkDocItem" autoTableMapping="true" caption="Строка товарного документа">
+        <attrs>
+          <attr name="di" type="di" mandatory="true"/>
+          <attr name="qtyGds" type="nInt" mandatory="true" caption="Количество"/>
+          <attr name="qtyGdsMainMsm" type="nInt" mandatory="true" caption="Количество в БЕИ"/>
+          <attr name="prcGds" type="nInt" mandatory="true" caption="Цена"/>
+          <!--attr name="dscType" type="ss" mandatory="false" caption="Тип скидки"/-->
+          <attr name="dsc" type="nInt" mandatory="false" caption="Скидка"/>
+          <attr name="sumDocCur" type="nInt" mandatory="false" caption="Конечная сумма ВД"/>
+          <attr name="sumMainCur" type="nInt" mandatory="false" caption="Конечная сумма НВ"/>
+          <attr name="endSumDocCur" type="nInt" mandatory="false" caption="Конечная сумма ВД"/>
+          <attr name="endSumMainCur" type="nInt" mandatory="false" caption="Конечная сумма НВ"/>
+        </attrs>
+        <constraints>
+          <uc uniqueType="pk">
+            <attrName>di</attrName>
+          </uc>
+          <fk parent="StkDoc" parentGroup="invoice" linkType="assoc">
+            <mapping attrNameLocal="doc" attrNameRemote="di" mandatory="true" caption="Документ"/>
+          </fk>
+          <fk parent="GdsAndSrv" parentGroup="gdsandservice" linkType="assoc">
+            <mapping attrNameLocal="gds" attrNameRemote="di" mandatory="true" caption="Товар"/>
+          </fk>
+          <fk parent="Measure" parentGroup="measure" linkType="assoc">
+            <mapping attrNameLocal="measure" attrNameRemote="di" mandatory="true" caption="ЕИ"/>
+          </fk>
+          <fk parent="StkDocItemDsc" parentGroup="refs" linkType="assoc">
+            <mapping attrNameLocal="dscType" attrNameRemote="ss" mandatory="true"/>
+          </fk>
+        </constraints>
+      </classSimple>
+
+      <classSimple name="StkWrnt" autoTableMapping="true" caption="Складской ордер">
+        <attrs>
+          <attr name="di" type="di" mandatory="true"/>
+          <attr name="numDoc" type="sCode" mandatory="true" caption="Номер ордера"/>
+          <attr name="dateExec" type="dDateTime" mandatory="false" caption="Дата исполнения"/>
+        </attrs>
+        <constraints>
+          <uc uniqueType="pk">
+            <attrName>di</attrName>
+          </uc>
+          <fk parent="StkDoc" parentGroup="invoice" linkType="assoc">
+            <mapping attrNameLocal="doc" attrNameRemote="di" mandatory="true" caption="Документ"/>
+          </fk>
+          <fk parent="Stock" parentGroup="stock" linkType="assoc">
+            <mapping attrNameLocal="stock" attrNameRemote="di" mandatory="true" caption="Склад"/>
+          </fk>
+        </constraints>
+      </classSimple>
+
+      <classSimple name="StkWrntItem" autoTableMapping="true" caption="Строка складского ордера">
+        <attrs>
+          <attr name="di" type="di" mandatory="true"/>
+          <attr name="qtyGds" type="nInt" mandatory="true" caption="Количество"/>
+          <attr name="qtyGdsMainMsm" type="nInt" mandatory="true" caption="Количество в БЕИ"/>
+
+        </attrs>
+        <constraints>
+          <uc uniqueType="pk">
+            <attrName>di</attrName>
+          </uc>
+          <fk parent="StkWrnt" parentGroup="invoice" linkType="assoc">
+            <mapping attrNameLocal="doc" attrNameRemote="di" mandatory="true" caption="Ордер"/>
+          </fk>
+          <fk parent="GdsAndSrv" parentGroup="gdsandservice" linkType="assoc">
+            <mapping attrNameLocal="doc" attrNameRemote="di" mandatory="true" caption="Товар"/>
+          </fk>
+          <fk parent="Measure" parentGroup="measure" linkType="assoc">
+            <mapping attrNameLocal="measure" attrNameRemote="di" mandatory="true" caption="ЕИ"/>
+          </fk>
+          <fk parent="StkDocItem" parentGroup="measure" linkType="assoc">
+            <mapping attrNameLocal="stkDocItem" attrNameRemote="di" mandatory="true" caption="Строка ТД"/>
+          </fk>
+        </constraints>
+      </classSimple>
+
+      <classInHierarchy name="StkDoc" autoTableMapping="true" caption="Товарный документ">
+        <hierarchySettings discriminatorField="isDirect" hierarchyMapping="tablePerClass"/>
+        <attrs>
+          <attr name="di" type="di" mandatory="true"/>
+          <attr name="numDoc" type="sCode" mandatory="true" caption="Номер документа"/>
+          <attr name="dateExec" type="dDateTime" mandatory="false" caption="Дата исполнения"/>
+          <attr name="isDirect" type="bBoolean" mandatory="false" caption="Направленный"/>
+        </attrs>
+        <constraints>
+          <uc uniqueType="pk">
+            <attrName>di</attrName>
+          </uc>
+          <fk parent="DocState" parentGroup="refs" linkType="assoc">
+            <mapping attrNameLocal="state" attrNameRemote="ss" mandatory="true"
+                     caption="Состояние документа"/>
+          </fk>
+          <fk parent="StkDocType" parentGroup="refs" linkType="assoc">
+            <mapping attrNameLocal="typeDoc" attrNameRemote="ss" mandatory="true" caption="Тип документа"/>
+          </fk>
+        </constraints>
+      </classInHierarchy>
+
+      <classInHierarchy name="StkDocDirect" autoTableMapping="true" caption="Направленный товарный документ">
+        <referenceToParent parent="StkDoc" discriminatorValue="1"/>
+        <hierarchySettings discriminatorField="typeDoc" hierarchyMapping="tablePerClass"/>
+        <attrs>
+          <attr name="isIn" type="bBoolean" mandatory="false" caption="Входящий"/>
+        </attrs>
+        <constraints>
+          <fk parent="GdsMovementType" parentGroup="refs" linkType="assoc">
+            <mapping attrNameLocal="gdsMove" attrNameRemote="di" mandatory="true" caption="Товародвижение"/>
+          </fk>
+        </constraints>
+      </classInHierarchy>
+
+      <classInHierarchy name="StkDocNoDirect" autoTableMapping="true" caption="Ненаправленный товарный документ">
+        <referenceToParent parent="StkDoc" discriminatorValue="0"/>
+        <hierarchySettings discriminatorField="typeDoc" hierarchyMapping="tablePerClass"/>
+      </classInHierarchy>
+
+      <classInHierarchy name="StkDocInv" abstract="false" autoTableMapping="true" caption="Накладная">
+        <referenceToParent parent="StkDocDirect" discriminatorValue="INV"/>
+        <hierarchySettings discriminatorField="isIn" hierarchyMapping="tablePerClass"/>
+        <constraints>
+          <fk parent="Contractor" parentGroup="common" linkType="assoc">
+            <mapping attrNameLocal="ctrOut" attrNameRemote="di" mandatory="true"
+                     caption="Внешний контрагент"/>
+          </fk>
+          <fk parent="Stock" parentGroup="stock" linkType="assoc">
+            <mapping attrNameLocal="stock" attrNameRemote="di" mandatory="true" caption="Склад"/>
+          </fk>
+        </constraints>
+      </classInHierarchy>
+
+      <classInHierarchy name="StkDocInvIn" abstract="false" autoTableMapping="true" caption="Накладная приходная">
+        <referenceToParent parent="StkDocInv" discriminatorValue="1"/>
+      </classInHierarchy>
+
+      <classInHierarchy name="StkDocInvOut" abstract="false" autoTableMapping="true"
+                        caption="Накладная расходная">
+        <referenceToParent parent="StkDocInv" discriminatorValue="0"/>
+      </classInHierarchy>
+
+
+      <classInHierarchy name="StkDocIntMove" abstract="false" autoTableMapping="true"
+                        caption="Внутреннее перемещение">
+        <referenceToParent parent="StkDocNoDirect" discriminatorValue="MV"/>
+        <constraints>
+          <fk parent="Stock" parentGroup="stock" linkType="assoc">
+            <mapping attrNameLocal="stockFrom" attrNameRemote="di" mandatory="true"
+                     caption="Склад-Источник"/>
+          </fk>
+          <fk parent="Stock" parentGroup="stock" linkType="assoc">
+            <mapping attrNameLocal="stockTo" attrNameRemote="di" mandatory="true" caption="Склад-Приемник"/>
+          </fk>
+          <fk parent="GdsMovementType" parentGroup="refs" linkType="assoc">
+            <mapping attrNameLocal="gdsMove" attrNameRemote="di" mandatory="true" caption="Товародвижение"/>
+          </fk>
+        </constraints>
+      </classInHierarchy>
+
+
+      <classInHierarchy name="StkDocCorrect" abstract="false" autoTableMapping="true"
+                        caption="Корректировочный документ">
+        <referenceToParent parent="StkDocDirect" discriminatorValue="CRT"/>
+        <hierarchySettings discriminatorField="isIn" hierarchyMapping="tablePerClass"/>
+        <constraints>
+          <fk parent="Stock" parentGroup="stock" linkType="assoc">
+            <mapping attrNameLocal="stock" attrNameRemote="di" mandatory="true" caption="Склад"/>
+          </fk>
+        </constraints>
+      </classInHierarchy>
+
+      <classInHierarchy name="StkDocShortage" abstract="false" autoTableMapping="true" caption="Недостача">
+        <referenceToParent parent="StkDocCorrect" discriminatorValue="0"/>
+        <constraints>
+          <fk parent="Contractor" parentGroup="common" linkType="assoc">
+            <mapping attrNameLocal="response" attrNameRemote="di" mandatory="true" caption="Ответственный"/>
+          </fk>
+        </constraints>
+      </classInHierarchy>
+
+      <classInHierarchy name="StkDocOverflow" abstract="false" autoTableMapping="true" caption="Переизбыток">
+        <referenceToParent parent="StkDoc" discriminatorValue="1"/>
+      </classInHierarchy>
+
+      <classInHierarchy name="StkDocInvent" abstract="false" autoTableMapping="true" caption="Инвентаризация">
+        <referenceToParent parent="StkDocNoDirect" discriminatorValue="INT"/>
+        <constraints>
+          <fk parent="Stock" parentGroup="stock" linkType="assoc">
+            <mapping attrNameLocal="stock" attrNameRemote="di" mandatory="true" caption="Склад"/>
+          </fk>
+        </constraints>
+      </classInHierarchy>
+
+    </classes>
+  </group>
+</objectSchema>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+    <appender name="STDOUT" class="com.symplesys.log.MessageAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%t] %-5p %logger{255} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <!--<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%t] %-5p %logger{255} - %msg%n</pattern>
+        </encoder>
+    </appender>-->
+    <!--<appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>/home/andrew/JOB/apache-tomcat-7.0.40/webapps/enzo/main.log</file>
+        &lt;!&ndash;<append>true</append>&ndash;&gt;
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%t] %-5p %logger{255} - %msg%n</pattern>
+        </encoder>
+    </appender>-->
+
+    <!--<logger name="com.simplesys.json.JsonObject" level="ERROR"/>-->
+
+    <root level="DEBUG">
+        <appender-ref ref="STDOUT"/>
+        <!--<appender-ref ref="FILE"/>-->
+    </root>
+</configuration>

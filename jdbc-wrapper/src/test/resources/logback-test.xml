@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+    <!--<statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener"/>-->
+    <property name="LOG_HOME" value="C:/Program Files/apache-tomcat-7.0.26/webapps/MyAppsSC/templates/"/>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <withJansi>true</withJansi>
+        <encoder>
+            <!--<pattern>%d{HH:mm:ss.SSS} [%thread] %highlight(%-5level) %logger{36} - %msg%n</pattern>-->
+            <pattern>%d{HH:mm:ss.SSS} [%t] %-5p %logger{255} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="com.simplesys.connectionStack.H2BCPConfig" level="warn"/>
+    <logger name="com.simplesys.connectionStack.PostgreSQLConfig" level="warn"/>
+    <logger name="com.simplesys.connectionStack.OracleBCPConfig" level="warn"/>
+    <logger name="com.simplesys.connectionStack.ConnectionPool" level="warn"/>
+    <logger name="com.simplesys.jdbc.control.DSRequest" level="debug"/>
+    <logger name="com.simplesys.connectionStack.PostgreSQLConfig" level="debug"/>
+    <logger name="Tests" level="debug"/>
+    <logger name="com.simplesys.SQL.Gen.SQLField" level="debug"/>
+    <logger name="com.simplesys.SQL.Gen.SQLFields" level="debug"/>
+    <logger name="com.simplesys.SQL.Gen.SQLCompoundTable" level="debug"/>
+    <logger name="com.simplesys.SQL.Gen.SQLFrom" level="debug"/>
+    <logger name="com.simplesys.SQL.Gen.SQLFrom" level="debug"/>
+    <logger name="com.simplesys.SQL.Gen.SQLAlias" level="debug"/>
+    <logger name="com.simplesys.jdbc.control.ClassBO" level="debug"/>
+    <logger name="com.simplesys.jdbc.control.Table" level="debug"/>
+
+    <root level="debug">
+        <appender-ref ref="STDOUT"/>
+    </root>
+</configuration>

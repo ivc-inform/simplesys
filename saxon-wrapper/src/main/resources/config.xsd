@@ -1,0 +1,97 @@
+<configuration xmlns="http://saxon.sf.net/ns/configuration"
+               edition="EE">
+
+  <global
+          allowExternalFunctions="true"
+          allowMultiThreading="false"
+          allowOldJavaUriFormat="false"
+          collationUriResolver="net.sf.saxon.lib.StandardCollationURIResolver"
+          collectionUriResolver="net.sf.saxon.lib.StandardCollectionURIResolver"
+          compileWithTracing="false"
+          defaultCollation="http://www.w3.org/2005/xpath-functions/collation/codepoint"
+          defaultCollection=""
+          dtdValidation="false"
+          dtdValidationRecoverable="false"
+          errorListener="net.sf.saxon.lib.StandardErrorListener"
+          expandAttributeDefaults="true"
+          lazyConstructionMode="false"
+          lineNumbering="true"
+          optimizationLevel="10"
+          preEvaluateDocFunction="false"
+          preferJaxpParser="true"
+          recognizeUriQueryParameters="true"
+          schemaValidation="strict"
+          serializerFactory=""
+          sourceParser=""
+          sourceResolver=""
+          stripWhitespace="all"
+          styleParser=""
+          timing="false"
+          traceExternalFunctions="false"
+          traceListener=""
+          traceOptimizerDecisions="false"
+          treeModel="tinyTreeCondensed"
+          uriResolver=""
+          usePiDisableOutputEscaping="false"
+          useTypedValueCache="true"
+          validationComments="false"
+          validationWarnings="true"
+          versionOfXml="1.1"
+          xInclude="false"
+          />
+
+  <xslt
+          initialMode=""
+          initialTemplate=""
+          messageReceiver=""
+          outputUriResolver=""
+          recoveryPolicy="recoverWithWarnings"
+          schemaAware="true"
+          staticErrorListener=""
+          staticUriResolver=""
+          styleParser=""
+          version="2.1"
+          versionWarning="true">
+    <extensionElement namespace="http://saxon.sf.net/sql"
+                      factory=""/>
+  </xslt>
+
+  <xquery
+          allowUpdate="true"
+          constructionMode="preserve"
+          defaultElementNamespace=""
+          defaultFunctionNamespace="http://www.w3.org/2005/xpath-functions"
+          emptyLeast="true"
+          inheritNamespaces="true"
+          moduleUriResolver=""
+          preserveBoundarySpace="false"
+          preserveNamespaces="true"
+          requiredContextItemType="document-node()"
+          schemaAware="false"
+          staticErrorListener=""
+          version="1.1"
+          />
+
+  <xsd
+          occurrenceLimits=""
+          schemaUriResolver=""
+          useXsiSchemaLocation="true"
+          version="1.1"
+          />
+
+  <serialization
+          method="xml"
+          indent="yes"
+          saxon:indent-spaces="4"
+          xmlns:saxon="http://saxon.sf.net/"/>
+
+  <localizations defaultLanguage="en" defaultCountry="US">
+  </localizations>
+
+  <resources>
+    <schemaComponentModel></schemaComponentModel>
+  </resources>
+
+  <collations>
+  </collations>
+</configuration>

@@ -1,0 +1,157 @@
+package com.simplesys.isc.grids.listGrid
+
+import com.simplesys.isc.system.typesDyn._
+import com.simplesys.isc.system.misc._
+import com.simplesys.json.{JsonElement, JsonNull, JsonObject, JsonList}
+import com.simplesys.isc.forms.formItems.FormItemDyn
+import com.simplesys.isc.system.{ClassDynInit, ArrayDyn}
+import com.simplesys.isc.forms.formItems.formItem.FormItemIconDyn
+import com.simplesys.isc.dataBinging.dataSource.CriteriaDyn
+import com.simplesys.isc.dataBinging.{DSRequestDyn, DataSourceDyn}
+import com.simplesys.isc.forms.ValidatorDyn
+
+trait ListGridFieldDynInit extends ClassDynInit {
+    protected val align: AlignmentDyn = AlNull
+    protected val autoFetchDisplayMap: Bool = null
+    protected val autoFitWidth: Bool = null
+    protected val autoFitWidthApproach: AutoFitWidthApproach = aftWdAprchNull
+    protected val autoFreeze: Bool = null
+    protected val baseStyle: SCClassName = ""
+    protected val canEdit: Bool = null
+    protected val canExport: Bool = null
+    protected val canFilter: Bool = null
+    protected val canDragResize: Bool = null
+    protected val canFreeze: Bool = null
+    protected val canGroupBy: Bool = true
+    protected val canHide: Bool = null
+    protected val canHilite: Bool = null
+    private[listGrid] val changed: FunctionExpression = null
+    private[listGrid] val cellChanged: FunctionExpression = null
+    protected val canReorder: Bool = null
+    protected val canSort: Bool = true
+    protected val canSortClientOnly: Bool = null
+    protected val canToggle: Bool = false
+    protected val cellAlign: AlignmentDyn = AlNull
+    protected val cellIcon: SCImgURL = JsonNull
+    protected val dataPath: String = null
+    protected val dateFormatter: DateDisplayFormat = ddfNull
+    protected val decimalPad: Number = null
+    protected val decimalPrecision: Number = null
+    protected val defaultIconSrc: String = null
+    protected val defaultFilterValue: JsonObject = JsonObject()
+    protected val defaultValue: String = null
+    protected val defaultGroupingMode: String = ""
+    protected val displayField: String = null
+    protected val displayValueFromRecord: Bool = null
+    protected val editorIconHeight: Number = null
+    protected val editorIconWidth: Number = null
+    protected val editorImageURLPrefix: String = ""
+    protected val editorImageURLSuffix: String = ""
+    protected val editorProperties: FormItemDyn = null
+    protected val editorValueIconHeight: Number = null
+    protected val editorValueIcons: JsonObject = JsonObject()
+    protected val editorValueIconWidth: Number = null
+    protected val editorValueMap: JsonList = JsonList()
+    private[listGrid] val editorType: String = ""
+    protected val emptyCellValue: HTMLString = "&nbsp;"
+    protected val enterKeyEditAction: EnterKeyEditAction = entrKeyEdActDone
+    protected val escapeHTML: Bool = null
+    protected val escapeKeyEditAction: EscapeKeyEditAction = escKeyEdActCancel
+    protected val exportRawValues: Bool = null
+    protected val fieldType: ListGridFieldType = lgftText
+    protected val filterEditorProperties: FormItemDyn = null
+    protected val filterEditorType: FormItemDyn = null
+    protected val filterEditorValueMap: JsonObject = JsonObject()
+    protected val filterOnKeypress: Bool = null
+    protected val filterOperator: OperatorId = opIdNull
+    protected val formatCellValue: FunctionExpression = null
+    protected val formatGridSummary: FunctionExpression = null
+    protected val formatGroupSummary: FunctionExpression = null
+    protected val frozen: Bool = null
+    protected val groupGranularity: Number = null
+    private[grids] val hidden: Bool = null
+    protected val groupingMode: String = ""
+    protected val groupingModes: JsonList = null
+    protected val groupPrecision: Number = null
+    protected val headerBaseStyle: CSSStyleName = ""
+    protected val headerTitleStyle: CSSStyleName = ""
+    protected val hiliteIconHeight: Number = null
+    protected val hiliteIconLeftPadding: Number = null
+    protected val hiliteIconPosition: HiliteIconPosition = hltPosNull
+    protected val hiliteIconRightPadding: Number = null
+    protected val hiliteIconSize: Number = null
+    protected val hiliteIconWidth: Number = null
+    protected val icon: SCImgURL = JsonNull
+    protected val iconOrientation: IconOrientation = IoLeft
+    protected val icons: ArrayDyn[FormItemIconDyn] = null
+    protected val iconSize: Number = null
+    protected val iconSpacing: Number = 6
+    protected val iconVAlign: String = null
+    protected val iconWidth: Number = null
+    protected val ignoreKeyboardClicks: Bool = null
+    protected val imageHeight: Number = 16
+    protected val imageSize: Number = 16
+    protected val imageURLPrefix: String = null
+    protected val imageURLSuffix: String = null
+    protected val imageWidth: Number = 16
+    protected val includeFrom: String = null
+    protected val includeInRecordSummary: Bool = null
+    protected val includeInRecordSummaryFields: JsonList = JsonList()
+    protected val inputFormat: DateInputFormat = null
+    protected val isRemoveField: Bool = null
+    protected val leaveHeaderMenuButtonSpace: Bool = null
+    protected val linkText: String = ""
+    protected val linkTextProperty: String = ""
+    protected val linkURLPrefix: String = ""
+    protected val linkURLSuffix: String = ""
+    protected val multiple: Bool = null
+    protected val name: String = null
+    protected val optionCriteria: CriteriaDyn = null
+    protected val optionDataSource: DataSourceDyn = null
+    private[listGrid] val optionDataSource1: JsonElement = JsonNull
+    protected val optionFilterContext: DSRequestDyn = null
+    protected val optionOperationId: String = null
+    protected val optionTextMatchStyle: TextMatchStyle = txtMchStyleNull
+    protected val partialSummary: Bool = null
+    protected val prompt: Bool = null
+    protected val recordSummaryFunction: RecordSummaryFunction = rcSumFncNull
+    protected val shouldPrint: Bool = null
+    protected val showAlternateStyle: Bool = null
+    protected val showDefaultContextMenu: Bool = true
+    protected val showDisabledIcon: Bool = true
+    protected val showDownIcon: Bool = false
+    protected val showFileInline: Bool = null
+    protected val showFocusedIcon: Bool = false
+    protected val showGridSummary: Bool = null
+    protected val showGroupSummary: Bool = null
+    protected val showHover: Bool = null
+    protected val showRollOverIcon: Bool = false
+    protected val showSelectedIcon: Bool = false
+    protected val showTitle: Bool = null
+    protected val showValueIconOnly: Bool = null
+    protected val sortDirection: SortDirection = srtDirNull
+    protected val sortByDisplayField: Bool = null
+    protected val sortByMappedValue: Bool = null
+    protected val summaryFunction: JsonList = null
+    protected val summaryTitle: String = ""
+    protected val summaryValue: HTMLString = ""
+    protected val summaryValueTitle: String = null
+    protected val suppressValueIcon: Bool = false
+    protected val target: String = "_blank"
+    protected val timeFormatter: TimeDisplayFormat = tmDspFmtNull
+    protected val title: String = null
+    protected val `type`: ListGridFieldType = lgftText
+    protected val userFormula: UserFormula = ""
+    protected val validators: ArrayDyn[ValidatorDyn] = null
+    protected val validateOnChange: Bool = null
+    protected val valueField: String = null
+    protected val valueIconHeight: Number = null
+    protected val valueIconLeftPadding: Number = null
+    protected val valueIconOrientation: String = ""
+    protected val valueIconRightPadding: Number = null
+    protected val valueIcons: JsonObject = JsonObject()
+    protected val valueIconSize: Number = null
+    protected val valueIconWidth: Number = null
+    protected val valueMap: JsonObject = JsonObject()
+    protected val width: Number = "*"
+}
