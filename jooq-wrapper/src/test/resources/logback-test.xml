@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+  <!--<statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener"/>-->
+  <property name="LOG_HOME" value=""/>
+
+  <!--<appender name="FILE" class="ch.qos.logback.core.FileAppender">
+    <append>false</append>
+    <file>${LOG_HOME}/isc-wrapper-test.html</file>
+    <encoder>
+      <pattern>%msg%n</pattern>
+    </encoder>
+  </appender>-->
+
+
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <withJansi>true</withJansi>
+    <encoder>
+      <!--<pattern>%d{HH:mm:ss.SSS} [%thread] %highlight(%-5level) %logger{36} - %msg%n</pattern>-->
+      <pattern>%d{HH:mm:ss.SSS} [%t] %-5p %logger{255} - %msg%n</pattern>
+      <!--<pattern>%date [%thread] %highlight(%-5level) %cyan(%-15logger{15}) %X - %msg %n</pattern>-->
+    </encoder>
+  </appender>
+
+  <logger name="com.simplesys.json.JsonObject" level="warn"/>
+  <!--<appender-ref ref="FILE"/>-->
+
+  <root>
+    <appender-ref ref="STDOUT"/>
+  </root>
+</configuration>

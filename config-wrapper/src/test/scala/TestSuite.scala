@@ -5,6 +5,8 @@ import com.typesafe.config.ConfigObject
 import org.scalatest.FunSuite
 
 class TestSuite extends FunSuite with Logging with Config {
+    override val pathBasename = "topology"
+
     test("Config") {
 
         import scala.collection.JavaConverters._

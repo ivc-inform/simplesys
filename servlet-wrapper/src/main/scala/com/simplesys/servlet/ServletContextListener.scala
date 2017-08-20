@@ -2,7 +2,7 @@ package com.simplesys.servlet
 
 import javax.servlet.{ServletContextListener => JServletContextListener, ServletContextEvent => JServletContextEvent}
 import com.simplesys.log.Logging
-import collection.JavaConverters._
+import collection.JavaConversions._
 
 trait ServletContextListener extends JServletContextListener with Logging {
 
@@ -10,7 +10,7 @@ trait ServletContextListener extends JServletContextListener with Logging {
         ContextInitialized1(ServletContextEvent(sce))
         logger trace "ContextInitialized ."
 
-        sce.getServletContext.getServletRegistrations.asScala.toMap.foreach {
+        sce.getServletContext.getServletRegistrations.toMap.foreach {
             case (key, _) => logger trace (s"Registered Servlet: $key");
         }
 

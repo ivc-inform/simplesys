@@ -3,13 +3,13 @@ package com.simplesys.jdbc.meta
 import java.sql.Connection
 
 import com.simplesys.SQL.Gen._
-import com.simplesys.common.Strings._
-import com.simplesys.db.pool.PoolDataSource
+import com.simplesys.bonecp.BoneCPDataSource
 import com.simplesys.isc.system.typesDyn.{opIdAnd, opIdEquals}
-import com.simplesys.jdbc.control.SessionStructures._
 import com.simplesys.sql.OracleDialect
+import com.simplesys.jdbc.control.SessionStructures._
 
 import scala.collection.mutable.ArrayBuffer
+import com.simplesys.common.Strings._
 
 trait MetaSupport {
     /*getColumns
@@ -95,7 +95,7 @@ trait MetaSupport {
         )
     )
 
-    def getTableColumns(catalog: String = null, schemaPattern: String = null, tableNamePattern: String, columnNamePattern: String = null, sort: Boolean = false)(implicit connection: Connection, dataSource: PoolDataSource): Seq[ColumnMeta] = {
+    def getTableColumns(catalog: String = null, schemaPattern: String = null, tableNamePattern: String, columnNamePattern: String = null, sort: Boolean = false)(implicit connection: Connection, dataSource: BoneCPDataSource): Seq[ColumnMeta] = {
 
         val result = connection.getMetaData.getColumns(catalog, schemaPattern, tableNamePattern, columnNamePattern)
         val res = ArrayBuffer.empty[ColumnMeta]
@@ -109,17 +109,17 @@ trait MetaSupport {
             res
     }
 
-    def getTableColumnsS(catalog: String = null, schemaPattern: String = null, tableNamePattern: String, columnNamePattern: String = null)(implicit dataSource: PoolDataSource) = getTableColumns(catalog, schemaPattern, tableNamePattern, columnNamePattern, true)(dataSource.getConnection, dataSource)
+    def getTableColumnsS(catalog: String = null, schemaPattern: String = null, tableNamePattern: String, columnNamePattern: String = null)(implicit dataSource: BoneCPDataSource) = getTableColumns(catalog, schemaPattern, tableNamePattern, columnNamePattern, true)(dataSource.Connection, dataSource)
 
-    def getTableColumnsWithComments(catalog: String = null, schemaPattern: String = null, tableNamePattern: String, columnNamePattern: String = null)(implicit connection: Connection, dataSource: PoolDataSource): Seq[ColumnMeta] = {
+    def getTableColumnsWithComments(catalog: String = null, schemaPattern: String = null, tableNamePattern: String, columnNamePattern: String = null)(implicit connection: Connection, dataSource: BoneCPDataSource): Seq[ColumnMeta] = {
 
         val result = connection.getMetaData.getColumns(catalog, schemaPattern, tableNamePattern, columnNamePattern)
         val res = ArrayBuffer.empty[ColumnMeta]
 
         //select comments from user_col_comments where table_name = 'SAVE_TRANSACTION' and column_name = 'GTIMESTAMP'
-        prepareStatement(connection, userColComments.toSQL(), dataSource.settings.fetchSize) {
+        prepareStatement(connection, userColComments.toSQL(), dataSource.Config.FetchSize) {
             statement =>
-                dataSource.sqlDialect match {
+                dataSource.SQLDialect match {
                     case OracleDialect =>
                         while (result.next()) {
                             statement.setString(1, result.getString("TABLE_NAME"))
@@ -131,14 +131,14 @@ trait MetaSupport {
                         }
 
                     case _ =>
-                        throw new RuntimeException("Not implementation for :" + dataSource.sqlDialect)
+                        throw new RuntimeException("Not implementation for :" + dataSource.SQLDialect)
                 }
         }
 
         res
     }
 
-    def getSQLFields(catalog: String = null, schemaPattern: String = null, tableNamePattern: String, columnNamePattern: String = null, withTableOwner: Boolean = true)(implicit connection: Connection, dataSource: PoolDataSource): SQLFields =
+    def getSQLFields(catalog: String = null, schemaPattern: String = null, tableNamePattern: String, columnNamePattern: String = null, withTableOwner: Boolean = true)(implicit connection: Connection, dataSource: BoneCPDataSource): SQLFields =
         SQLFields(getTableColumns(catalog = catalog, schemaPattern = schemaPattern, tableNamePattern = tableNamePattern, columnNamePattern = columnNamePattern) map {
             case ColumnMeta(name, _type, mantadory, comment) => SQLField(name = name, quoted = quoted, isMantadory = mantadory, sqlDataType = _type, tableOwner = if (withTableOwner) SQLTable(name = tableNamePattern, quoted = quoted) else SQLTable(name = strEmpty))
         })
@@ -185,10 +185,10 @@ trait MetaSupport {
         override def toString: String = s"name = '${name}' comment = '${comment}'"
     }
 
-    def getTablesS(catalog: String = null, schemaPattern: String = null, tableNamePattern: String, types: Array[String] = null, sort: Boolean = true)(implicit dataSource: PoolDataSource): Seq[TableMeta] =
-        getTables(catalog, schemaPattern, tableNamePattern, types, sort)(dataSource.getConnection, dataSource)
+    def getTablesS(catalog: String = null, schemaPattern: String = null, tableNamePattern: String, types: Array[String] = null, sort: Boolean = true)(implicit dataSource: BoneCPDataSource): Seq[TableMeta] =
+        getTables(catalog, schemaPattern, tableNamePattern, types, sort)(dataSource.Connection, dataSource)
 
-    def getTables(catalog: String = null, schemaPattern: String = null, tableNamePattern: String, types: Array[String] = null, sort: Boolean = false)(implicit connection: Connection, dataSource: PoolDataSource): Seq[TableMeta] = {
+    def getTables(catalog: String = null, schemaPattern: String = null, tableNamePattern: String, types: Array[String] = null, sort: Boolean = false)(implicit connection: Connection, dataSource: BoneCPDataSource): Seq[TableMeta] = {
 
         val result = connection.getMetaData.getTables(catalog, schemaPattern, tableNamePattern, types)
         val res = ArrayBuffer.empty[TableMeta]
@@ -202,14 +202,14 @@ trait MetaSupport {
             res
     }
 
-    def getTablesWithComments(catalog: String = null, schemaPattern: String = null, tableNamePattern: String, types: Array[String] = null)(implicit connection: Connection, dataSource: PoolDataSource): Seq[TableMeta] = {
+    def getTablesWithComments(catalog: String = null, schemaPattern: String = null, tableNamePattern: String, types: Array[String] = null)(implicit connection: Connection, dataSource: BoneCPDataSource): Seq[TableMeta] = {
 
         val result = connection.getMetaData.getTables(catalog, schemaPattern, tableNamePattern, types)
         val res = ArrayBuffer.empty[TableMeta]
 
-        prepareStatement(connection, userTableComments.toSQL(), dataSource.settings.fetchSize) {
+        prepareStatement(connection, userTableComments.toSQL(), dataSource.Config.FetchSize) {
             statement =>
-                dataSource.sqlDialect match {
+                dataSource.SQLDialect match {
                     case OracleDialect =>
                         while (result.next()) {
                             statement.setString(1, result.getString("TABLE_NAME"))
@@ -220,7 +220,7 @@ trait MetaSupport {
                         }
 
                     case _ =>
-                        throw new RuntimeException("Not implementation for :" + dataSource.sqlDialect)
+                        throw new RuntimeException("Not implementation for :" + dataSource.SQLDialect)
                 }
         }
 
@@ -243,7 +243,7 @@ trait MetaSupport {
       SQLException - if a database access error occurs
       */
 
-    def getTableTypes(implicit connection: Connection, dataSource: PoolDataSource): Seq[String] = {
+    def getTableTypes(implicit connection: Connection, dataSource: BoneCPDataSource): Seq[String] = {
 
         val result = connection.getMetaData.getTableTypes()
         val res = ArrayBuffer.empty[String]

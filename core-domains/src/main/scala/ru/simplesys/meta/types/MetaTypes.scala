@@ -433,7 +433,7 @@ case object DomainDI extends SimpleDataType("di", ScalaTypeBigDecimal, "di", Big
 }
 
 case object DomainID extends SimpleDataType("id", ScalaTypeLong, "id", LongDataType, "BIGINT", Some("AsLong")) with MetaType[Long] {
-    override def autoIncGeneratorFunctionName = Some("nextDouble()")
+    override def autoIncGeneratorFunctionName = Some("nextLong()")
 
     override val scInheritsFrom = Some(iscTypes.ftInteger)
 

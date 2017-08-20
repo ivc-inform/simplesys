@@ -4,12 +4,11 @@ import java.io.{PrintWriter, StringWriter}
 import java.sql._
 import java.util.concurrent.TimeoutException
 
+import com.simplesys.bonecp.BoneCPDataSource
 import com.simplesys.common.Strings._
 import com.simplesys.control.ControlStructs._
-import com.simplesys.db.pool.PoolDataSource
 import com.simplesys.jdbc.exception.{NoDataFoundException, TooManyRowsException}
 import com.simplesys.log.Logging
-import oracle.jdbc.OracleConnection
 
 import scala.annotation.tailrec
 import scalaz.Validation.FlatMap._
@@ -104,9 +103,9 @@ object SessionStructures extends Logging {
             ValidationEx(Failure(e))
     }
 
-    def session[T](dataSource: PoolDataSource)(f: (Connection) => T): ValidationEx[T] = {
+    def session[T](dataSource: BoneCPDataSource)(f: (Connection) => T): ValidationEx[T] = {
         tryCatch {
-            val connection = dataSource.getConnection
+            val connection = dataSource.Connection
             try {
                 f(connection)
             }
@@ -116,9 +115,9 @@ object SessionStructures extends Logging {
         }
     }
 
-    def transaction[T](dataSource: PoolDataSource)(f: (Connection) => T): ValidationEx[T] = {
+    def transaction[T](dataSource: BoneCPDataSource)(f: (Connection) => T): ValidationEx[T] = {
         tryCatch {
-            val connection = dataSource.getConnection
+            val connection = dataSource.Connection
             val autoCommit = connection.getAutoCommit
             connection setAutoCommit false
             try {
@@ -147,72 +146,9 @@ object SessionStructures extends Logging {
         }
     }
 
-    def transaction[T](connection: Connection)(f: (Connection) => T): ValidationEx[T] = {
+    def transactionEx[T](dataSource: BoneCPDataSource)(f: (Connection) => (T, Boolean)): ValidationEx[T] = {
         tryCatch {
-            val autoCommit = connection.getAutoCommit
-            connection setAutoCommit false
-            try {
-                val res = f(connection)
-                connection.commit()
-                connection setAutoCommit autoCommit
-                res
-            }
-            catch {
-                case e: BatchUpdateException =>
-                    connection.rollback()
-                    connection setAutoCommit autoCommit
-
-                    logger error e
-                    throw e
-                case e: Throwable =>
-                    connection.rollback()
-                    connection setAutoCommit autoCommit
-
-                    logger error e
-                    throw e
-            }
-            finally {
-                connection.close()
-            }
-        }
-    }
-
-    def transactionEx[T](connection: Connection)(f: (Connection) => (T, Boolean)): ValidationEx[T] = {
-        tryCatch {
-            val autoCommit = connection.getAutoCommit
-            connection setAutoCommit false
-            try {
-                val res: (T, Boolean) = f(connection)
-                if (res._2)
-                    connection.commit()
-                else
-                    connection.rollback()
-                connection setAutoCommit autoCommit
-                res._1
-            }
-            catch {
-                case e: BatchUpdateException =>
-                    connection.rollback()
-                    connection setAutoCommit autoCommit
-
-                    logger error e
-                    throw e
-                case e: Throwable =>
-                    connection.rollback()
-                    connection setAutoCommit autoCommit
-
-                    logger error e
-                    throw e
-            }
-            finally {
-                connection.close()
-            }
-        }
-    }
-
-    def transactionEx[T](dataSource: PoolDataSource)(f: (Connection) => (T, Boolean)): ValidationEx[T] = {
-        tryCatch {
-            val connection = dataSource.getConnection
+            val connection = dataSource.Connection
             val autoCommit = connection.getAutoCommit
             connection setAutoCommit false
             try {
@@ -249,13 +185,6 @@ object SessionStructures extends Logging {
         if (fetchSize != 0)
             prepareStatement setFetchSize fetchSize
         using(prepareStatement)(f)
-    }
-
-    def callableStatement[T](connection: Connection, plSqlStr: String, fetchSize: Int = 0)(f: CallableStatement => T): T = {
-        val callableStatement = connection prepareCall plSqlStr
-        if (fetchSize != 0)
-            callableStatement setFetchSize fetchSize
-        using(callableStatement)(f)
     }
 
     def executeQuery[T](st: PreparedStatement)(f: ResultSet => T): List[T] =

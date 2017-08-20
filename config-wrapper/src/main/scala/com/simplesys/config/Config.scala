@@ -1,16 +1,15 @@
 package com.simplesys.config
 
-import java.util.Properties
 import java.util.concurrent.TimeUnit
 
 import com.simplesys.common.Strings._
-import com.typesafe.config.{ConfigException, ConfigFactory, ConfigObject, Config ⇒ JConfig}
+import com.typesafe.config.{Config => JConfig, ConfigException, ConfigFactory, ConfigObject}
 
-import scala.collection.JavaConverters._
+import scala.collection.JavaConversions._
 import scala.concurrent.duration._
 
 trait Config {
-    protected val resourceBasename: Option[String] = None
+    private val resourceBasename: Option[String] = None
     val pathBasename: String = strEmpty
 
     protected lazy val config: JConfig =
@@ -18,8 +17,8 @@ trait Config {
             case Some(path) => ConfigFactory load path
             case None => ConfigFactory load
         }
+
     private def getFullPath(path: String): String = if (pathBasename.nonEmpty && path.indexOf(pathBasename) == -1) pathBasename + "." + path else path
-    //private def getFullPath(path: String): String = path
 
     def getLong(path: String): Long = config getLong getFullPath(path)
     def getInt(path: String): Int = config getInt getFullPath(path)
@@ -28,8 +27,8 @@ trait Config {
     def getString(path: String): String = config getString getFullPath(path)
 
     def getDuration(path: String): FiniteDuration = Duration(config.getDuration(path, TimeUnit.NANOSECONDS), TimeUnit.NANOSECONDS)
-    def getDurationList(path: String): Seq[FiniteDuration] = config.getDurationList(path, TimeUnit.NANOSECONDS).asScala.map(Duration(_, TimeUnit.NANOSECONDS))
-    def getStringList(path: String): List[String] = (config getStringList getFullPath(path)).asScala.toList
+    def getDurationList(path: String): Seq[FiniteDuration] = config.getDurationList(path, TimeUnit.NANOSECONDS).map(Duration(_, TimeUnit.NANOSECONDS))
+    def getStringList(path: String): List[String] = (config getStringList getFullPath(path)).toList
     def getObject(path: String): ConfigObject = config getObject getFullPath(path)
 
     def getLongDefault(path: String, default: Long = 0): Long = {
@@ -74,16 +73,4 @@ trait Config {
     }
 
     def configRender: String = config.root().render()
-
-    def getProperties: Properties = {
-
-        val props = new Properties()
-
-        val map: Map[String, Object] = config.entrySet().asScala.map({ entry =>
-            entry.getKey -> entry.getValue.unwrapped()
-        })(collection.breakOut)
-
-        props.putAll(map.asJava)
-        props
-    }
 }

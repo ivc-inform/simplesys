@@ -36,7 +36,7 @@ trait AkkaPartial {
                 onSystemDestroy(system, endpoints)
                 //endpoints.close()
                 //system.terminate()
-                system.terminate()
+                system.awaitTermination()
         }
         _httpSystem = None
     }

@@ -48,9 +48,6 @@ trait ConstantResponse {
     val ScServiceUnavailable = JHttpServletResponse.SC_SERVICE_UNAVAILABLE
     val ScGatewayTimeout = JHttpServletResponse.SC_GATEWAY_TIMEOUT
     val ScHttpVersionNotSupported = JHttpServletResponse.SC_HTTP_VERSION_NOT_SUPPORTED
-
-    implicit def jHttpServletResponse2HttpServletResponse(response: HttpServletResponse): JHttpServletResponse = response.proxy
-    implicit def HttpservletResponse2JHttpServletResponse(response: JHttpServletResponse): HttpServletResponse = new HttpServletResponse(response)
 }
 
 object HttpServletResponse extends ConstantResponse {

@@ -1,7 +1,7 @@
 package com.simplesys.servlet
 
 import javax.servlet.{ServletConfig => JServletConfig}
-import collection.JavaConverters._
+import collection.JavaConversions._
 import com.simplesys.log.Logging
 
 object ServletConfig {
@@ -20,7 +20,7 @@ class ServletConfig(protected[servlet] val proxy: JServletConfig) extends Loggin
 
     def InitParameter(name: String) = proxy getInitParameter (name)
 
-    def InitParameters: Map[String, String] = proxy.getInitParameterNames.asScala map {
+    def InitParameters: Map[String, String] = proxy.getInitParameterNames map {
         case param: String => param -> proxy.getInitParameter(param)
     } toMap
 

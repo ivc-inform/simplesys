@@ -1,9 +1,10 @@
 package com.simplesys.io
 
-import java.io.File
-
-import com.simplesys.log.Logging
 import org.scalatest.FunSuite
+import java.io.File
+import com.simplesys.log.Logging
+import scalax.file.FileSystem
+import scalax.file.ImplicitConversions.defaultPath2jfile
 
 class TestSuit extends FunSuite with Logging {
   test("Read\\Write to File") {

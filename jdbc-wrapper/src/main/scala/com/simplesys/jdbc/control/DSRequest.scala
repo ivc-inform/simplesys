@@ -6,7 +6,7 @@ import com.simplesys.common.equality.SimpleEquality._
 import com.simplesys.isc.system.misc.Number
 import com.simplesys.isc.system.typesDyn._
 import com.simplesys.jdbc.control.DSRequest._
-import com.simplesys.json.{JsonList, JsonObject}
+import com.simplesys.json.{Json, JsonList, JsonObject}
 import com.simplesys.log.Logging
 import com.simplesys.sql.{OracleDialect, SQLDialect}
 
@@ -103,7 +103,7 @@ object DSRequest {
     }
 }
 
-case class DSRequest(sqlDialect: SQLDialect, startRow: Number, endRow: Number, sortBy: JsonList, data: JsonObject, textMatchStyle: String = "exact") extends Logging {
+case class DSRequest(sqlDialect: SQLDialect, startRow: Number, endRow: Number, sortBy: JsonList, data: JsonObject, textMatchStyle: String) extends Logging {
 
     logger trace (newLine + s"sqlDialect: ${sqlDialect.toString} startRow: ${startRow.toString()} endRow: ${endRow.toString()} sortBy: ${sortBy.toPrettyString} textMatchStyle: ${textMatchStyle} data: ${data.toPrettyString}")
 
@@ -130,10 +130,10 @@ case class DSRequest(sqlDialect: SQLDialect, startRow: Number, endRow: Number, s
         }
 
         def getColumn(nameInBo: String): BasicClassBOColumn[_] = {
-            fields.filter(_.nameInBo === nameInBo).headOption match {
-                case None => throw new RuntimeException(s"Field: ${nameInBo} not found.")
-                case Some(column) => column
-            }
+           fields.filter(_.nameInBo === nameInBo).headOption match {
+               case None => throw new RuntimeException (s"Field: ${nameInBo} not found.")
+               case Some(column) => column
+           }
         }
 
         data match {
@@ -166,7 +166,7 @@ case class DSRequest(sqlDialect: SQLDialect, startRow: Number, endRow: Number, s
                             val _values = values.filter(_.toString != "null")
                             _values foreach (value => bindMap += BindingColumn(fields.filter(_.nameInBo === key).head, value.toString))
 
-                            val _textMachStyle = TextMatchStyle getObject textMatchStyle
+                            val _textMachStyle = TextMatchStyle.getObject(textMatchStyle.getOrElse("exact"))
 
                             val placeHolders: ArrayBuffer[SQLValue] = _values.map(item => SQLValue(_textMachStyle.getBindPlaceholder))
 
@@ -186,8 +186,7 @@ case class DSRequest(sqlDialect: SQLDialect, startRow: Number, endRow: Number, s
 
                             bindMap += BindingColumn(fields.filter(_.nameInBo === key).head, value.toString)
 
-                            val _textMachStyle = TextMatchStyle getObject textMatchStyle
-
+                            val _textMachStyle = TextMatchStyle.getObject(textMatchStyle.getOrElse("exact"))
                             def getOperator: OperatorId = _textMachStyle.toSQL match {
                                 case "=" => opIdEquals
                                 case "LIKE" => opIdContains

@@ -5,11 +5,11 @@ import java.sql.{Connection, Date, PreparedStatement, ResultSet, SQLException, T
 
 import com.simplesys.SQL.Gen._
 import com.simplesys.SQL._
+import com.simplesys.bonecp.BoneCPDataSource
 import com.simplesys.common.Strings._
 import com.simplesys.common.array.{NotValue, toArray}
 import com.simplesys.common.equality.SimpleEquality._
 import com.simplesys.config.Config
-import com.simplesys.db.pool.PoolDataSource
 import com.simplesys.isc.system.typesDyn._
 import com.simplesys.jdbc.control.SessionStructures._
 import com.simplesys.jdbc.control.SuperTuple1._
@@ -32,7 +32,7 @@ case class BindingColumn(column: BasicClassBOColumn[_], value: String)
 trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
     top =>
 
-    def dataSource: PoolDataSource
+    def dataSource: BoneCPDataSource
 
     protected var _columns: Product with FieldProduct = _
     protected val _where = WheresList()
@@ -82,7 +82,7 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
 
     abstract class OptionColumn[T: ClassTag] extends Column[Array[T]]
 
-    abstract class EnumStringColumn[To](val name: String, val nameInBo: String, val caption: String = strEmpty, val tableColumn: BasicTableColumn[String])(implicit val converterEnum: String => To, val backConverterEnum: To => String) extends Column[To] {
+    abstract class EnumStringColumn[To](val name: String, val nameInBo: String,val caption: String = strEmpty, val tableColumn: BasicTableColumn[String])(implicit val converterEnum: String => To, val backConverterEnum: To => String) extends Column[To] {
         def entity = top
 
         def getDBDataType: DBDataType = VarcharDataType(-1)
@@ -177,7 +177,6 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
     }
 
     case class ClobOptionColumn(name: String, nameInBo: String, caption: String = strEmpty, tableColumn: BasicTableColumn[Array[String]]) extends OptionColumn[String] {
-
         import com.simplesys.jdbc._
 
         def entity = top
@@ -200,7 +199,6 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
     }
 
     case class JsonColumn(name: String, nameInBo: String, caption: String = strEmpty, tableColumn: BasicTableColumn[String]) extends Column[String] {
-
         import com.simplesys.jdbc._
 
         def entity = top
@@ -220,7 +218,6 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
     }
 
     case class JsonOptionColumn(name: String, nameInBo: String, caption: String = strEmpty, tableColumn: BasicTableColumn[Array[String]]) extends OptionColumn[String] {
-
         import com.simplesys.jdbc._
 
         def entity = top
@@ -337,7 +334,7 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
 
         def getDBDataType = LongDataType
 
-        def default = 0L
+        def default = 0
 
         @throws(classOf[SQLException])
         def get(resultSet: ResultSet) = resultSet getLong getName
@@ -715,81 +712,101 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
         import com.simplesys.jdbc.joda._
 
         bindMap.foreach {
-            case BindingColumn(column: BasicClassBOColumn[_], value) =>
-                if (column.isInstanceOf[IntColumn]) {
-                    column.asInstanceOf[IntColumn].set(preparedStatement, _offset, value.toInt)
-                    logger trace (s"Binding IntColumn index: ${_offset}, value: ${value.toInt}")
-                    _offset += 1
-                } else if (column.isInstanceOf[IntOptionColumn]) {
-                    column.asInstanceOf[IntOptionColumn].set(preparedStatement, _offset, Array(value.toInt))
-                    logger trace (s"Binding IntOptionColumn index: ${_offset}, value: Array(${value.toInt})")
-                    _offset += 1
-                } else if (column.isInstanceOf[DoubleColumn]) {
-                    column.asInstanceOf[DoubleColumn].set(preparedStatement, _offset, value.toDouble)
-                    logger trace (s"Binding DoubleColumn index: ${_offset}, value: ${value.toDouble}")
-                    _offset += 1
-                } else if (column.isInstanceOf[DoubleOptionColumn]) {
-                    column.asInstanceOf[DoubleOptionColumn].set(preparedStatement, _offset, Array(value.toDouble))
-                    logger trace (s"Binding DoubleOptionColumn index: ${_offset}, value: Array(${value.toDouble})")
-                    _offset += 1
-                } else if (column.isInstanceOf[LongColumn]) {
-                    column.asInstanceOf[LongColumn].set(preparedStatement, _offset, value.toLong)
-                    logger trace (s"Binding LongColumn index: ${_offset}, value: ${value.toLong}")
-                    _offset += 1
-                } else if (column.isInstanceOf[LongOptionColumn]) {
-                    column.asInstanceOf[LongOptionColumn].set(preparedStatement, _offset, Array(value.toLong))
-                    logger trace (s"Binding LongOptionColumn index: ${_offset}, value: Array(${value.toLong})")
-                    _offset += 1
-                } else if (column.isInstanceOf[BigDecimalColumn]) {
-                    column.asInstanceOf[BigDecimalColumn].set(preparedStatement, _offset, value.toBigDecimal)
-                    logger trace (s"Binding BigDecimalColumn index: ${_offset}, value: ${value.toBigDecimal}")
-                    _offset += 1
-                } else if (column.isInstanceOf[BigDecimalOptionColumn]) {
-                    column.asInstanceOf[BigDecimalOptionColumn].set(preparedStatement, _offset, Array(value.toBigDecimal))
-                    logger trace (s"Binding BigDecimalOptionColumn index: ${_offset}, value: Array(${value.toBigDecimal})")
-                    _offset += 1
-                } else if (column.isInstanceOf[BooleanColumn]) {
-                    column.asInstanceOf[BooleanColumn].set(preparedStatement, _offset, value.toBoolean)
-                    logger trace (s"Binding BooleanColumn index: ${_offset}, value: ${value.toBoolean}")
-                    _offset += 1
-                } else if (column.isInstanceOf[BooleanOptionColumn]) {
-                    column.asInstanceOf[BooleanOptionColumn].set(preparedStatement, _offset, Array(value.toBoolean))
-                    logger trace (s"Binding BooleanOptionColumn index: ${_offset}, value: Array(${value.toBoolean})")
-                    _offset += 1
-                } else if (column.isInstanceOf[StringColumn]) {
-                    column.asInstanceOf[StringColumn].set(preparedStatement, _offset, value)
-                    logger trace (s"Binding StringColumn index: ${_offset}, value: $value")
-                    _offset += 1
-                } else if (column.isInstanceOf[StringOptionColumn]) {
-                    column.asInstanceOf[StringOptionColumn].set(preparedStatement, _offset, Array(value))
-                    logger trace (s"Binding StringOptionColumn index: ${_offset}, value: Array($value)")
-                    _offset += 1
-                } else if (column.isInstanceOf[DateColumn]) {
-                    column.asInstanceOf[DateColumn].set(preparedStatement, _offset, value.toDateTimeS())
-                    logger trace (s"Binding DateColumn index: ${_offset}, value: ${value.toDateTimeS()}")
-                    _offset += 1
-                } else if (column.isInstanceOf[DateOptionColumn]) {
-                    column.asInstanceOf[DateOptionColumn].set(preparedStatement, _offset, Array(value.toDateTimeS()))
-                    logger trace (s"Binding DateOptionColumn index: ${_offset}, value: Array(${value.toDateTimeS()})")
-                    _offset += 1
-                } else if (column.isInstanceOf[DateTimeColumn]) {
-                    column.asInstanceOf[DateTimeColumn].set(preparedStatement, _offset, value.toDateTimeS())
-                    logger trace (s"Binding DateTimeColumn index: ${_offset}, value: ${value.toDateTimeS()}")
-                    _offset += 1
-                } else if (column.isInstanceOf[DateTimeOptionColumn]) {
-                    column.asInstanceOf[DateTimeOptionColumn].set(preparedStatement, _offset, Array(value.toDateTimeS()))
-                    logger trace (s"Binding DateTimeOptionColumn index: ${_offset}, value: Array(${value.toDateTimeS()})")
-                    _offset += 1
-                } else if (column.isInstanceOf[LocalDateTimeColumn]) {
-                    column.asInstanceOf[LocalDateTimeColumn].set(preparedStatement, _offset, value.toLocalDateTimeS())
-                    logger trace (s"Binding LocalDateTimeColumn index: ${_offset}, value: ${value.toLocalDateTimeS()}")
-                    _offset += 1
-                } else if (column.isInstanceOf[LocalDateTimeOptionColumn]) {
-                    column.asInstanceOf[LocalDateTimeOptionColumn].set(preparedStatement, _offset, Array(value.toLocalDateTimeS()))
-                    logger trace (s"Binding LocalDateTimeOptionColumn index: ${_offset}, value: Array(${value.toLocalDateTimeS()})")
-                    _offset += 1
-                } else
-                    throw new RuntimeException(s"Bad branch of $column")
+            case BindingColumn(column, value) =>
+                column match {
+                    case column: IntColumn =>
+                        column.set(preparedStatement, _offset, value.toInt)
+                        logger trace (s"Binding IntColumn index: ${_offset}, value: ${value.toInt}")
+                        _offset += 1
+
+                    case column: IntOptionColumn =>
+                        column.set(preparedStatement, _offset, Array(value.toInt))
+                        logger trace (s"Binding index: ${_offset}, value: Array(${value.toInt})")
+                        _offset += 1
+
+                    case column: DoubleColumn =>
+                        column.set(preparedStatement, _offset, value.toDouble)
+                        logger trace (s"Binding IntOptionColumn index: ${_offset}, value: ${value.toDouble}")
+                        _offset += 1
+
+                    case column: DoubleOptionColumn =>
+                        column.set(preparedStatement, _offset, Array(value.toDouble))
+                        logger trace (s"Binding index: ${_offset}, value: Array(${value.toDouble})")
+                        _offset += 1
+
+                    case column: LongColumn =>
+                        column.set(preparedStatement, _offset, value.toLong)
+                        logger trace (s"Binding DoubleOptionColumn index: ${_offset}, value: ${value.toLong}")
+                        _offset += 1
+
+                    case column: LongOptionColumn =>
+                        column.set(preparedStatement, _offset, Array(value.toLong))
+                        logger trace (s"Binding LongOptionColumn index: ${_offset}, value: Array(${value.toLong})")
+                        _offset += 1
+
+                    case column: BigDecimalColumn =>
+                        column.set(preparedStatement, _offset, value.toBigDecimal)
+                        logger trace (s"Binding BigDecimalColumn index: ${_offset}, value: ${value.toBigDecimal}")
+                        _offset += 1
+
+                    case column: BigDecimalOptionColumn =>
+                        column.set(preparedStatement, _offset, Array(value.toBigDecimal))
+                        logger trace (s"Binding BigDecimalOptionColumn index: ${_offset}, value: Array(${value.toBigDecimal})")
+                        _offset += 1
+
+                    case column: BooleanColumn =>
+                        column.set(preparedStatement, _offset, value.toBoolean)
+                        logger trace (s"Binding BooleanColumn index: ${_offset}, value: ${value.toBoolean}")
+                        _offset += 1
+
+                    case column: BooleanOptionColumn =>
+                        column.set(preparedStatement, _offset, Array(value.toBoolean))
+                        logger trace (s"Binding BooleanOptionColumn index: ${_offset}, value: Array(${value.toBoolean})")
+                        _offset += 1
+
+                    case column: StringColumn =>
+                        column.set(preparedStatement, _offset, value.unQuoted)
+                        logger trace (s"Binding StringColumn index: ${_offset}, value: ${value.unQuoted}")
+                        _offset += 1
+
+                    case column: StringOptionColumn =>
+                        column.set(preparedStatement, _offset, Array(value.unQuoted))
+                        logger trace (s"Binding StringOptionColumn index: ${_offset}, value: Array(${value.unQuoted})")
+                        _offset += 1
+
+                    case column: DateColumn =>
+                        column.set(preparedStatement, _offset, value.toDateTimeS())
+                        logger trace (s"Binding DateColumn index: ${_offset}, value: ${value.toDateTimeS()}")
+                        _offset += 1
+
+                    case column: DateOptionColumn =>
+                        column.set(preparedStatement, _offset, Array(value.toDateTimeS()))
+                        logger trace (s"Binding DateOptionColumn index: ${_offset}, value: Array(${value.toDateTimeS()})")
+                        _offset += 1
+
+                    case column: DateTimeColumn =>
+                        column.set(preparedStatement, _offset, value.toDateTimeS())
+                        logger trace (s"Binding DateTimeColumn index: ${_offset}, value: ${value.toDateTimeS()}")
+                        _offset += 1
+
+                    case column: DateTimeOptionColumn =>
+                        column.set(preparedStatement, _offset, Array(value.toDateTimeS()))
+                        logger trace (s"Binding DateTimeOptionColumn index: ${_offset}, value: Array(${value.toDateTimeS()})")
+                        _offset += 1
+
+                    case column: LocalDateTimeColumn =>
+                        column.set(preparedStatement, _offset, value.toLocalDateTimeS())
+                        logger trace (s"Binding LocalDateTimeColumn index: ${_offset}, value: ${value.toLocalDateTimeS()}")
+                        _offset += 1
+
+                    case column: LocalDateTimeOptionColumn =>
+                        column.set(preparedStatement, _offset, Array(value.toLocalDateTimeS()))
+                        logger trace (s"Binding LocalDateTimeOptionColumn index: ${_offset}, value: Array(${value.toLocalDateTimeS()})")
+                        _offset += 1
+
+                    case x =>
+                        throw new RuntimeException(s"Bad branch of ${x}")
+                }
 
             case x =>
                 throw new RuntimeException(s"Bad branch of ${x}")
@@ -799,7 +816,7 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
             case null =>
             case _ =>
                 if ((dsRequest.endRow.toLong !== 0) || (dsRequest.startRow.toLong !== 0))
-                    dataSource.sqlDialect match {
+                    dataSource.SQLDialect match {
                         case OracleDialect =>
                             val endRow = dsRequest.endRow.toLong + getInt("config.tailToEndRow")
                             preparedStatement.setLong(_offset, endRow)
@@ -811,14 +828,14 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
 
                             logger trace (s"Binding index: ${_offset}, value: ${startRow}")
                         case _ =>
-                            throw new RuntimeException("Not implementation for :" + dataSource.sqlDialect)
+                            throw new RuntimeException("Not implementation for :" + dataSource.SQLDialect)
                     }
         }
         _offset
     }
 
-    def selectList[FT <: Product with FieldProduct](columns: FT = allColumns, join: JoinParam, where: WhereParam, orderBy: OrderByParam, fetchSize: Int = dataSource.settings.fetchSize, dsRequest: DSRequest): ValidationEx[List[FT#ReturnType]]
-    def selectIterator[FT <: Product with FieldProduct](columns: FT = allColumns, join: JoinParam, where: WhereParam, orderBy: OrderByParam, fetchSize: Int = dataSource.settings.fetchSize, dsRequest: DSRequest): ValidationExIterator[Iterator[FT#ReturnType]]
+    def selectList[FT <: Product with FieldProduct](columns: FT = allColumns, join: JoinParam, where: WhereParam, orderBy: OrderByParam, fetchSize: Int = dataSource.Config.FetchSize, dsRequest: DSRequest): ValidationEx[List[FT#ReturnType]]
+    def selectIterator[FT <: Product with FieldProduct](columns: FT = allColumns, join: JoinParam, where: WhereParam, orderBy: OrderByParam, fetchSize: Int = dataSource.Config.FetchSize, dsRequest: DSRequest): ValidationExIterator[Iterator[FT#ReturnType]]
 
     def selectListRoot[FT <: Product with FieldProduct](columns: FT = allColumns, from: FromParam, join: JoinParam, where: WhereParam, discriminator: WhereParam, orderBy: OrderByParam, fetchSize: Int, dsRequest: DSRequest): ValidationEx[List[FT#ReturnType]] = {
         prepareSelect(from = from, columns = columns.fields, join = join, where = where, discriminator = discriminator, orderBy = orderBy, dsRequest = dsRequest) match {
@@ -846,7 +863,7 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
                 val _sql = sql.toSQL()
                 logger.trace(s"Constructed sql is: ${newLine + _sql}")
 
-                val connection = dataSource.getConnection
+                val connection = dataSource.Connection
                 val preparedStatement = connection prepareStatement _sql
 
                 try {
@@ -882,7 +899,7 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
                 val _sql = sql.toSQL()
                 logger.trace(s"Constructed sql is: ${newLine + _sql}")
 
-                val connection = dataSource.getConnection
+                val connection = dataSource.Connection
                 val preparedStatement = connection prepareStatement _sql
 
                 try {
@@ -911,27 +928,27 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
 
     private def getFetchColumns = if (_columns == null) allColumns else _columns
 
-    def Fetch(): ValidationEx[List[RT]] = selectList(columns = getFetchColumns, join = _join, where = _where, orderBy = _orderBy, fetchSize = dataSource.settings.fetchSize, dsRequest = null)
+    def Fetch(): ValidationEx[List[RT]] = selectList(columns = getFetchColumns, join = _join, where = _where, orderBy = _orderBy, fetchSize = dataSource.Config.FetchSize, dsRequest = null)
     def Fetch(fetchSize: Int): ValidationEx[List[RT]] = selectList(columns = getFetchColumns, join = _join, where = _where, orderBy = _orderBy, fetchSize = fetchSize, dsRequest = null)
     def Fetch(fetchSize: Int, dsRequest: DSRequest): ValidationEx[List[RT]] = selectList(columns = getFetchColumns, join = _join, where = _where, orderBy = _orderBy, fetchSize = fetchSize, dsRequest = dsRequest)
-    def Fetch(dsRequest: DSRequest): ValidationEx[List[RT]] = selectList(columns = getFetchColumns, join = _join, where = _where, orderBy = _orderBy, fetchSize = dataSource.settings.fetchSize, dsRequest = dsRequest)
+    def Fetch(dsRequest: DSRequest): ValidationEx[List[RT]] = selectList(columns = getFetchColumns, join = _join, where = _where, orderBy = _orderBy, fetchSize = dataSource.Config.FetchSize, dsRequest = dsRequest)
 
-    def FetchIterator(): ValidationExIterator[Iterator[RT]] = selectIterator(columns = getFetchColumns, join = _join, where = _where, orderBy = _orderBy, fetchSize = dataSource.settings.fetchSize, dsRequest = null)
+    def FetchIterator(): ValidationExIterator[Iterator[RT]] = selectIterator(columns = getFetchColumns, join = _join, where = _where, orderBy = _orderBy, fetchSize = dataSource.Config.FetchSize, dsRequest = null)
     def FetchIterator(fetchSize: Int): ValidationExIterator[Iterator[RT]] = selectIterator(columns = getFetchColumns, join = _join, where = _where, orderBy = _orderBy, fetchSize = fetchSize, dsRequest = null)
-    def FetchIterator(dsRequest: DSRequest): ValidationExIterator[Iterator[RT]] = selectIterator(columns = getFetchColumns, join = _join, where = _where, orderBy = _orderBy, fetchSize = dataSource.settings.fetchSize, dsRequest = dsRequest)
+    def FetchIterator(dsRequest: DSRequest): ValidationExIterator[Iterator[RT]] = selectIterator(columns = getFetchColumns, join = _join, where = _where, orderBy = _orderBy, fetchSize = dataSource.Config.FetchSize, dsRequest = dsRequest)
     def FetchIterator(fetchSize: Int, dsRequest: DSRequest): ValidationExIterator[Iterator[RT]] = selectIterator(columns = getFetchColumns, join = _join, where = _where, orderBy = _orderBy, fetchSize = fetchSize, dsRequest = dsRequest)
 
     def FetchOne(): ValidationEx[(Product with FieldProduct)#ReturnType] = selectOne(getFetchColumns, _join, _where)
 
     def selectSQL[FT <: Product with FieldProduct](columns: FT = allColumns, sql: SQLParam): ValidationEx[List[FT#ReturnType]] = {
-        val sql_str: String = sql match {
+        val sql_str = sql match {
             case SQL(sql) => sql
             case _ => throw new RuntimeException("Not SQL")
         }
 
         session(dataSource) {
             connection =>
-                prepareStatement(connection, sql_str, dataSource.settings.fetchSize) {
+                prepareStatement(connection, sql_str, dataSource.Config.FetchSize) {
                     preparedStatement =>
                         executeQuery(preparedStatement) {
                             resultSet => columns buildResult resultSet
@@ -948,7 +965,7 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
                 session(dataSource) {
                     connection =>
                         logger.trace(s"Constructed sql is: ${newLine + sql.toSQL()}")
-                        prepareStatement(connection, sql.toSQL(), dataSource.settings.fetchSize) {
+                        prepareStatement(connection, sql.toSQL(), dataSource.Config.FetchSize) {
                             preparedStatement =>
                                 binding(offset = 1, preparedStatement = preparedStatement, discriptors = discriptors, wheres = wheres, joinsDs = joinsDs, joinsBo = joinsBo, joinsTable = joinsTable, bindMap = bindMap)
                                 executeOne(preparedStatement) {
@@ -1186,7 +1203,7 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
             dsRequest match {
                 case null =>
                 case _ =>
-                    dataSource.sqlDialect match {
+                    dataSource.SQLDialect match {
                         case OracleDialect =>
                             val sb = dsRequest.sortBy
                             sb match {
@@ -1294,7 +1311,7 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
             case x => x
         }: _*)
 
-        def preSQL(topLevel: Boolean): SQLAbsTable = dataSource.sqlDialect match {
+        def preSQL(topLevel: Boolean): SQLAbsTable = dataSource.SQLDialect match {
             case OracleDialect =>
                 val fields = getSQLColumns
                 //logger trace s"columns: ${newLine + fields.toSQL()}"
@@ -1318,7 +1335,7 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
                 preSQL(true)
             case _ =>
                 if (dsRequest.endRow.toLong != 0 || dsRequest.startRow.toLong != 0)
-                    dataSource.sqlDialect match {
+                    dataSource.SQLDialect match {
                         case OracleDialect =>
                             val _fields: SQLFields = getSQLColumns.sqlFieldsWithTableOwner(SQLTable("T1")) + SQLField(name = "ROWNUM", isSystem = true, quoted = false, alias = "sys$$simplesys$$rownum".als)
 
@@ -1338,7 +1355,7 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
                                 ordersBy = topLevelOrderBy(fields, sqlOrdersBy)
                             )
                         case _ =>
-                            logger warn ("Not implementation for :" + dataSource.sqlDialect.toString)
+                            logger warn ("Not implementation for :" + dataSource.SQLDialect.toString)
                             preSQL(true)
                     }
                 else
@@ -1410,7 +1427,7 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
         }
         //logger.trace(s"Constructed setFields is: ${newLine + setFields.toUpdateSQL().replace("$AliasTable$.", "")}")
 
-        def sqlUpdate: SQLAbsTable = dataSource.sqlDialect match {
+        def sqlUpdate: SQLAbsTable = dataSource.SQLDialect match {
             case OracleDialect =>
                 SQLCompoundTable(fields = setFields, from = SQLFrom(table), where = getWheres(where))
             case _ =>
@@ -1452,7 +1469,7 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
     def updateWithoutCommit(connection: Connection, setters: SetParam, where: WhereParam, table: SQLTable): List[Int] = {
         val updateStr = MakeUpdateSQL(setters, where, table = table)
 
-        prepareStatement(connection, updateStr, dataSource.settings.fetchSize) {
+        prepareStatement(connection, updateStr, dataSource.Config.FetchSize) {
             preparedStatement =>
                 batch4Update(preparedStatement = preparedStatement, setters = setters, where = where)
                 preparedStatement.executeBatch().toList
@@ -1460,7 +1477,7 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
     }
 
     def makeDeleteSQL(where: WhereParam, table: SQLTable): String = {
-        val sqlDelete: SQLAbsTable = dataSource.sqlDialect match {
+        val sqlDelete: SQLAbsTable = dataSource.SQLDialect match {
             case OracleDialect =>
                 SQLCompoundTable(from = SQLFrom(table), where = getWheres(where))
             case _ =>
@@ -1489,7 +1506,7 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
     }
 
     def deleteWithoutCommit(connection: Connection, where: WhereParam, table: SQLTable): List[Int] = {
-        prepareStatement(connection, makeDeleteSQL(where, table), dataSource.settings.fetchSize) {
+        prepareStatement(connection, makeDeleteSQL(where, table), dataSource.Config.FetchSize) {
             statement =>
                 batch4Delete(statement = statement, where = where)
                 statement.executeBatch().toList

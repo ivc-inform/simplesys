@@ -1,21 +1,22 @@
 package com.simplesys.saxon
 
-import java.util.Locale
-import javax.xml.transform.SourceLocator
-import javax.xml.transform.stream.StreamSource
-
-import com.simplesys.common.Strings._
-import com.simplesys.common.URIBox
-import com.simplesys.file.ImplicitConversions._
-import com.simplesys.file.Path
-import com.simplesys.io._
-import com.simplesys.log.Logging
 import net.sf.saxon.Configuration
+import javax.xml.transform.stream.StreamSource
+import com.simplesys.common.URIBox
 import net.sf.saxon.s9api._
-import org.joda.time.DateTime
-import org.joda.time.format.DateTimeFormat
-
 import scala.collection.mutable.{ArrayBuffer, Map}
+import com.simplesys.log.Logging
+import com.simplesys.common.Strings._
+import javax.xml.transform.SourceLocator
+import java.util.Locale
+import org.joda.time.format.DateTimeFormat
+import org.joda.time.DateTime
+import java.io._
+import com.simplesys.io._
+import com.simplesys.common.ResInputStream
+import scala.Some
+import scalax.file.Path
+import scalax.file.ImplicitConversions._
 
 case class Transform(xsltPath: Path, xmlPath: Path = "", initialTemplate: String = "", initialMode: String = "", out: Serializer = new Serializer(System.out))
 

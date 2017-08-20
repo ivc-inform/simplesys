@@ -1,13 +1,16 @@
+import com.simplesys.log.Logging
+import com.simplesys.saxon.{Transform, XsltTransformer}
 import java.io.File
 import javax.xml.transform.stream.StreamSource
-
-import com.simplesys.file.ImplicitConversions._
-import com.simplesys.file.{Path, PathSet}
-import com.simplesys.log.Logging
-import com.simplesys.saxon.XsltTransformer._
-import com.simplesys.saxon.{Transform, _}
-import net.sf.saxon.s9api.{Processor, Serializer}
+import net.sf.saxon.lib.FeatureKeys
+import net.sf.saxon.s9api.{Serializer, Processor}
 import org.scalatest.FunSuite
+import com.simplesys.saxon._
+import com.simplesys.saxon.XsltTransformer._
+import scala.collection.mutable.ArrayBuffer
+import scalax.file.ImplicitConversions._
+import scalax.file.{PathSet, Path}
+import com.simplesys.io._
 
 //import com.simplesys.saxon.ControlStructs._
 

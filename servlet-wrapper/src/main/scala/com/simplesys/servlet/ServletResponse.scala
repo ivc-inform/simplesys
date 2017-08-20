@@ -16,11 +16,7 @@ import scala.io.Codec
 
 object ServletResponse {
     def apply(response: JServletResponse) = new ServletResponse(response)
-
     implicit def content2Opt(content: Content): Option[Content] = Some(content)
-
-    implicit def jServletResponse2ServletResponse(response: ServletResponse): JServletResponse = response.proxy
-    implicit def servletResponse2JServletResponse(response: JServletResponse): ServletResponse = new ServletResponse(response)
 }
 
 class ServletResponse(protected[servlet] val proxy: JServletResponse) extends Logging {
@@ -124,7 +120,7 @@ class ServletResponse(protected[servlet] val proxy: JServletResponse) extends Lo
         proxy setContentLength len
     }
 
-    def ContentLengthLong: Long = ???
+    def ContentLengthLong : Long = ???
     def ContentLengthLong_=(len: Long) {
         proxy setContentLengthLong len
     }

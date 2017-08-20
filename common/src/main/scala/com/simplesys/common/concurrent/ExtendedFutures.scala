@@ -1,4 +1,4 @@
-/*package com.simplesys.common
+package com.simplesys.common
 package concurrent
 
 import scala.concurrent._
@@ -6,10 +6,6 @@ import scala.concurrent.duration.Duration
 import scala.util.Try
 
 class FutureEx[+T](val proxy: Future[T], val interruptMethod: () => Boolean, val cancelMethod: () => Boolean) extends Future[T] {
-
-  override def transform[S](f: (Try[T]) ⇒ Try[S])(implicit executor: ExecutionContext): Future[S] = proxy.transform(f)(executor)
-  override def transformWith[S](f: (Try[T]) ⇒ Future[S])(implicit executor: ExecutionContext): Future[S] = proxy.transformWith(f)(executor)
-
   override def onComplete[U](func: (Try[T]) => U)(implicit executor: ExecutionContext): Unit = proxy.onComplete(func)(executor)
 
   override def isCompleted: Boolean = proxy.isCompleted
@@ -66,4 +62,4 @@ object FutureEx {
   }
 
   def cancellable[T](body: Future[T] => T)(implicit execCtx: ExecutionContext): FutureEx[T] = interruptableFuture(body)
-}*/
+}

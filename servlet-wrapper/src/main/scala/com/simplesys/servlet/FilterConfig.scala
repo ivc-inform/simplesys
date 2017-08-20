@@ -2,7 +2,7 @@ package com.simplesys.servlet
 
 
 import javax.servlet.{FilterConfig => JFilterConfig}
-import collection.JavaConverters._
+import collection.JavaConversions._
 import com.simplesys.log.Logging
 
 object FilterConfig {
@@ -18,7 +18,7 @@ class FilterConfig(protected val proxy: JFilterConfig) extends Logging {
     def InitParameter(name: String) = proxy getInitParameter name
 
     def InitParameters: Map[String, String] = {
-        proxy.getInitParameterNames.asScala map {
+        proxy.getInitParameterNames map {
             case param: String => param -> proxy.getInitParameter(param)
         } toMap
     }

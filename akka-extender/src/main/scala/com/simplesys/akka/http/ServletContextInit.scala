@@ -1,15 +1,16 @@
 package com.simplesys.akka.http
 
-import akka.actor.ActorSystem
+import akka.actor.{ActorSystem, Props}
 import com.simplesys.config.Config
+import com.simplesys.connectionStack.BoneCPStack
 import com.simplesys.servlet.{ServletContext, ServletContextEvent, ServletContextListener}
-
 import scala.reflect.runtime.universe._
-import scala.reflect.runtime.{universe ⇒ ru}
+import scala.reflect.runtime.{universe => ru}
 
 trait ServletContextInit extends Config {
     self: ServletContextListener =>
 
+    protected[this] lazy val cpStack = BoneCPStack()
     implicit protected[this] lazy val system = ActorSystem(getString("akka.http.system-name"))
     protected[this] lazy val scheduler = system.scheduler
     protected[this] lazy val classLoaderMirror = runtimeMirror(getClass.getClassLoader)
@@ -19,6 +20,7 @@ trait ServletContextInit extends Config {
 
     override def ContextInitialized1(sce: ServletContextEvent) {
 
+        sce.ServletContext.Attribute("dbConnectionStack", Some(cpStack))
 
         sce.ServletContext.Attribute("actorSystem", Some(system))
 
@@ -33,10 +35,11 @@ trait ServletContextInit extends Config {
 
     override def ContextDestroyed1(sce: ServletContextEvent) {
         sce.ServletContext RemoveAttribute "dbConnectionStack"
+        cpStack.Close()
 
         sce.ServletContext RemoveAttribute "actorSystem"
 
-        system.terminate()
-        //system.awaitTermination()
+        system.shutdown()
+        system.awaitTermination();
     }
 }

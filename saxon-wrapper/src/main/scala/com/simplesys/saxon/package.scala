@@ -4,7 +4,7 @@ import net.sf.saxon.s9api._
 import java.net.{URL, URI}
 import javax.xml.transform.SourceLocator
 import scala.collection.JavaConverters._
-import com.simplesys.file.{PathSet, Path}
+import scalax.file.{PathSet, Path}
 import scala.collection.mutable.ArrayBuffer
 
 package object saxon {
