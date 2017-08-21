@@ -3,25 +3,19 @@ package com.simplesys.servlet
 import akka.actor.{ActorSystem, PoisonPill}
 import com.simplesys.akka.http.Endpoints._
 import com.simplesys.akka.http.sse.AkkaSseMapServlet
-import com.simplesys.akka.http.{Endpoint, DynamicEndpoints, EndpointsAgentMap}
+import com.simplesys.akka.http.{DynamicEndpoints, Endpoint, EndpointsAgentMap}
 import com.simplesys.log.Logging
 
+import scala.collection.mutable
 import scala.collection.mutable.Map
 
 class CommonSseServlet extends AkkaSseMapServlet with DynamicEndpoints with Logging {
 
     protected lazy val providerMap: ProviderMap = ServletContext.Attribute("ProviderMap" + ServletConfig.ServletName) match {
-        case None =>
+        case None ⇒
             Map.empty[String, Endpoint]
-        case Some(providerMapSeq) ⇒
-            providerMap match {
-                case providerMapSeq: ProviderMap ⇒
-                    providerMapSeq
-                case any =>
-                    logger warn s"ProviderMap not exist type: $any"
-                    Map.empty[String, Endpoint]
-
-            }
+        case Some(providerMapSeq: mutable.Map[_, _]) =>
+            providerMapSeq.asInstanceOf[ProviderMap]
         case any =>
             logger warn s"ProviderMap not exist type: $any"
             Map.empty[String, Endpoint]
