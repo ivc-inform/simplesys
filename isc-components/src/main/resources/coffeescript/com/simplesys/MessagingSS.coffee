@@ -162,6 +162,7 @@ if not isc.module_RealtimeMessaging?
 					callback = channel.callback
 					if callback?
 						isc.MessagingSS.fireCallback callback, "data", [data], channel
+						return
 			return
 
 		send: (channels, data, callback) ->
