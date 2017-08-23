@@ -30,6 +30,7 @@ class TestSuit extends FunSuite with Logging {
 
   test("asPath"){
     val path = "/home/andrew/Job/simplesys/scala-io-extender/src/test/scala/com/simplesys/io/TestFun.scala".asPath
+    logger debug path.toFile.getAbsolutePath.asPath.createDirectory()
     logger debug path.toFile.getAbsolutePath
   }
 }
