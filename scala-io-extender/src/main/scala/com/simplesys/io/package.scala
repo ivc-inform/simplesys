@@ -76,6 +76,7 @@ package object io extends Logging {
 
         def checkDirectory: File = {
             if (!file.exists()) {
+                logger warn s"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Directory: ${file.getAbsolutePath} not exist, will be createing. !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
                 val path: DefaultPath = com.simplesys.file.Path(file)
                 //if (path.isDirectory)
                 path.createDirectory()
