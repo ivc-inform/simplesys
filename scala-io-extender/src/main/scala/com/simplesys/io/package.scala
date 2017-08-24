@@ -4,6 +4,7 @@ import java.io.{File, PrintWriter, StringWriter}
 import java.net.URI
 import javax.xml.transform.stream.StreamSource
 
+import com.simplesys.file.defaultfs.DefaultPath
 import com.simplesys.file.{Path, PathSet}
 import com.simplesys.log.Logging
 
@@ -71,6 +72,15 @@ package object io extends Logging {
 
         def merge(file: File): Unit = {
             <=|(Source.fromFile(file)(UTF8).getLines().foreach(_))
+        }
+
+        def checkDirectory: File = {
+            if (!file.exists()) {
+                val path: DefaultPath = com.simplesys.file.Path(file)
+                //if (path.isDirectory)
+                path.createDirectory()
+            }
+            file
         }
     }
 
