@@ -33,6 +33,10 @@ class OraclePoolDataSource(override val pathBasename: String) extends PoolDataSo
 
     settings.waitTimeout.foreach(pds.setConnectionWaitTimeout)
     logger trace s"connectionWaitTimeout : ${pds.getConnectionWaitTimeout}"
+
+    settings.maxConnectionReuseTime.foreach(pds.setMaxConnectionReuseTime)
+    logger trace s"maxConnectionReuseTime : ${pds.getMaxConnectionReuseTime}"
+
     settings.maxSize.foreach(pds.setMaxPoolSize)
 
     def getConnection(): OracleConnection = pds.getConnection().asInstanceOf[OracleConnection]
