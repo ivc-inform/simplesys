@@ -7,7 +7,7 @@ object PluginDeps {
     val jsonPlugin = addSbtPlugin("com.simplesys" % "json" % versions.jsonPluginVersion)
 
     object versions {
-        val sbtCoffeScriptVersion = "1.1.3-SNAPSHOT"
+        val sbtCoffeScriptVersion = "1.1.4"
         val jdbcPluginVersion = "1.0.2-SNAPSHOT"
         val jsonPluginVersion = "1.0.2-SNAPSHOT"
     }
