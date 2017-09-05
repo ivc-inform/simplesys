@@ -8,8 +8,8 @@ object PluginDeps {
 
     object versions {
         val sbtCoffeScriptVersion = "1.1.4"
-        val jdbcPluginVersion = "1.0.2-SNAPSHOT"
-        val jsonPluginVersion = "1.0.2-SNAPSHOT"
+        val jdbcPluginVersion = "1.0.3"
+        val jsonPluginVersion = "1.0.3"
     }
 }
 
