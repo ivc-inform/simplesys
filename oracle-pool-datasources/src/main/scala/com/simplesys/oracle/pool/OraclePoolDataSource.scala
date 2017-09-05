@@ -31,12 +31,14 @@ class OraclePoolDataSource(override val pathBasename: String) extends PoolDataSo
     pds setPassword settings.password
     pds setInitialPoolSize settings.initialSize
 
-    settings.maxSize.foreach(pds setMaxPoolSize _)
+    settings.waitTimeout.foreach(pds.setConnectionWaitTimeout)
+    logger trace s"connectionWaitTimeout : ${pds.getConnectionWaitTimeout}"
+
+    settings.maxConnectionReuseTime.foreach(pds.setMaxConnectionReuseTime)
+    logger trace s"maxConnectionReuseTime : ${pds.getMaxConnectionReuseTime}"
+
+    settings.maxSize.foreach(pds.setMaxPoolSize)
 
     def getConnection(): OracleConnection = pds.getConnection().asInstanceOf[OracleConnection]
-    def sqlDialect: SQLDialect = settings.className match {
-        case Some(className) ⇒
-            if (className.toUpperCase.contains("ORACLE")) OracleDialect else UnknownDialect
-        case None ⇒ OracleDialect
-    }
+    def sqlDialect: SQLDialect = OracleDialect
 }
