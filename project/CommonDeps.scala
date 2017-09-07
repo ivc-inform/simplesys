@@ -40,7 +40,6 @@ object CommonDeps {
     val akkaTestKit = "com.typesafe.akka" %% "akka-testkit" % versions.akkaVersion
     val liquibaseWrapped = "ru.simplesys.org.liquibase" % "liquibase-core" % versions.liquibaseWrapped
 
-    val boneCP = "com.jolbox" % "bonecp" % versions.boneCPVersion
     val h2DB = "com.h2database" % "h2" % versions.h2DBVersion
     val derbyDB = "org.apache.derby" % "derby" % versions.derbyDBVersion
     //val jdbcPostgres = "org.postgresql" % "postgresql" % versions.postgresDriverVersion
@@ -83,8 +82,6 @@ object CommonDeps {
         val hikariCPVersionVersion = "2.6.3"
 
         val configTypesafeVersion = "1.3.1"
-
-        val boneCPVersion = "0.8.0.RELEASE"
 
         val liquibaseWrapped = "3.0.2"
 
