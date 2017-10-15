@@ -7,7 +7,7 @@
         </encoder>
     </appender>
 
-    <logger name="com.zaxxer.hikari.HikariConfig" level="warn"/>
+    <logger name="com.zaxxer.hikari.HikariConfig" level="debug"/>
 
     <root level="debug">
         <appender-ref ref="STDOUT"/>
