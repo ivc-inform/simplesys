@@ -285,6 +285,7 @@ lazy val slickExtension = Project(id = "slick-extension", base = file("slick-ext
     libraryDependencies ++= Seq(
         CommonDeps.slick,
         CommonDeps.slickHikariCP,
+        CommonDeps.jdbcOracle12,
         CommonDeps.scalaTest
     )
 ).settings(CommonSettings.defaultProjectSettings)
