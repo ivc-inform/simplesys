@@ -37,7 +37,7 @@ object CommonDeps {
     val akkaActor = "com.typesafe.akka" %% "akka-actor" % versions.akkaVersion
     val akkaSLF4J = "com.typesafe.akka" %% "akka-slf4j" % versions.akkaVersion
     val akkaAgent = "com.typesafe.akka" %% "akka-agent" % versions.akkaVersion
-    val akkaTestKit = "com.typesafe.akka" %% "akka-testkit" % versions.akkaVersion
+    val akkaTestKit = "com.typesafe.akka" %% "akka-testkit" % versions.akkaVersion % Test
     val liquibaseWrapped = "ru.simplesys.org.liquibase" % "liquibase-core" % versions.liquibaseWrapped
 
     val h2DB = "com.h2database" % "h2" % versions.h2DBVersion
@@ -48,7 +48,7 @@ object CommonDeps {
     val jdbcOracle12UCP = "com.oracle.jdbc" % "ucp" % versions.oracle12DriverVersion
     val jdbcOracleN18_12 = "com.oracle.jdbc" % "orai18n" % versions.oracle12DriverVersion
 
-    val scalaTest = "org.scalatest" %% "scalatest" % versions.scalaTestVersion
+    val scalaTest = "org.scalatest" %% "scalatest" % versions.scalaTestVersion % Test
     val rhino = "org.mozilla" % "rhino" % versions.rhinoVersion
     val apacheCommonsLang = "org.apache.commons" % "commons-lang3" % versions.apacheCommonsLangVersion
     val apacheCommonsIO = "commons-io" % "commons-io" % versions.apacheCommonsIOVersion
@@ -56,6 +56,9 @@ object CommonDeps {
     val scalaArm = "com.jsuereth" %% "scala-arm" % versions.scalaArmVersion
     val utilEval = "com.twitter" %% "util-eval" % versions.utilEvalVersion
     val configWrapper = "com.github.kxbmap" %% "configs" % versions.configWrapperVersion
+    val junit = "junit" % "junit" % "4.12" % Test
+    val specs2 = "org.specs2" %% "specs2-core" % "4.0.0" % Test
+
 
 
     object versions {
