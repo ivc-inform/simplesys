@@ -16,7 +16,5 @@ class Test extends FunSuite {
         println(s"sqlDialect is ${dataSource.sqlDialect}")
 
         println(s"AutoCommit: ${connection.getAutoCommit}")
-
-        
     }
 }

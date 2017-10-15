@@ -105,7 +105,7 @@ object CommonDeps {
 
         val scalaRiformVersion = "0.1.8"
 
-        val utilEvalVersion = "7.1.0"
+        val utilEvalVersion = "6.43.0"
         val configWrapperVersion = "0.4.4"
     }
 }
