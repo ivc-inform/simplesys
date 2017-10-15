@@ -29,6 +29,8 @@ object CommonDeps {
     val wrappedSaxonEE = "com.simplesys.saxon" % "saxon-ee" % versions.wrappedSaxonEEVersion
     val xerces = "xerces" % "xercesImpl" % versions.xercesVersion
     val hikariCP = "com.zaxxer" % "HikariCP" % versions.hikariCPVersionVersion
+    val slick = "com.typesafe.slick" %% "slick" % versions.slickVersion
+    val slickHikariCP = "com.typesafe.slick" %% "slick-hikaricp" % versions.slickVersion
     val configTypesafe = "com.typesafe" % "config" % versions.configTypesafeVersion
 
     val doobieCore = "org.tpolecat" %% "doobie-core" % versions.doobieVersion
@@ -83,6 +85,7 @@ object CommonDeps {
         val wrappedSaxonEEVersion = "9.5.1.2-1"
         val xercesVersion = "2.11.0"
         val hikariCPVersionVersion = "2.7.1"
+        val slickVersion = "3.3.0-SNAPSHOT"
 
         val configTypesafeVersion = "1.3.1"
 

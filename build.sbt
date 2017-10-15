@@ -32,7 +32,8 @@ lazy val root = (project in file(".")).
       coreLibrary,
       utilEvalExtender,
       doobieExtender,
-      hikariCP
+      hikariCP,
+      slickExtension
   ).
   settings(inThisBuild(Seq(
       git.baseVersion := CommonSettings.settingValues.baseVersion,
@@ -276,6 +277,14 @@ lazy val hikariCP = Project(id = "hikari-cp", base = file("hikari-cp")).dependsO
         CommonDeps.jdbcOracle12,
         CommonDeps.jdbcOracle12UCP,
         CommonDeps.jdbcOracleN18_12,
+        CommonDeps.scalaTest
+    )
+).settings(CommonSettings.defaultProjectSettings)
+
+lazy val slickExtension = Project(id = "slick-extension", base = file("slick-extension")).dependsOn(common, configWrapper).settings(
+    libraryDependencies ++= Seq(
+        CommonDeps.slick,
+        CommonDeps.slickHikariCP,
         CommonDeps.scalaTest
     )
 ).settings(CommonSettings.defaultProjectSettings)
