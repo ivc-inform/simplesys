@@ -61,7 +61,7 @@ object CommonDeps {
     object versions {
         val scalaModulesVersion = "1.0.6"
 
-        val akkaVersion = "2.5.4"
+        val akkaVersion = "2.5.6"
 
         val scalazVersion = "7.2.8"
 
@@ -79,21 +79,20 @@ object CommonDeps {
 
         val wrappedSaxonEEVersion = "9.5.1.2-1"
         val xercesVersion = "2.11.0"
-        val hikariCPVersionVersion = "2.6.3"
+        val hikariCPVersionVersion = "2.7.1"
 
         val configTypesafeVersion = "1.3.1"
 
         val liquibaseWrapped = "3.0.2"
 
-        val h2DBVersion = "1.4.192"
+        val h2DBVersion = "1.4.193"
         val derbyDBVersion = "10.11.1.1"
         val postgresDriverVersion = "9.4-1201-jdbc41"
-        val oracle11DriverVersion = "11.2.0.4"
         val oracle12DriverVersion = "12.2.0.1"
 
         val uTestVersion = "0.3.1"
-        val scalaTestVersion = "3.0.1"
-        val scalaMetaVersion = "1.6.0"
+        val scalaTestVersion = "3.0.3"
+        val scalaMetaVersion = "2.0.1"
         val scalaArmVersion = "2.0"
         val scalaParserCombinatorsVersion = "1.0.5"
         val scalaSpecsVersion = "3.8.6"
@@ -106,7 +105,7 @@ object CommonDeps {
 
         val scalaRiformVersion = "0.1.8"
 
-        val utilEvalVersion = "6.43.0"
+        val utilEvalVersion = "7.1.0"
         val configWrapperVersion = "0.4.4"
     }
 }
