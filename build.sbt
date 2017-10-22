@@ -63,7 +63,7 @@ lazy val akkaExtender = Project(id = "akka-extender", base = file("akka-extender
         CommonDeps.specs2,
         CommonDeps.akkaTestKit
     )
-).settings(CommonSettings.defaultProjectSettings)
+)
 
 lazy val oraclePoolDataSources = Project(id = "oracle-pool-datasources", base = file("oracle-pool-datasources")).dependsOn(common, configWrapper, logbackWrapper).settings(
 
@@ -73,7 +73,7 @@ lazy val oraclePoolDataSources = Project(id = "oracle-pool-datasources", base = 
         CommonDeps.jdbcOracleN18_12,
         CommonDeps.scalaTest
     )
-).settings(CommonSettings.defaultProjectSettings)
+)
 
 lazy val classUtil = Project(id = "class-util", base = file("class-util")).dependsOn(common, scalaIOExtender).settings(
     scalacOptions += "-language:reflectiveCalls",
@@ -83,7 +83,7 @@ lazy val classUtil = Project(id = "class-util", base = file("class-util")).depen
         CommonDeps.scalaTest
     )
 
-).settings(CommonSettings.defaultProjectSettings)
+)
 
 lazy val common = (project in file("common")).dependsOn(logbackWrapper, jodaWrapper).settings(
     libraryDependencies ++= Seq(
@@ -94,7 +94,7 @@ lazy val common = (project in file("common")).dependsOn(logbackWrapper, jodaWrap
         CommonDeps.junit,
         CommonDeps.scalaTest
     )
-).settings(CommonSettings.defaultProjectSettings)
+)
 
 
 lazy val commonWebApp = Project(id = "common-webapp", base = file("common-webapp")).enablePlugins(SbtCoffeeScript).dependsOn(akkaExtender, iscWrapper, classUtil).settings(
@@ -112,7 +112,7 @@ lazy val commonWebApp = Project(id = "common-webapp", base = file("common-webapp
         CommonDeps.servletAPI % Provided,
         CommonDeps.scalaTest
     )
-).settings(CommonSettings.defaultProjectSettings)
+)
 
 lazy val configWrapper = Project(id = "config-wrapper", base = file("config-wrapper")).dependsOn(common, xmlExtender).settings(
     libraryDependencies ++= Seq(
@@ -120,7 +120,7 @@ lazy val configWrapper = Project(id = "config-wrapper", base = file("config-wrap
         CommonDeps.configTypesafe,
         CommonDeps.scalaTest
     )
-).settings(CommonSettings.defaultProjectSettings)
+)
 
 lazy val coreDomains = Project(id = "core-domains", base = file("core-domains")).dependsOn(coreUtils, xmlExtender, jsonExtenderTypesafe).settings(
     libraryDependencies ++= Seq(
@@ -129,18 +129,18 @@ lazy val coreDomains = Project(id = "core-domains", base = file("core-domains"))
         CommonDeps.liquibaseWrapped,
         CommonDeps.scalaTest
     )
-).settings(CommonSettings.defaultProjectSettings)
+)
 
 lazy val coreLibrary = Project(id = "core-library", base = file("core-library")).settings(
     libraryDependencies ++= Seq(
         CommonDeps.scalaXml,
         CommonDeps.scalaTest
     )
-).settings(CommonSettings.defaultProjectSettings)
+)
 
 lazy val coreUtils = Project(id = "core-utils", base = file("core-utils")).settings(
     libraryDependencies += CommonDeps.scalaReflect.value
-).settings(CommonSettings.defaultProjectSettings)
+)
 
 lazy val doobieExtender = Project(id = "doobie-extender", base = file("doobie-extender")).dependsOn(jodaWrapper, logbackWrapper).settings(
     libraryDependencies ++= Seq(
@@ -148,7 +148,7 @@ lazy val doobieExtender = Project(id = "doobie-extender", base = file("doobie-ex
         CommonDeps.doobieCoreCats,
         CommonDeps.scalaTest
     )
-).settings(CommonSettings.defaultProjectSettings)
+)
 
 lazy val iscComponents = Project(id = "isc-components", base = file("isc-components")).enablePlugins(SbtCoffeeScript).dependsOn(scalaIOExtender, iscWrapper).
   settings(
@@ -164,7 +164,7 @@ lazy val iscComponents = Project(id = "isc-components", base = file("isc-compone
     webTarget := (resourceDirectory in Compile).value / "webapp" / "javascript" / "generated" / "generatedComponents" / "coffeescript",
     sourceDirectory in Assets := (resourceDirectory in Compile).value / "coffeescript",
     (managedResources in Compile) ++= CoffeeScriptKeys.coffeeScript.value
-).settings(CommonSettings.defaultProjectSettings)
+)
 
 lazy val iscMisc = Project(id = "isc-misc", base = file("isc-misc")).dependsOn(common, xmlExtender).settings(
     libraryDependencies ++= Seq(
@@ -173,7 +173,7 @@ lazy val iscMisc = Project(id = "isc-misc", base = file("isc-misc")).dependsOn(c
         CommonDeps.scalaParserCombinators,
         CommonDeps.scalaTest
     )
-).settings(CommonSettings.defaultProjectSettings)
+)
 
 lazy val iscWrapper = Project(id = "isc-wrapper", base = file("isc-wrapper")).dependsOn(xmlExtender, servletWrapper, iscMisc, jsonExtenderTypesafe, akkaExtender, coreDomains, jdbcWrapper).settings(
 
@@ -182,7 +182,7 @@ lazy val iscWrapper = Project(id = "isc-wrapper", base = file("isc-wrapper")).de
         CommonDeps.servletAPI % Provided,
         CommonDeps.scalaTest
     )
-).settings(CommonSettings.defaultProjectSettings)
+)
 
 lazy val jdbcWrapper = Project(id = "jdbc-wrapper", base = file("jdbc-wrapper")).dependsOn(oraclePoolDataSources, scalaGen, coreDomains, coreLibrary).enablePlugins(JDBCPlugin).settings(
     com.simplesys.jdbc.plugins.jdbc.JDBCPlugin.autoImport.maxArity := 50,
@@ -193,7 +193,7 @@ lazy val jdbcWrapper = Project(id = "jdbc-wrapper", base = file("jdbc-wrapper"))
         CommonDeps.scalazCore,
         CommonDeps.scalaTest
     )
-).settings(CommonSettings.defaultProjectSettings)
+)
 
 lazy val jodaWrapper = Project(id = "joda-wrapper", base = file("joda-wrapper")).settings(
     libraryDependencies ++= Seq(
@@ -201,7 +201,7 @@ lazy val jodaWrapper = Project(id = "joda-wrapper", base = file("joda-wrapper"))
         CommonDeps.jodaConvert % Compile,
         CommonDeps.scalaTest
     )
-).settings(CommonSettings.defaultProjectSettings)
+)
 
 
 lazy val jsonExtenderTypesafe = Project(id = "json-extender-typesafe", base = file("json-extender-typesafe")).dependsOn(scalaGen).enablePlugins(JSONPlugin).settings(
@@ -213,7 +213,7 @@ lazy val jsonExtenderTypesafe = Project(id = "json-extender-typesafe", base = fi
         CommonDeps.scalaParserCombinators,
         CommonDeps.scalaTest
     )
-).settings(CommonSettings.defaultProjectSettings)
+)
 
 lazy val logbackWrapper = Project(id = "logback-wrapper", base = file("logback-wrapper")).settings(
     libraryDependencies ++= Seq(
@@ -223,20 +223,20 @@ lazy val logbackWrapper = Project(id = "logback-wrapper", base = file("logback-w
         CommonDeps.junit,
         CommonDeps.scalaTest
     )
-).settings(CommonSettings.defaultProjectSettings)
+)
 
 lazy val saxonWrapper = Project(id = "saxon-wrapper", base = file("saxon-wrapper")).dependsOn(common, scalaIOExtender).settings(
     libraryDependencies ++= Seq(
         CommonDeps.wrappedSaxonEE,
         CommonDeps.scalaTest
     )
-).settings(CommonSettings.defaultProjectSettings)
+)
 
 lazy val scalaGen = Project(id = "scala-gen", base = file("scala-gen")).dependsOn(common, scalaIOExtender, iscMisc).settings(
     libraryDependencies ++= Seq(
         CommonDeps.scalaTest
     )
-).settings(CommonSettings.defaultProjectSettings)
+)
 
 lazy val scalaIOExtender = Project(id = "scala-io-extender", base = file("scala-io-extender")).dependsOn(logbackWrapper).settings(
     libraryDependencies ++= Seq(
@@ -245,7 +245,7 @@ lazy val scalaIOExtender = Project(id = "scala-io-extender", base = file("scala-
         CommonDeps.scalaParserCombinators,
         CommonDeps.scalaTest
     )
-).settings(CommonSettings.defaultProjectSettings)
+)
 
 lazy val servletWrapper = Project(id = "servlet-wrapper", base = file("servlet-wrapper")).dependsOn(coreUtils, oraclePoolDataSources, xmlExtender, jsonExtenderTypesafe).settings(
     scalacOptions += "-Dscalac:patmat:analysisBudget=1024",
@@ -254,14 +254,14 @@ lazy val servletWrapper = Project(id = "servlet-wrapper", base = file("servlet-w
         CommonDeps.servletAPI % Provided,
         CommonDeps.scalaTest
     )
-).settings(CommonSettings.defaultProjectSettings)
+)
 
 lazy val utilEvalExtender = Project(id = "util-eval-extender", base = file("util-eval-extender")).dependsOn(common).settings(
     libraryDependencies ++= Seq(
         CommonDeps.utilEval,
         CommonDeps.scalaTest
     )
-).settings(CommonSettings.defaultProjectSettings)
+)
 
 lazy val xmlExtender = Project(id = "xml-extender", base = file("xml-extender")).dependsOn(common, saxonWrapper).settings(
     libraryDependencies ++= Seq(
@@ -269,7 +269,7 @@ lazy val xmlExtender = Project(id = "xml-extender", base = file("xml-extender"))
         CommonDeps.junit,
         CommonDeps.scalaTest
     )
-).settings(CommonSettings.defaultProjectSettings)
+)
 
 lazy val hikariCP = Project(id = "hikari-cp", base = file("hikari-cp")).dependsOn(common, configWrapper).settings(
     libraryDependencies ++= Seq(
@@ -279,7 +279,7 @@ lazy val hikariCP = Project(id = "hikari-cp", base = file("hikari-cp")).dependsO
         CommonDeps.jdbcOracleN18_12,
         CommonDeps.scalaTest
     )
-).settings(CommonSettings.defaultProjectSettings)
+)
 
 lazy val slickExtension = Project(id = "slick-extension", base = file("slick-extension")).dependsOn(common, configWrapper).settings(
     libraryDependencies ++= Seq(
@@ -288,5 +288,5 @@ lazy val slickExtension = Project(id = "slick-extension", base = file("slick-ext
         CommonDeps.jdbcOracle12,
         CommonDeps.scalaTest
     )
-).settings(CommonSettings.defaultProjectSettings)
+)
 
