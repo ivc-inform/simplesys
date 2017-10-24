@@ -36,7 +36,7 @@ lazy val root = (project in file(".")).
   ).
   settings(inThisBuild(Seq(
       git.baseVersion := CommonSettings.settingValues.baseVersion,
-      scalaVersion := "2.12.3",
+      scalaVersion := "2.12.4",
       publishTo := {
           val corporateRepo = "http://toucan.simplesys.lan/"
           if (isSnapshot.value)
