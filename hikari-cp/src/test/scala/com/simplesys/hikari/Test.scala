@@ -1,12 +1,15 @@
 package com.simplesys.hikari
 
+import java.sql.Connection
+
 import org.scalatest.FunSuite
 
 class Test extends FunSuite {
     test("connection") {
         val dataSource = new OracleHikariDataSource("oraclcePoolDataSource")
-        val connection = dataSource.getConnection()
+        val connection: Connection = dataSource.getConnection()
 
+        println(s"Is closed: ${connection.isClosed}")
 
         // Create Oracle DatabaseMetaData object
         val meta = connection.getMetaData
@@ -16,5 +19,8 @@ class Test extends FunSuite {
         println(s"sqlDialect is ${dataSource.sqlDialect}")
 
         println(s"AutoCommit: ${connection.getAutoCommit}")
+
+        connection.close()
+        println(s"Is closed: ${connection.isClosed}")
     }
 }

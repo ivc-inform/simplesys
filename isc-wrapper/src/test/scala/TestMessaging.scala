@@ -39,7 +39,6 @@ class TestMessaging extends FunSuite with Logging with BeforeAndAfterAll with Co
     }
 
     override protected def afterAll() {
-        actorSystem.shutdown()
-        actorSystem.awaitTermination()
+        actorSystem.terminate()
     }
 }

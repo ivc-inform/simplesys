@@ -1,12 +1,4 @@
-import com.simplesys.connectionStack.BoneCPStack
-import com.simplesys.isc.dataBinging.dataSource.RecordDyn
-import com.simplesys.isc.dataBinging.RPC.RPCResponseDyn
-import com.simplesys.isc.dataBinging.{DSResponseFailureExDyn, DSResponseDyn}
-import com.simplesys.isc.grids.RecordsDynList
-import com.simplesys.log.Logging
-import org.scalatest.FunSuite
-import scalaz.{Success, Failure}
-import com.simplesys.jdbc._
+
 
 //import com.simplesys.bonecp.P
 
