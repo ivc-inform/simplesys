@@ -5,6 +5,7 @@ object PluginDeps {
     val sbtCoffeeScript = addSbtPlugin("com.typesafe.sbt" % "sbt-coffeescript" % versions.sbtCoffeScriptVersion)
     val jdbcPlugin = addSbtPlugin("com.simplesys" % "jdbc" % versions.jdbcPluginVersion)
     val jsonPlugin = addSbtPlugin("com.simplesys" % "json" % versions.jsonPluginVersion)
+    val coursier = addSbtPlugin("io.get-coursier" % "sbt-coursier" % "1.0.0-RC12")
 
     object versions {
         val sbtCoffeScriptVersion = "1.1.4"
