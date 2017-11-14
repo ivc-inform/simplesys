@@ -1,7 +1,7 @@
 isc.ListGrid.addProperties
 #	"datetimeFormatter"        : ()->
 #		"#{@getDate()}.#{@getMonth()}.#{@getShortYear()}"
-		
+	
 	"canDragSelectText"        : true
 	"getRowNumSelectedGridRecord": ->
 		grid = @
@@ -60,20 +60,26 @@ isc.ListGrid.addProperties
 
 	"setMasterGrid": (grid, pkFieldNames) ->
 		###console.log "setMasterGrid (grid: #{grid.getID()})"###
+  
 		if isc.isA.ListGridEditor(grid) or isc.isA.TreeGridEditor(grid)
 			grid = grid.grid
 
+		thisGrid = @
+		
 		if isc.isA.ListGrid(grid)
 			@masterGrid = grid
 			if isc.isA.DataSource(@dataSource)
 				forignKeyFields = @dataSource.getForignKeyFields()
 	
 				@masterGrid.setSelectionChanged? (record, state) =>
+					if (!state)
+						return
 					masterSelectedRecords = @masterGrid.getSelectedRecords()
 					
 					@discardAllEdits()
 	
 					criteria = {}
+					criteria.ts = simpleSyS.timeStamp()
 					if pkFieldNames? and isc.isA.Object(pkFieldNames) and pkFieldNames.masterGridField? and pkFieldNames.detailGridField
 						pkFieldNames = [pkFieldNames]
 	
@@ -88,6 +94,7 @@ isc.ListGrid.addProperties
 									criteria[item.detailGridField] = arrayRes
 	
 						if not isc.isA.emptyObject criteria
+							thisGrid.criteria = criteria
 							@fetchData(
 								criteria,
 								if @selectFirstRecordAfterFetch is true then () => @selectFirstRecord() ; return)
@@ -108,6 +115,7 @@ isc.ListGrid.addProperties
 									criteria[field] = arrayRes
 	
 						if not isc.isA.emptyObject criteria
+							thisGrid.criteria = criteria
 							@fetchData(
 								criteria,
 								if @selectFirstRecordAfterFetch is true then () => @selectFirstRecord(); return)
@@ -372,6 +380,4 @@ isc.ClassFactory.defineInterface("GridEditorInterface").addInterfaceProperties
 	"startEditingInForm": (obj, fields, callback, requestProperties)->
 		@grid.startEditingInForm obj, fields, callback, requestProperties
 		return
-
-
 

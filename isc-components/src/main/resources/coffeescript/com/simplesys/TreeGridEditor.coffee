@@ -31,6 +31,8 @@ isc.defineClass("TreeGridEditor", isc.VLayoutSS, isc.GridEditorInterface).addPro
 	"getEditFormItem" : (field) ->
 		@grid.getEditFormItem field
 	"fetchData": (criteria, callback, requestProperties) ->
+		criteria = @grid.criteria unless criteria
+		
 		if @useClientFilteringSorting is false
 			_callback = (dsResponse, data, dsRequest) =>
 				@grid.selectFirstRecord() if @selectFirstRecordAfterFetch
@@ -287,6 +289,7 @@ isc.defineClass("TreeGridEditor", isc.VLayoutSS, isc.GridEditorInterface).addPro
 			"showOpenIcons"                   : @showOpenIcons
 			"cascadeSelection"                : @cascadeSelection
 			"canEdit"                         : @canEdit
+			"canSort"                         : @canSort
 			"filterOnKeypress"                : @filterOnKeypress
 			"selectionType"                   : @selectionType
 			"showRollOver"                    : @showRollOver
