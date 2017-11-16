@@ -73,4 +73,6 @@ package object jdbc extends Logging {
                 strEmpty
         }
     }
+    
+    implicit def opt2Array[T: ClassTag](x: Option[T]): Array[T] = if (x.isEmpty) Array.empty else Array(x.get)
 }
