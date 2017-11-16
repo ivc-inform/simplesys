@@ -2,11 +2,10 @@ package com.simplesys
 package corelibrary
 package domain
 
-import scala.reflect.ClassTag
 import scala.xml.Elem
 
 trait BOReference[+T] {
-    //  type BOType <: T
+    implicit def x2Opt[T](x:T):Option[T] = Some(x)
 }
 
 trait BOPersist {
