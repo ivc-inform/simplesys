@@ -14,8 +14,6 @@ import scala.reflect.ClassTag
 import scala.reflect.runtime.universe._
 import scala.reflect.runtime.{universe => ru}
 
-case object GetData
-
 trait RSTransferTrait {
 
     this: AkkaHttpMapServlet with DynamicEndpoints with Logging =>

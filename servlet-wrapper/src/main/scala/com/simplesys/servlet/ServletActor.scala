@@ -1,6 +1,6 @@
 package com.simplesys.servlet
 
-import akka.actor.Actor
+import akka.actor.{Actor, PoisonPill}
 import com.simplesys.config.Config
 import com.simplesys.log.Logging
 import com.simplesys.servlet.http.{HttpServletRequest, HttpServletResponse}

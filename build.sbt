@@ -52,6 +52,7 @@ lazy val root = (project in file(".")).
 
 lazy val akkaExtender = Project(id = "akka-extender", base = file("akka-extender")).dependsOn(servletWrapper).settings(
     libraryDependencies ++= Seq(
+        CommonDeps.servletAPI % Provided,
         CommonDeps.junit,
         CommonDeps.specs2,
         CommonDeps.akkaTestKit
