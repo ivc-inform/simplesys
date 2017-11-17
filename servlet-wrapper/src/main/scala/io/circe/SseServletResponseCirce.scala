@@ -2,6 +2,7 @@ package io.circe
 
 import com.simplesys.common.Strings._
 import com.simplesys.servlet.http.sse._
+import io.circe.Json._
 
 trait SseServletResponseCirce {
     this: SseServletResponse ⇒
@@ -13,17 +14,17 @@ trait SseServletResponseCirce {
             if (!out.checkError())
                 out write s"event:${ev.serrialize}".newLine
 
-        val _channels = Json.JArray(channels.map(item => Json.JString(item.serrialize)))
+        val _channels = JArray(channels.map(item => JString(item.serrialize)))
 
         val _data: Json = channels.length match {
             case 0 ⇒
                 data
             case _ ⇒
-                Json.JObject(JsonObject.fromIterable(Seq("data" -> data, "channels" -> _channels)))
+                JObject(JsonObject.fromIterable(Seq("data" -> data, "channels" -> _channels)))
         }
 
         _data match {
-            case Json.JString(string) =>
+            case JString(string) =>
                 val templ = """(.*)(\s*)""".r("line", "spacer")
 
                 for (x <- templ findAllMatchIn string) {
@@ -31,15 +32,15 @@ trait SseServletResponseCirce {
                         out write s"data:${x.group("line")}".newLine
                 }
 
-            case Json.JObject(obj) =>
+            case JObject(obj) =>
                 if (!out.checkError())
                     out write s"data:${obj.toString()}".newLine
 
-            case Json.JArray(list) =>
+            case JArray(list) =>
                 if (!out.checkError())
                     out write s"data:${list.toString()}".newLine
 
-            case x@Json.Null =>
+            case x@Null =>
                 if (!out.checkError())
                     out write s"data:${x.toString()}".newLine
 
@@ -66,13 +67,13 @@ trait SseServletResponseCirce {
         }
 
         channels match {
-            case Json.JArray(channels) ⇒
+            case JArray(channels) ⇒
                 val _channels: Vector[SseChannel] = channels.length match {
                     case 0 => Vector.empty[SseChannel]
                     case _ =>
                         channels.map(
                             _ match {
-                                case Json.JString(string) => SseStringChannel(string)
+                                case JString(string) => SseStringChannel(string)
                                 case any => throw new RuntimeException(s"Bad branch. ${any}")
                             }
                         )

@@ -2,6 +2,7 @@ package io.circe
 
 import com.simplesys.servlet.http.sse.SseServletRequest
 import io.circe.parser.parse
+import io.circe.Json._
 
 trait SseServletRequestCirce {
     this: SseServletRequest ⇒
@@ -14,7 +15,7 @@ trait SseServletRequestCirce {
             match {
                 case Json.Null ⇒
                     Set.empty[String]
-                case Json.JArray(array) ⇒
+                case JArray(array) ⇒
                     Set(array.toString())
                 case _ ⇒
                     Set.empty[String]
