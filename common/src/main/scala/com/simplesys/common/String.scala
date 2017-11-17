@@ -3,7 +3,7 @@ package com.simplesys.common
 import java.io.{File, InputStream}
 import java.math.BigInteger
 import java.text.{DateFormat, DecimalFormat, DecimalFormatSymbols, SimpleDateFormat}
-import java.time.{LocalDate, LocalDateTime}
+import java.time.{LocalDate, LocalDateTime, LocalTime}
 import java.time.format.DateTimeFormatter
 
 import com.simplesys.common.equality.SimpleEquality._
@@ -73,15 +73,8 @@ object Strings {
 
     implicit class stringToDate(val string: String) {
         def toLocalDateTime(dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME): LocalDateTime = LocalDateTime.parse(string.unQuoted, dateTimeFormatter)
-
         def toLocalDate(dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE): LocalDate = LocalDate.parse(string.unQuoted, dateTimeFormatter)
-
-        def toDateTime(dateTimeFormatter: DateFormat = new SimpleDateFormat("d-MMM-yyyy,HH:mm:ss aaa")): DateTime =
-            DateTime.parse(string.unQuoted, dateTimeFormatter withZone dateTimeZone)
-
-        def toDateTimeOpt(dateTimeFormatter: DateTimeFormatter = ISODateTimeFormat.dateTimeParser().withOffsetParsed(), dateTimeZone: DateTimeZone = DateTimeZone.getDefault): Option[DateTime] =
-            if (string.isNull || string.isEmpty) None else Some(string.toDateTime(dateTimeFormatter))
-
+        def toLocalTime(dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_TIME): LocalTime = LocalTime.parse(string.unQuoted, dateTimeFormatter)
     }
 
     val lineSeparator = System.getProperty("line.separator")
@@ -125,6 +118,7 @@ object Strings {
 
         def fill(length: Int, str: String, comment: String): String = {
             def len: Int = (length - comment.length - 2) / 2
+
             if (!comment.isEmpty) fill(len, str).space + comment.space + fill(len, str) else fill(len, str)
         }
 

@@ -12,8 +12,7 @@ import com.simplesys.io._
 import com.simplesys.log.Logging
 import net.sf.saxon.Configuration
 import net.sf.saxon.s9api._
-import org.joda.time.DateTime
-import org.joda.time.format.DateTimeFormat
+import com.simplesys.genSources._
 
 import scala.collection.mutable.{ArrayBuffer, Map}
 
@@ -61,10 +60,7 @@ object XsltTransformer extends Logging {
         trans setDestination res.out
 
         trans.setMessageListener((content: XdmNode, terminate: Boolean, locator: SourceLocator) => {
-            logger.trace(s">> Message terminate=${if (terminate) "yes" else "no"} at ${
-                val fmt = DateTimeFormat.forPattern("dd.MM.yyyy HH:mm:ss")
-                new DateTime().toString(fmt.withLocale(Locale.ROOT))
-            }")
+            logger.trace(s">> Message terminate=${if (terminate) "yes" else "no"} at ${getDateNowStr}")
             logger.trace(s"   From instruction at line: ${locator.getLineNumber} of ${locator.getSystemId}")
             logger.trace(s"${space.space.space + content.getStringValue} <<")
         })
@@ -108,10 +104,7 @@ object XsltTransformer extends Logging {
         trans setDestination res.out
 
         trans.setMessageListener((content: XdmNode, terminate: Boolean, locator: SourceLocator) => {
-            logger.trace(s">> Message terminate=${if (terminate) "yes" else "no"} at ${
-                val fmt = DateTimeFormat.forPattern("dd.MM.yyyy HH:mm:ss")
-                new DateTime().toString(fmt.withLocale(Locale.ROOT))
-            }")
+            logger.trace(s">> Message terminate=${if (terminate) "yes" else "no"} at ${getDateNowStr}")
             logger.trace(s"   From instruction at line: ${locator.getLineNumber} of ${locator.getSystemId}")
             logger.trace(s"${space.space.space + content.getStringValue} <<")
         })

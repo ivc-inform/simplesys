@@ -1,22 +1,22 @@
 package com.simplesys
 
-import org.joda.time.DateTime
-import org.joda.time.format.DateTimeFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.Locale
+
 import com.simplesys.common.Strings._
 
 package object genSources {
+    def getDateNowStr: String = {
+        val fmt =  DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
+        LocalDateTime.now.format(fmt.withLocale(Locale.ROOT))
+    }
+
     private val mess =
-        s"""This file is generated automatically (at ${
-            val fmt = DateTimeFormat.forPattern("dd.MM.yyyy HH:mm:ss");
-            new DateTime().toString(fmt.withLocale(Locale.ROOT))
-        }), do not spend any changes here, because they will be lost."""
+        s"""This file is generated automatically (at ${getDateNowStr}), do not spend any changes here, because they will be lost."""
 
     private val mess1 =
-        s"""This file is generated automatically (at ${
-            val fmt = DateTimeFormat.forPattern("dd.MM.yyyy HH:mm:ss");
-            new DateTime().toString(fmt.withLocale(Locale.ROOT))
-        })."""
+        s"""This file is generated automatically (at ${getDateNowStr})."""
 
     def genMessageCreating(generatorName: String): String = s"""// ${mess} Generator: ${generatorName.dblQuoted}"""
     def genMessageCreating: String = s"""// ${mess} Generator: unknown"""
