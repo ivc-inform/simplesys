@@ -13,9 +13,6 @@ import com.simplesys.akka.http.{AkkaMap, Endpoint, FutureResponse, ServletContex
 import com.simplesys.annotation.{RSTransfer, SseTransfer}
 import com.simplesys.common.Strings._
 import com.simplesys.common._
-import com.simplesys.isc.dataBinging.DSResponseDyn
-import com.simplesys.isc.dataBinging.RPC.RPCResponseDyn
-import com.simplesys.json.{JsonList, JsonObject}
 import com.simplesys.log.Logging
 import com.simplesys.servlet._
 import com.simplesys.servlet.http.sse.{SseServletRequest, SseServletResponse}

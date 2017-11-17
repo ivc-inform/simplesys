@@ -1,6 +1,6 @@
 package com.simplesys.smartClient
 
-case class ResponseData(status: String, login: String, userId: Long, captionUser: String, codeGroup: String, simpleSysContextPath: String)
+case class ResponseData(status: Int, login: Option[String] = None, userId: Option[Long] = None, captionUser: Option[String] = None, codeGroup: Option[String] = None, simpleSysContextPath: Option[String] = None, errorMessage: Option[String] = None)
 
 object RPCResponse {
     val statusSuccess = 0

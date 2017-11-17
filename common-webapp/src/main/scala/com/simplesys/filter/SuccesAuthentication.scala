@@ -1,58 +1,45 @@
 package com.simplesys.filter
 
 import akka.actor.ActorSystem
+import com.simplesys.log.Logging
 import com.simplesys.servlet.http.{HttpServletRequest, HttpServletResponse}
+import com.simplesys.smartClient.RPCResponse._
+import com.simplesys.smartClient.{RPCResponse, ResponseData}
+import io.circe.Json
+import io.circe.syntax._
+import io.circe.generic.auto._
 
-object SuccesAuthentication {
-    def apply(request: HttpServletRequest, response: HttpServletResponse, login: String, id: Long,captionUser: String, codeGroup:String)(implicit system: ActorSystem) {
-        if (!response.IsCommitted)
-            response.FlushBuffer()
-
-
-        val result = new RPCResponseDyn {
-            Data = JsonObject(
-                "status" -> statusSuccess,
-                "login" -> login,
-                "userId" -> id,
-                "captionUser" -> captionUser,
-                "codeGroup" -> codeGroup,
-                "simpleSysContextPath" -> request.ContextPath
-            )
-        }
-
-        //response Print (logJSActor(result))
-        response Print ("")
+trait Log extends Logging {
+    implicit def toOpt[T](x: T): Option[T] = Some(x)
+    def logJSActor(json: Json): Json = {
+        logger debug json.spaces4
+        json
     }
 }
 
-object FailureAuthentication {
+object SuccesAuthentication extends Log {
+    def apply(request: HttpServletRequest, response: HttpServletResponse, login: String, id: Long, captionUser: String, codeGroup: String)(implicit system: ActorSystem) {
+        if (!response.IsCommitted)
+            response.FlushBuffer()
+
+        response Print (logJSActor(RPCResponse(data = ResponseData(status = statusSuccess, login = login, userId = id, captionUser = captionUser, codeGroup = codeGroup, simpleSysContextPath = request.ContextPath)).asJson))
+    }
+}
+
+object FailureAuthentication extends Log {
     def apply(request: HttpServletRequest, response: HttpServletResponse, errorMessage: String)(implicit system: ActorSystem) {
         if (!response.IsCommitted)
             response.FlushBuffer()
 
-        val result = new RPCResponseDyn {
-            Data = JsonObject(
-                "status" -> statusLoginIncorrect,
-                "errorMessage" -> errorMessage
-            )
-        }
-
-        response Print (logJSActor(result))
+        response Print (logJSActor(RPCResponse(data = ResponseData(status = statusLoginIncorrect, errorMessage = errorMessage)).asJson))
     }
 }
 
-object LoginRequiredResponse {
-    def apply(request: HttpServletRequest, response: HttpServletResponse )(implicit system: ActorSystem) {
+object LoginRequiredResponse  extends Log {
+    def apply(request: HttpServletRequest, response: HttpServletResponse)(implicit system: ActorSystem) {
         if (!response.IsCommitted)
             response.FlushBuffer()
-
-        val result = new RPCResponseDyn {
-            Data = JsonObject(
-                "status" -> statusLoginRequired,
-                "errorMessage" -> "Требуется аутентификация !"
-            )
-        }
-
-        response Print (logJSActor(result))
+        
+        response Print (logJSActor(RPCResponse(data = ResponseData(status = statusLoginIncorrect, errorMessage = "Требуется аутентификация !")).asJson))
     }
 }
