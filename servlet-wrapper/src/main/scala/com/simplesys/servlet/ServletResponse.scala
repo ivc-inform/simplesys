@@ -66,7 +66,7 @@ class ServletResponse(protected[servlet] val proxy: JServletResponse) extends Lo
         if (prettyString)
             PrintAndFlush(json.spaces4)
         else
-            PrintAndFlush(json.toString())
+            PrintAndFlush(json.noSpaces)
 
     }
 
@@ -74,14 +74,14 @@ class ServletResponse(protected[servlet] val proxy: JServletResponse) extends Lo
         if (prettyString)
             Print(json.spaces4)
         else
-            Print(json.toString())
+            Print(json.noSpaces)
     }
 
     def PrintAndClose(json: Json, prettyString: Boolean = false) {
         if (prettyString)
             PrintAndClose(json.spaces4)
         else
-            PrintAndClose(json.toString())
+            PrintAndClose(json.noSpaces)
     }
 
     def Print(str: String) {

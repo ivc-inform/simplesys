@@ -1,5 +1,7 @@
 package com.simplesys.smartClient
 
+import io.circe.Json
+
 case class ResponseData(status: Int, login: Option[String] = None, userId: Option[Long] = None, captionUser: Option[String] = None, codeGroup: Option[String] = None, simpleSysContextPath: Option[String] = None, errorMessage: Option[String] = None)
 
 object RPCResponse {
@@ -18,4 +20,4 @@ object RPCResponse {
     val statusConnetionResetError = -92
     val statusServerTimeout = -100
 }
-case class RPCResponse(data: ResponseData)
+case class RPCResponse(data: Json)

@@ -22,7 +22,7 @@ object SuccesAuthentication extends Log {
         if (!response.IsCommitted)
             response.FlushBuffer()
 
-        response Print (logJSActor(RPCResponse(data = ResponseData(status = statusSuccess, login = login, userId = id, captionUser = captionUser, codeGroup = codeGroup, simpleSysContextPath = request.ContextPath)).asJson))
+        response Print (logJSActor(RPCResponse(data = ResponseData(status = statusSuccess, login = login, userId = id, captionUser = captionUser, codeGroup = codeGroup, simpleSysContextPath = request.ContextPath).asJson).asJson))
     }
 }
 
@@ -31,7 +31,7 @@ object FailureAuthentication extends Log {
         if (!response.IsCommitted)
             response.FlushBuffer()
 
-        response Print (logJSActor(RPCResponse(data = ResponseData(status = statusLoginIncorrect, errorMessage = errorMessage)).asJson))
+        response Print (logJSActor(RPCResponse(data = ResponseData(status = statusLoginIncorrect, errorMessage = errorMessage).asJson).asJson))
     }
 }
 
@@ -40,6 +40,6 @@ object LoginRequiredResponse  extends Log {
         if (!response.IsCommitted)
             response.FlushBuffer()
         
-        response Print (logJSActor(RPCResponse(data = ResponseData(status = statusLoginIncorrect, errorMessage = "Требуется аутентификация !")).asJson))
+        response Print (logJSActor(RPCResponse(data = ResponseData(status = statusLoginIncorrect, errorMessage = "Требуется аутентификация !").asJson).asJson))
     }
 }

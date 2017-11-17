@@ -52,10 +52,6 @@ lazy val root = (project in file(".")).
 
 lazy val akkaExtender = Project(id = "akka-extender", base = file("akka-extender")).dependsOn(servletWrapper).settings(
     libraryDependencies ++= Seq(
-        CommonDeps.servletAPI % Provided,
-        CommonDeps.akkaActor,
-        CommonDeps.akkaAgent,
-        CommonDeps.akkaSLF4J,
         CommonDeps.junit,
         CommonDeps.specs2,
         CommonDeps.akkaTestKit
@@ -152,19 +148,19 @@ lazy val doobieExtender = Project(id = "doobie-extender", base = file("doobie-ex
 
 lazy val iscComponents = Project(id = "isc-components", base = file("isc-components")).enablePlugins(SbtCoffeeScript).dependsOn(scalaIOExtender).
   settings(
-    sbtPlugin := false,
-    organization := CommonSettings.settingValues.organization,
-    libraryDependencies ++= Seq(
-        CommonDeps.servletAPI % "provided",
-        CommonDeps.scalaTest
-    ),
-    CoffeeScriptKeys.sourceMap := false,
-    CoffeeScriptKeys.bare := false,
-    CoffeeScriptKeys.writeIncludeModules := true,
-    webTarget := (resourceDirectory in Compile).value / "webapp" / "javascript" / "generated" / "generatedComponents" / "coffeescript",
-    sourceDirectory in Assets := (resourceDirectory in Compile).value / "coffeescript",
-    (managedResources in Compile) ++= CoffeeScriptKeys.coffeeScript.value
-).settings(CommonSettings.defaultProjectSettings)
+      sbtPlugin := false,
+      organization := CommonSettings.settingValues.organization,
+      libraryDependencies ++= Seq(
+          CommonDeps.servletAPI % "provided",
+          CommonDeps.scalaTest
+      ),
+      CoffeeScriptKeys.sourceMap := false,
+      CoffeeScriptKeys.bare := false,
+      CoffeeScriptKeys.writeIncludeModules := true,
+      webTarget := (resourceDirectory in Compile).value / "webapp" / "javascript" / "generated" / "generatedComponents" / "coffeescript",
+      sourceDirectory in Assets := (resourceDirectory in Compile).value / "coffeescript",
+      (managedResources in Compile) ++= CoffeeScriptKeys.coffeeScript.value
+  ).settings(CommonSettings.defaultProjectSettings)
 
 lazy val iscMisc = Project(id = "isc-misc", base = file("isc-misc")).dependsOn(common, xmlExtender).settings(
     libraryDependencies ++= Seq(
@@ -222,6 +218,9 @@ lazy val servletWrapper = Project(id = "servlet-wrapper", base = file("servlet-w
     scalacOptions += "-Dscalac:patmat:analysisBudget=1024",
 
     libraryDependencies ++= Seq(
+        CommonDeps.akkaActor,
+        CommonDeps.akkaAgent,
+        CommonDeps.akkaSLF4J,
         CommonDeps.servletAPI % Provided,
         CommonDeps.scalaTest
     )
