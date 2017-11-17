@@ -2,13 +2,13 @@ package com.simplesys.common
 
 import java.io.{File, InputStream}
 import java.math.BigInteger
-import java.text.{DecimalFormat, DecimalFormatSymbols}
+import java.text.{DateFormat, DecimalFormat, DecimalFormatSymbols, SimpleDateFormat}
+import java.time.{LocalDate, LocalDateTime}
+import java.time.format.DateTimeFormatter
 
 import com.simplesys.common.equality.SimpleEquality._
 import org.apache.commons.io.IOUtils
 import org.apache.commons.lang3.StringEscapeUtils
-import org.joda.time.DateTimeZone
-import org.joda.time.format.{DateTimeFormatter, ISODateTimeFormat}
 
 import scala.io.Codec._
 import scala.util.Try
@@ -72,14 +72,14 @@ object Strings {
     }
 
     implicit class stringToDate(val string: String) {
-        def toLocalDateTime(dateTimeFormatter: DateTimeFormatter = ISODateTimeFormat.localDateOptionalTimeParser): org.joda.time.LocalDateTime = org.joda.time.LocalDateTime.parse(string.unQuoted, dateTimeFormatter)
+        def toLocalDateTime(dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME): LocalDateTime = LocalDateTime.parse(string.unQuoted, dateTimeFormatter)
 
-        def toLocalDate(dateTimeFormatter: DateTimeFormatter = ISODateTimeFormat.localDateOptionalTimeParser): org.joda.time.LocalDate = org.joda.time.LocalDate.parse(string.unQuoted, dateTimeFormatter)
+        def toLocalDate(dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE): LocalDate = LocalDate.parse(string.unQuoted, dateTimeFormatter)
 
-        def toDateTime(dateTimeFormatter: DateTimeFormatter = ISODateTimeFormat.dateTimeParser().withOffsetParsed(), dateTimeZone: DateTimeZone = DateTimeZone.getDefault): org.joda.time.DateTime =
-            org.joda.time.DateTime.parse(string.unQuoted, dateTimeFormatter withZone dateTimeZone)
+        def toDateTime(dateTimeFormatter: DateFormat = new SimpleDateFormat("d-MMM-yyyy,HH:mm:ss aaa")): DateTime =
+            DateTime.parse(string.unQuoted, dateTimeFormatter withZone dateTimeZone)
 
-        def toDateTimeOpt(dateTimeFormatter: DateTimeFormatter = ISODateTimeFormat.dateTimeParser().withOffsetParsed(), dateTimeZone: DateTimeZone = DateTimeZone.getDefault): Option[org.joda.time.DateTime] =
+        def toDateTimeOpt(dateTimeFormatter: DateTimeFormatter = ISODateTimeFormat.dateTimeParser().withOffsetParsed(), dateTimeZone: DateTimeZone = DateTimeZone.getDefault): Option[DateTime] =
             if (string.isNull || string.isEmpty) None else Some(string.toDateTime(dateTimeFormatter))
 
     }

@@ -9,7 +9,6 @@ name := "SimpleSys"
 lazy val root = (project in file(".")).
   enablePlugins(GitVersioning).
   aggregate(
-      jodaWrapper,
       logbackWrapper,
       common,
       scalaIOExtender,
@@ -85,7 +84,7 @@ lazy val classUtil = Project(id = "class-util", base = file("class-util")).depen
 
 ).settings(CommonSettings.defaultProjectSettings)
 
-lazy val common = (project in file("common")).dependsOn(logbackWrapper, jodaWrapper).settings(
+lazy val common = (project in file("common")).dependsOn(logbackWrapper).settings(
     libraryDependencies ++= Seq(
         CommonDeps.apacheCommonsLang,
         CommonDeps.apacheCommonsIO,
@@ -142,7 +141,7 @@ lazy val coreUtils = Project(id = "core-utils", base = file("core-utils")).setti
     libraryDependencies += CommonDeps.scalaReflect.value
 ).settings(CommonSettings.defaultProjectSettings)
 
-lazy val doobieExtender = Project(id = "doobie-extender", base = file("doobie-extender")).dependsOn(jodaWrapper, logbackWrapper).settings(
+lazy val doobieExtender = Project(id = "doobie-extender", base = file("doobie-extender")).dependsOn(logbackWrapper).settings(
     libraryDependencies ++= Seq(
         CommonDeps.doobieCore,
         CommonDeps.doobieCoreCats,
@@ -194,15 +193,6 @@ lazy val jdbcWrapper = Project(id = "jdbc-wrapper", base = file("jdbc-wrapper"))
         CommonDeps.scalaTest
     )
 ).settings(CommonSettings.defaultProjectSettings)
-
-lazy val jodaWrapper = Project(id = "joda-wrapper", base = file("joda-wrapper")).settings(
-    libraryDependencies ++= Seq(
-        CommonDeps.jodaTime,
-        CommonDeps.jodaConvert % Compile,
-        CommonDeps.scalaTest
-    )
-).settings(CommonSettings.defaultProjectSettings)
-
 
 lazy val jsonExtenderTypesafe = Project(id = "json-extender-typesafe", base = file("json-extender-typesafe")).dependsOn(scalaGen).enablePlugins(JSONPlugin).settings(
 
