@@ -2,16 +2,17 @@ package com.simplesys.servlet
 
 import java.io.{IOException, UnsupportedEncodingException}
 import java.util.Locale
-import javax.servlet.http.{HttpServletRequest => JHttpServletRequest}
-import javax.servlet.{ServletRequest => JServletRequest}
+import javax.servlet.http.{HttpServletRequest ⇒ JHttpServletRequest}
+import javax.servlet.{ServletRequest ⇒ JServletRequest}
 
 import com.simplesys.common._
 import com.simplesys.common.equality.SimpleEquality._
-import com.simplesys.json.{Json, JsonObject}
 import com.simplesys.log.Logging
 import com.simplesys.servlet.http.HttpServletRequest
 import com.simplesys.servlet.http.sse.SseServletRequest
 import com.simplesys.xml.Elem
+import io.circe.Json
+import io.circe.parser._
 
 import scala.collection.JavaConverters._
 import scala.collection.immutable.SortedMap
@@ -171,23 +172,12 @@ class ServletRequest(protected[servlet] val proxy: JServletRequest) extends Logg
         }
     }
 
-    def JSONData: JsonObject = {
+    def JSONData: Json = {
         ISC_dataFormat match {
             case "JSON" =>
-                try {
-                    val res = Json(InputStream)
-                    logger trace (s"InputStream JsonData: ${res.toPrettyString}")
-                    res
-                }
-                catch {
-                    case e: IllegalStateException =>
-                        logger.warn(s"${e.getMessage}")
-                        Json()
-                    case e: IOException =>
-                        logger.warn(s"${e.getMessage}")
-                        Json()
-                }
-            case _ => Json()
+                parse(InputStream) getOrElse (Json.Null)
+            case _ ⇒
+                Json.Null
         }
     }
 

@@ -61,9 +61,11 @@ object CommonDeps {
     val configWrapper = "com.github.kxbmap" %% "configs" % versions.configWrapperVersion
     val junit = "junit" % "junit" % "4.12" % Test
     val specs2 = "org.specs2" %% "specs2-core" % "4.0.0" % Test
-
-
-
+    
+    val circeCore = "io.circe" %% "circe-core" % versions.circeVersion
+    val circeGeneric = "io.circe" %% "circe-generic" % versions.circeVersion
+    val circeParcer = "io.circe" %% "circe-parser" % versions.circeVersion
+    
     object versions {
         val scalaModulesVersion = "1.0.6"
 
@@ -114,6 +116,8 @@ object CommonDeps {
 
         val utilEvalVersion = "6.43.0"
         val configWrapperVersion = "0.4.4"
+
+        val circeVersion = "0.8.0"
     }
 }
 

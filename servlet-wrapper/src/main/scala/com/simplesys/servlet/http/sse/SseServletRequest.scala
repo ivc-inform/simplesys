@@ -1,23 +1,25 @@
 package com.simplesys.servlet.http.sse
 
-import javax.servlet.http.{HttpServletRequest => JHttpServletRequest}
-import javax.servlet.{ServletRequest => JServletRequest}
+import javax.servlet.http.{HttpServletRequest ⇒ JHttpServletRequest}
+import javax.servlet.{ServletRequest ⇒ JServletRequest}
 
 import com.simplesys.common.Strings._
-import com.simplesys.json.Json
 import com.simplesys.servlet.ServletRequest
 import com.simplesys.servlet.http.HttpServletRequest
+import io.circe.Json
+import io.circe.Json.JArray
+import io.circe.parser._
 
 import scala.io.Codec
 
 object SseServletRequest {
     def apply(request: JHttpServletRequest): SseServletRequest = new SseServletRequest(request)
-    
+
     def apply(request: JServletRequest): SseServletRequest = request match {
         case request: JHttpServletRequest => SseServletRequest(request)
         case _ => throw new RuntimeException("Ожидался HttpServletRequest.")
     }
-    
+
     def apply(request: ServletRequest): SseServletRequest = apply(request.proxy)
 }
 
@@ -29,9 +31,15 @@ class SseServletRequest(override protected[servlet] val proxy: JHttpServletReque
         case None =>
             Set.empty[String]
         case Some(subscribedChannels) =>
-            Json(subscribedChannels).map {
-                case (key, value) => key
-            }.toSet
+            parse(subscribedChannels).getOrElse(Json.Null)
+            match {
+                case Json.Null ⇒
+                    Set.empty[String]
+                case JArray(array) ⇒
+                    Set(array.toString())
+                case _ ⇒
+                    Set.empty[String]
+            }
     }
 
     def EventStream: Boolean = Parameter("eventStream") match {

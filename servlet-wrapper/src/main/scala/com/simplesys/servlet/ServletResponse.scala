@@ -6,11 +6,11 @@ import javax.servlet.http.{HttpServletResponse ⇒ JHttpServletResponse}
 import javax.servlet.{ServletOutputStream, ServletResponse ⇒ JServletResponse}
 
 import com.simplesys.common.equality.SimpleEquality._
-import com.simplesys.json.JsonElement
 import com.simplesys.log.Logging
 import com.simplesys.servlet.http.HttpServletResponse
 import com.simplesys.servlet.http.sse.SseServletResponse
 import com.simplesys.xml.Elem
+import io.circe.Json
 
 import scala.io.Codec
 
@@ -62,24 +62,24 @@ class ServletResponse(protected[servlet] val proxy: JServletResponse) extends Lo
         PrintAndFlush(elem.toUnEscapeString)
     }
 
-    def PrintAndFlush(json: JsonElement, prettyString: Boolean = false) {
+    def PrintAndFlush(json: Json, prettyString: Boolean = false) {
         if (prettyString)
-            PrintAndFlush(json.toPrettyString)
+            PrintAndFlush(json.spaces4)
         else
             PrintAndFlush(json.toString())
 
     }
 
-    def Print(json: JsonElement, prettyString: Boolean = false) {
+    def Print(json: Json, prettyString: Boolean = false) {
         if (prettyString)
-            Print(json.toPrettyString)
+            Print(json.spaces4)
         else
             Print(json.toString())
     }
 
-    def PrintAndClose(json: JsonElement, prettyString: Boolean = false) {
+    def PrintAndClose(json: Json, prettyString: Boolean = false) {
         if (prettyString)
-            PrintAndClose(json.toPrettyString)
+            PrintAndClose(json.spaces4)
         else
             PrintAndClose(json.toString())
     }

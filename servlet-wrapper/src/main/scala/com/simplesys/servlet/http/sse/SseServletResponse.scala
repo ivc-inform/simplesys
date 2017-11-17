@@ -5,10 +5,11 @@ import javax.servlet.{ServletResponse ⇒ JServletResponse}
 
 import com.simplesys.common.Strings._
 import com.simplesys.config.Config
-import com.simplesys.json._
 import com.simplesys.servlet.ServletResponse._
 import com.simplesys.servlet.http._
 import com.simplesys.servlet.{EventStreamContent, ServletResponse}
+import io.circe.Json.{JArray, JNull, JObject, JString}
+import io.circe.{Json, JsonObject}
 
 import scala.io.Codec._
 
@@ -29,22 +30,24 @@ class SseServletResponse(override protected[servlet] val proxy: JHttpServletResp
     ContentType = EventStreamContent + UTF8
     this ++= (CacheControlNoCache, ConnectionClose, PragmaNoCache, HeaderLocalDateTime("Expires", System.currentTimeMillis()))
 
-    def SendMessage(data: JsonElement, event: Option[SseEvent], id: Option[SseID], channels: List[SseChannel]) {
+    def SendMessage(data: Json, event: Option[SseEvent], id: Option[SseID], channels: Vector[SseChannel]) {
         val out = Writer
 
         for (ev <- event)
             if (!out.checkError())
                 out write s"event:${ev.serrialize}".newLine
 
-        val _channels: JsonList = JsonList(channels.map(item => JsonString(item.serrialize)): _*)
+        val _channels = JArray(channels.map(item => JString(item.serrialize)))
 
-        val _data: JsonElement = channels.length match {
-            case 0 => data
-            case _ => JsonObject("data" -> data, "channels" -> _channels)
+        val _data: Json = channels.length match {
+            case 0 ⇒
+                data
+            case _ ⇒
+                JObject(JsonObject.from("data" -> data, "channels" -> _channels))
         }
 
         _data match {
-            case JsonString(string) =>
+            case JString(string) =>
                 val templ = """(.*)(\s*)""".r("line", "spacer")
 
                 for (x <- templ findAllMatchIn string) {
@@ -52,15 +55,15 @@ class SseServletResponse(override protected[servlet] val proxy: JHttpServletResp
                         out write s"data:${x.group("line")}".newLine
                 }
 
-            case obj: JsonObject =>
+            case JObject(obj) =>
                 if (!out.checkError())
                     out write s"data:${obj.toString()}".newLine
 
-            case list: JsonList =>
+            case JArray(list) =>
                 if (!out.checkError())
                     out write s"data:${list.toString()}".newLine
 
-            case x: JsonEmpty.type =>
+            case x@Json.Null =>
                 if (!out.checkError())
                     out write s"data:${x.toString()}".newLine
 
@@ -79,25 +82,30 @@ class SseServletResponse(override protected[servlet] val proxy: JHttpServletResp
             out.flush()
     }
 
-    def SendMessage(data: JsonElement, event: Option[SseEvent], id: Option[String], channels: JsonList): Unit = {
+    def SendMessage(data: Json, event: Option[SseEvent], id: Option[String], channels: Json): Unit = {
 
         val _id: Option[SseID] = id match {
             case None => None
             case Some(string) => Some(SseStringID(string))
         }
 
-        val _channels: List[SseChannel] = channels.length match {
-            case 0 => List.empty[SseChannel]
-            case _ =>
-                channels.map(
-                    _ match {
-                        case JsonString(string) => SseStringChannel(string)
-                        case any => throw new RuntimeException(s"Bad branch. ${any}")
-                    }
-                ).toList
-        }
+        channels match {
+            case JArray(channels) ⇒
+                val _channels: Vector[SseChannel] = channels.length match {
+                    case 0 => Vector.empty[SseChannel]
+                    case _ =>
+                        channels.map(
+                            _ match {
+                                case JString(string) => SseStringChannel(string)
+                                case any => throw new RuntimeException(s"Bad branch. ${any}")
+                            }
+                        )
+                }
 
-        SendMessage(data = data, event = event, id = _id, channels = _channels)
+                SendMessage(data = data, event = event, id = _id, channels = _channels)
+
+            case _ ⇒
+        }
     }
 
     //Задержка для повторного реконнекта, выполняющегося броузером автоматически при закрытии соединения. ms

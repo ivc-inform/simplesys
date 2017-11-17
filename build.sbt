@@ -88,6 +88,9 @@ lazy val common = (project in file("common")).dependsOn(logbackWrapper).settings
         CommonDeps.apacheCommonsIO,
         CommonDeps.scalaXml,
         CommonDeps.scalaReflect.value,
+        CommonDeps.circeCore,
+        CommonDeps.circeGeneric,
+        CommonDeps.circeParcer,
         CommonDeps.junit,
         CommonDeps.scalaTest
     )
