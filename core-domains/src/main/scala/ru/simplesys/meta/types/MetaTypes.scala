@@ -2,29 +2,24 @@ package ru.simplesys
 package meta
 package types
 
-import java.io.InputStream
-
-import org.joda.time.{DateTime, LocalDate, LocalDateTime}
-import com.simplesys.xml.{Elem, TypeNull, XsiScore}
+import com.simplesys.isc.system.{typesDyn ⇒ iscTypes}
 import com.simplesys.xml.Elem._
+import com.simplesys.xml.{Elem, TypeNull, XsiScore}
+import io.circe.Json
+import org.joda.time.{DateTime, LocalDateTime}
 
-import scala.xml._
-import scala.xml.NamespaceBinding
-import com.simplesys.isc.system.{typesDyn => iscTypes}
-import com.simplesys.isc.system.typesDyn.OperatorId
-import org.joda.time.format.DateTimeFormat
+import scala.xml.{NamespaceBinding, _}
 
 trait MetaType[T] {
     type A = T
     def guid: String = ""
 }
 
+import com.simplesys.common.Strings._
 import liquibase.database.Database
 import liquibase.database.core._
 import liquibase.datatype.LiquibaseDataType
 import liquibase.datatype.core._
-import com.simplesys.common.Strings._
-import com.simplesys.json._
 
 //---------------------------------------------------------------------------------
 
@@ -311,7 +306,7 @@ trait SCSimpleType {
     def scValidOperators: Option[Set[iscTypes.OperatorId]] = None
     // should be String, JsonObject or smth more clever?
     def scValidators: Option[Seq[String]] = None
-    def scFieldProperties: Option[JsonObject] = None
+    def scFieldProperties: Option[Json] = None
     //  def normalDisplayFormatter
     //  def shortDisplayFormatter
     //  def editFormatter

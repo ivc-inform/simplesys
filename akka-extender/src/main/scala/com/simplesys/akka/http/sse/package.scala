@@ -1,21 +1,22 @@
 package com.simplesys.akka.http
 
-import com.simplesys.json.{JsonString, JsonList}
 import com.simplesys.common.Strings._
+import io.circe.Json
+import io.circe.Json._
 
 package object sse {
     val marker = "@@@channels:"
 
-    def getChannelsList(message: Any): JsonList = {
+    def getChannelsList(message: Any): Json = {
         message match {
             case message: String => getChannelsList(message)
-            case _ => JsonList()
+            case _ => arr()
         }
     }
 
-    def getChannelsList(message: String): JsonList = {
-        def array: Array[JsonString] = message.substring(message.indexOf(marker) + marker.length + 1, message.length - 1).split(",").map { case x: String => JsonString(x.trim)}
-        if (message.indexOf(marker) == -1) JsonList() else JsonList(array: _*)
+    def getChannelsList(message: String): Json = {
+        def array: Array[Json] = message.substring(message.indexOf(marker) + marker.length + 1, message.length - 1).split(",").map { case x: String => fromString(x.trim)}
+        if (message.indexOf(marker) == -1) arr() else arr(array: _*)
     }
 
     def getWithoutChannels(message: Any): String = {
