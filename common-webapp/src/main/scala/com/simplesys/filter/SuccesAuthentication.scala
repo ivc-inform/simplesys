@@ -1,7 +1,6 @@
 package com.simplesys.filter
 
 import akka.actor.ActorSystem
-import com.simplesys.json.JsonObject
 import com.simplesys.servlet.http.{HttpServletRequest, HttpServletResponse}
 
 object SuccesAuthentication {
