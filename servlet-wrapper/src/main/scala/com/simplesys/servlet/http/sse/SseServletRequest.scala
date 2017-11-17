@@ -6,7 +6,7 @@ import javax.servlet.{ServletRequest ⇒ JServletRequest}
 import com.simplesys.common.Strings._
 import com.simplesys.servlet.ServletRequest
 import com.simplesys.servlet.http.HttpServletRequest
-import io.circe.Json
+import io.circe.{Json, SseServletRequestCirce}
 import io.circe.Json.JArray
 import io.circe.parser._
 
@@ -23,24 +23,9 @@ object SseServletRequest {
     def apply(request: ServletRequest): SseServletRequest = apply(request.proxy)
 }
 
-class SseServletRequest(override protected[servlet] val proxy: JHttpServletRequest) extends HttpServletRequest(proxy) {
+class SseServletRequest(override protected[servlet] val proxy: JHttpServletRequest) extends HttpServletRequest(proxy) with SseServletRequestCirce {
 
     def SessionID: String = Session.get.Id
-
-    def SubscribedChannels: Set[String] = Parameter("subscribedChannels") match {
-        case None =>
-            Set.empty[String]
-        case Some(subscribedChannels) =>
-            parse(subscribedChannels).getOrElse(Json.Null)
-            match {
-                case Json.Null ⇒
-                    Set.empty[String]
-                case JArray(array) ⇒
-                    Set(array.toString())
-                case _ ⇒
-                    Set.empty[String]
-            }
-    }
 
     def EventStream: Boolean = Parameter("eventStream") match {
         case None => false
