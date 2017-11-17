@@ -27,7 +27,7 @@ class SseServletResponse(override protected[servlet] val proxy: JHttpServletResp
 
     //SendRetry(getInt("messaging.connectTimeout"))
     ContentType = EventStreamContent + UTF8
-    this ++= (CacheControlNoCache, ConnectionClose, PragmaNoCache, HeaderDateTime("Expires", System.currentTimeMillis()))
+    this ++= (CacheControlNoCache, ConnectionClose, PragmaNoCache, HeaderLocalDateTime("Expires", System.currentTimeMillis()))
 
     def SendMessage(data: JsonElement, event: Option[SseEvent], id: Option[SseID], channels: List[SseChannel]) {
         val out = Writer

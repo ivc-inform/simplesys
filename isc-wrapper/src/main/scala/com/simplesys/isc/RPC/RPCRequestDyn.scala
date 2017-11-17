@@ -1,14 +1,13 @@
 package com.simplesys.isc.dataBinging.RPC
 
-import com.simplesys.isc.dataBinging.dataSource.{CriterionDyn, AdvancedCriteriaDyn}
+import java.time.LocalDateTime
+
+import com.simplesys.isc.dataBinging.dataSource.{AdvancedCriteriaDyn, CriterionDyn}
 import com.simplesys.isc.system.ClassDyn
 import com.simplesys.isc.system.misc.{Bool, Number}
 import com.simplesys.isc.system.typesDyn._
 import com.simplesys.json.{JsonString, UnquotedString, _}
 import com.simplesys.servlet.http.HttpServletRequest
-import org.joda.time.DateTime
-
-import scala.collection.mutable.ArrayBuffer
 
 object RPCRequestDyn {
     implicit def RPCRequest1toJsonObject(in: RPCRequestDyn): JsonObject = in json
@@ -103,20 +102,20 @@ class RPCRequestDyn(override val inJson: JsonObject = null,
             }
         }
 
-        def getDateTime(key: String): DateTime = {
+        def getLocalDateTime(key: String): LocalDateTime = {
             advancedCriteria match {
-                case None => Data getDateTime key
-                case advancedCriteria => getCriterion(advancedCriteria, key) getDateTime "value"
+                case None => Data getLocalDateTime key
+                case advancedCriteria => getCriterion(advancedCriteria, key) getLocalDateTime "value"
             }
         }
 
-        def getDateTimeOpt(key: String): Option[DateTime] = {
+        def getDateTimeOpt(key: String): Option[LocalDateTime] = {
             advancedCriteria match {
-                case None => Data getDateTimeOpt key
+                case None => Data getLocalDateTimeOpt key
                 case advancedCriteria =>
                     getCriterionOpt(advancedCriteria, key) match {
                         case None => None
-                        case Some(criterion) => criterion getDateTimeOpt "value"
+                        case Some(criterion) => criterion getLocalDateTimeOpt "value"
                     }
             }
         }

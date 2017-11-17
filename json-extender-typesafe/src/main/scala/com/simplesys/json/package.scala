@@ -2,11 +2,11 @@ package com.simplesys
 
 import java.io.InputStream
 import java.math.{BigDecimal ⇒ JBigDecimal}
+import java.time.LocalDateTime
 
 import com.simplesys.common.Strings._
 import com.simplesys.isc.system.misc._
 import com.simplesys.log.Logging
-import org.joda.time.{DateTime, LocalDateTime}
 
 import scala.util.{Failure, Success}
 
@@ -193,16 +193,7 @@ package object json extends Logging {
             case (str, unq) => (str, unq)
         }
     }
-
-    implicit def dateTime2JsonElement(value: DateTime): JsonElement = JsonDateTime(value)
-    implicit def dateTime2JsonElement1(value: DateTime): Option[JsonElement] = Some(JsonDateTime(value))
-    implicit def dateTime2JsonElement2(value: Option[DateTime]): Option[JsonElement] = value match {
-        case Some(x: DateTime) =>
-            logger trace (s"value: ${value}")
-            Some(JsonDateTime(x))
-        case _ => None
-    }
-
+    
     implicit def localDateTime2JsonElement(value: LocalDateTime): JsonElement = JsonLocalDateTime(value)
     implicit def localDateTime2JsonElement1(value: LocalDateTime): Option[JsonElement] = Some(JsonLocalDateTime(value))
     implicit def localDateTime2JsonElement2(value: Option[LocalDateTime]): Option[JsonElement] = value match {

@@ -2,12 +2,12 @@ package com.simplesys
 
 import java.io.{BufferedReader, IOException, InputStream}
 import java.sql.{Clob, SQLException}
+import java.time.LocalDateTime
 
 import com.simplesys.common.Strings._
 import com.simplesys.jdbc.control.{BasicClassBOColumn, Table}
-import com.simplesys.json.{JsonBigDecimal, JsonBoolean, JsonDateTime, JsonDouble, JsonInt, JsonLocalDateTime, JsonLong, JsonString}
+import com.simplesys.json.{JsonBigDecimal, JsonBoolean, JsonDouble, JsonInt, JsonLocalDateTime, JsonLong, JsonString}
 import com.simplesys.log.Logging
-import org.joda.time.{DateTime, LocalDateTime}
 
 import scala.reflect.ClassTag
 
@@ -24,9 +24,7 @@ package object jdbc extends Logging {
     implicit def arrayString2OptionString(value: Array[String]): Option[String] = if (value.length == 0) None else Some(value(0))
 
     implicit def arrayBigDecimal2JsonElement(value: Array[BigDecimal]): Option[JsonBigDecimal] = if (value.length == 0) None else Some(JsonBigDecimal(value(0)))
-
-    implicit def arrayDateTime2JsonElement(value: Array[DateTime]): Option[JsonDateTime] = if (value.length == 0) None else Some(JsonDateTime(value(0)))
-
+    
     implicit def arrayLocalDateTime2JsonElement(value: Array[LocalDateTime]): Option[JsonLocalDateTime] = if (value.length == 0) None else Some(JsonLocalDateTime(value(0)))
 
     implicit def arrayLong2JsonElement(value: Array[Long]): Option[JsonLong] = if (value.length == 0) None else Some(JsonLong(value(0)))

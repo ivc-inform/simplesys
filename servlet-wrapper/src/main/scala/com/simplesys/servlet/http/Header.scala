@@ -1,9 +1,13 @@
 package com.simplesys.servlet.http
 
+import java.time.{LocalDateTime, ZoneId}
+
 import scala.collection.immutable.SortedMap
-import javax.servlet.http.{HttpServletResponse => JHttpServletResponse}
+import javax.servlet.http.{HttpServletResponse ⇒ JHttpServletResponse}
+
 import com.simplesys.common.Strings._
 import com.simplesys.common._
+
 import scala.collection.JavaConverters._
 
 sealed trait Header {
@@ -25,21 +29,13 @@ case class HeaderInt(name: String, valuesI: Seq[Int]) extends Header {
     override val values = valuesI.map(_.toString)
 }
 
-object HeaderDateTime {
-    def apply(name: String, value: org.joda.time.DateTime) = new HeaderDateTime(name, Seq(value))
-    def apply(name: String, value: Long) = new HeaderDateTime(name, Seq(new org.joda.time.DateTime(value)))
-}
-
-case class HeaderDateTime(name: String, valuesDT: Seq[org.joda.time.DateTime]) extends Header {
-    override val values = valuesDT.map(_.getMillis.toString)
-}
-
 object HeaderLocalDateTime {
-    def apply(name: String, value: org.joda.time.LocalDateTime) = new HeaderLocalDateTime(name, Seq(value))
+    def apply(name: String, value: LocalDateTime) = new HeaderLocalDateTime(name, Seq(value))
+    def apply(name: String, value: Long) = new HeaderLocalDateTime(name, Seq(value.toLocalDateTime))
 }
 
-case class HeaderLocalDateTime(name: String, valuesLDT: Seq[org.joda.time.LocalDateTime]) extends Header {
-    override val values = valuesLDT.map(_.toDateTime.getMillis.toString)
+case class HeaderLocalDateTime(name: String, valuesLDT: Seq[LocalDateTime]) extends Header {
+    override val values = valuesLDT.map(_.getMillis.toString)
 }
 
 trait Headers {
@@ -89,8 +85,7 @@ trait Headers {
                         else
                             proxy addIntHeader(name, head)
                 }
-
-            case HeaderDateTime(name, values) =>
+            case HeaderLocalDateTime(name, values) =>
                 values.headOption match {
                     case None =>
                     case Some(head) =>
@@ -99,17 +94,6 @@ trait Headers {
                             proxy setDateHeader(name, head.getMillis)
                         else
                             proxy addDateHeader(name, head.getMillis)
-                }
-
-            case HeaderLocalDateTime(name, values) =>
-                values.headOption match {
-                    case None =>
-                    case Some(head) =>
-                        val _head = head.toDateTime.getMillis.toString
-                        if (containsHeader(name, _head))
-                            proxy setDateHeader(name, head.toDateTime.getMillis)
-                        else
-                            proxy addDateHeader(name, head.toDateTime.getMillis)
                 }
 
             case header =>

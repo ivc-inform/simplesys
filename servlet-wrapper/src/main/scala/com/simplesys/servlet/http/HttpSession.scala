@@ -1,14 +1,15 @@
 package com.simplesys.servlet.http
 
-import javax.servlet.http.{HttpSession => JHttpSession}
-import com.simplesys.config.Config
-import org.joda
+import java.time.LocalDateTime
+import javax.servlet.http.{HttpSession ⇒ JHttpSession}
 
-import collection.immutable.SortedMap
-import com.simplesys.log.Logging
-import collection.JavaConverters._
 import com.simplesys.common._
-import java.util.Date
+import com.simplesys.common.Strings._
+import com.simplesys.config.Config
+import com.simplesys.log.Logging
+
+import scala.collection.JavaConverters._
+import scala.collection.immutable.SortedMap
 
 object HttpSession {
     def apply(proxy: JHttpSession) = new HttpSession(proxy)
@@ -16,11 +17,11 @@ object HttpSession {
 
 class HttpSession(protected val proxy: JHttpSession) extends Config with Logging {
 
-    def CreationTime = new org.joda.time.DateTime(proxy getCreationTime)
+    def CreationTime: LocalDateTime = proxy.getCreationTime.toLocalDateTime
 
     def Id = proxy getId
 
-    def LastAccessedTime = new org.joda.time.DateTime(proxy getLastAccessedTime)
+    def LastAccessedTime: LocalDateTime = proxy.getLastAccessedTime.toLocalDateTime
 
     def ServletContext = com.simplesys.servlet.ServletContext(proxy getServletContext)
 

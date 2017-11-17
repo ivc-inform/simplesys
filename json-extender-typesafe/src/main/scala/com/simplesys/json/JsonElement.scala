@@ -1,6 +1,7 @@
 package com.simplesys.json
 
 import java.io.{File, InputStream}
+import java.time.LocalDateTime
 
 import com.simplesys.common.Strings._
 import com.simplesys.common.equality.SimpleEquality._
@@ -8,7 +9,6 @@ import com.simplesys.isc.system.global._
 import com.simplesys.isc.system.misc._
 import com.simplesys.log.Logging
 import com.simplesys.script.JsBeautifier
-import org.joda.time.{DateTime, LocalDateTime}
 
 import scala.collection.mutable.{ArrayBuffer, Map}
 import scala.reflect.ClassTag
@@ -54,10 +54,6 @@ case class JsonDouble(value: Double) extends JsonElement {
 
 case class JsonInt(value: Int) extends JsonElement {
     override def toString: String = value.toString
-}
-
-case class JsonDateTime(value: DateTime) extends JsonElement {
-    override def toString: String = value.toString().dblQuoted
 }
 
 case class JsonLocalDateTime(value: LocalDateTime) extends JsonElement {
@@ -473,20 +469,6 @@ class JsonObject(protected val proxy: Map[String, JsonElement],
         proxy.get(key) match {
             case Some(JsonBigDecimal(bigDecimal)) => bigDecimal
             case _ => throw new RuntimeException(s"Value with key: ${key} not found.")
-        }
-
-    def getDateTimeOpt(key: String): Option[DateTime] =
-        proxy.get(key) match {
-            case Some(JsonDateTime(dateTime)) => Some(dateTime)
-            case Some(JsonString(string)) => Some(string.toDateTime())
-            case _ => None
-        }
-
-    def getDateTime(key: String): DateTime =
-        proxy.get(key) match {
-            case Some(JsonDateTime(dateTime)) => dateTime
-            case Some(JsonString(string)) => string.toDateTime()
-            case x => throw new RuntimeException(s"Value with key: ${key} not found.")
         }
 
     def getLocalDateTimeOpt(key: String): Option[LocalDateTime] =

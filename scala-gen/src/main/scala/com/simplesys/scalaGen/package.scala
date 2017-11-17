@@ -1,8 +1,9 @@
 package com.simplesys
 
+import java.time.LocalDateTime
+
 import com.simplesys.common.Strings._
 import com.simplesys.common.equality.SimpleEquality._
-import org.joda.time.LocalDateTime
 
 import scala.xml.TypeSymbol
 

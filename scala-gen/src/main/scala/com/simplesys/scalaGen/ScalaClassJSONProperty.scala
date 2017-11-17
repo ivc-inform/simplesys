@@ -1,12 +1,13 @@
 package com.simplesys.scalaGen
 
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+
 import com.simplesys.common.Strings._
 import com.simplesys.common.equality.SimpleEquality._
 import com.simplesys.io._
 import com.simplesys.javascript.JavaScript
 import com.simplesys.log.Logging
-import org.joda.time.LocalDateTime
-import org.joda.time.format.DateTimeFormat
 
 import scala.collection.mutable.ArrayBuffer
 import scala.io.Codec._
@@ -84,11 +85,11 @@ case class ScalaClassJSONPropertyBoolean(value: Boolean) extends ScalaPropertyEl
 }
 
 case class ScalaClassJSONPropertyDate(value: LocalDateTime) extends ScalaPropertyElement {
-    def serrialize(indent: Int = 0) = value.toString(DateTimeFormat.forPattern("dd.MM.yyyy")).dblQuoted
+    def serrialize(indent: Int = 0) = value.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")).dblQuoted
 }
 
 case class ScalaClassJSONPropertyDateTime(value: LocalDateTime) extends ScalaPropertyElement {
-    def serrialize(indent: Int = 0) = value.toString(DateTimeFormat.forPattern("dd.MM.yyyy HH:mm:ss")).dblQuoted
+    def serrialize(indent: Int = 0) = value.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")).dblQuoted
 }
 
 case class ScalaClassJSONPropertyDblQuotedValue(value: String) extends ScalaPropertyElement {

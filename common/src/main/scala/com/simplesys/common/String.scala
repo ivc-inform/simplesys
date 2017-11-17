@@ -3,7 +3,7 @@ package com.simplesys.common
 import java.io.{File, InputStream}
 import java.math.BigInteger
 import java.text.{DateFormat, DecimalFormat, DecimalFormatSymbols, SimpleDateFormat}
-import java.time.{LocalDate, LocalDateTime, LocalTime}
+import java.time.{LocalDate, LocalDateTime, LocalTime, ZoneId}
 import java.time.format.DateTimeFormatter
 
 import com.simplesys.common.equality.SimpleEquality._
@@ -75,6 +75,20 @@ object Strings {
         def toLocalDateTime(dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME): LocalDateTime = LocalDateTime.parse(string.unQuoted, dateTimeFormatter)
         def toLocalDate(dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE): LocalDate = LocalDate.parse(string.unQuoted, dateTimeFormatter)
         def toLocalTime(dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_TIME): LocalTime = LocalTime.parse(string.unQuoted, dateTimeFormatter)
+    }
+
+    implicit class LocalDateTimeOpt(localDateTime: LocalDateTime) {
+        def getMillis: Long = localDateTime.atZone(ZoneId.systemDefault()).toInstant.toEpochMilli
+    }
+
+    implicit class LonfToLocalDateTime(millis: Long) {
+
+        import java.time.Instant
+        import java.time.ZoneId
+
+        def toLocalDateTime: LocalDateTime = Instant.ofEpochMilli(millis).atZone(ZoneId.systemDefault).toLocalDateTime
+        def toLocalDate: LocalDate = Instant.ofEpochMilli(millis).atZone(ZoneId.systemDefault).toLocalDate
+        def toLocalTime: LocalTime = Instant.ofEpochMilli(millis).atZone(ZoneId.systemDefault).toLocalTime
     }
 
     val lineSeparator = System.getProperty("line.separator")
