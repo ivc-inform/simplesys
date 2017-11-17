@@ -8,6 +8,7 @@ object SuccesAuthentication {
         if (!response.IsCommitted)
             response.FlushBuffer()
 
+
         val result = new RPCResponseDyn {
             Data = JsonObject(
                 "status" -> statusSuccess,
@@ -19,7 +20,8 @@ object SuccesAuthentication {
             )
         }
 
-        response Print (logJSActor(result))
+        //response Print (logJSActor(result))
+        response Print ("")
     }
 }
 
