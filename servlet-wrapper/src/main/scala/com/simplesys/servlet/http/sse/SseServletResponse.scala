@@ -37,17 +37,17 @@ class SseServletResponse(override protected[servlet] val proxy: JHttpServletResp
             if (!out.checkError())
                 out write s"event:${ev.serrialize}".newLine
 
-        val _channels = JArray(channels.map(item => JString(item.serrialize)))
+        val _channels = Json.JArray(channels.map(item => JString(item.serrialize)))
 
         val _data: Json = channels.length match {
             case 0 ⇒
                 data
             case _ ⇒
-                JObject(JsonObject.from("data" -> data, "channels" -> _channels))
+                Json.JObject(JsonObject.from("data" -> data, "channels" -> _channels))
         }
 
         _data match {
-            case JString(string) =>
+            case Json.JString(string) =>
                 val templ = """(.*)(\s*)""".r("line", "spacer")
 
                 for (x <- templ findAllMatchIn string) {
@@ -55,11 +55,11 @@ class SseServletResponse(override protected[servlet] val proxy: JHttpServletResp
                         out write s"data:${x.group("line")}".newLine
                 }
 
-            case JObject(obj) =>
+            case Json.JObject(obj) =>
                 if (!out.checkError())
                     out write s"data:${obj.toString()}".newLine
 
-            case JArray(list) =>
+            case Json.JArray(list) =>
                 if (!out.checkError())
                     out write s"data:${list.toString()}".newLine
 
