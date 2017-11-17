@@ -1,9 +1,6 @@
 package com.simplesys.filter
 
 import akka.actor.ActorSystem
-import com.simplesys.isc.dataBinging.RPC.RPCResponseDyn
-import com.simplesys.isc.dataBinging.RPC.RPCResponseDyn._
-import com.simplesys.isc.templates.logJSActor
 import com.simplesys.json.JsonObject
 import com.simplesys.servlet.http.{HttpServletRequest, HttpServletResponse}
 

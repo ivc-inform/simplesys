@@ -17,14 +17,12 @@ lazy val root = (project in file(".")).
       xmlExtender,
       iscMisc,
       configWrapper,
-      jsonExtenderTypesafe,
       coreDomains,
       scalaGen,
       oraclePoolDataSources,
       servletWrapper,
       coreUtils,
       akkaExtender,
-      iscWrapper,
       jdbcWrapper,
       commonWebApp,
       iscComponents,
@@ -96,7 +94,7 @@ lazy val common = (project in file("common")).dependsOn(logbackWrapper).settings
 ).settings(CommonSettings.defaultProjectSettings)
 
 
-lazy val commonWebApp = Project(id = "common-webapp", base = file("common-webapp")).enablePlugins(SbtCoffeeScript).dependsOn(akkaExtender, iscWrapper, classUtil).settings(
+lazy val commonWebApp = Project(id = "common-webapp", base = file("common-webapp")).enablePlugins(SbtCoffeeScript).dependsOn(akkaExtender, classUtil).settings(
     sbtPlugin := false,
     organization := CommonSettings.settingValues.organization,
     CoffeeScriptKeys.sourceMap := false,
@@ -121,7 +119,7 @@ lazy val configWrapper = Project(id = "config-wrapper", base = file("config-wrap
     )
 ).settings(CommonSettings.defaultProjectSettings)
 
-lazy val coreDomains = Project(id = "core-domains", base = file("core-domains")).dependsOn(coreUtils, xmlExtender, jsonExtenderTypesafe).settings(
+lazy val coreDomains = Project(id = "core-domains", base = file("core-domains")).dependsOn(coreUtils, xmlExtender).settings(
     libraryDependencies ++= Seq(
         CommonDeps.jodaTime,
         CommonDeps.jodaConvert,
@@ -149,7 +147,7 @@ lazy val doobieExtender = Project(id = "doobie-extender", base = file("doobie-ex
     )
 ).settings(CommonSettings.defaultProjectSettings)
 
-lazy val iscComponents = Project(id = "isc-components", base = file("isc-components")).enablePlugins(SbtCoffeeScript).dependsOn(scalaIOExtender, iscWrapper).
+lazy val iscComponents = Project(id = "isc-components", base = file("isc-components")).enablePlugins(SbtCoffeeScript).dependsOn(scalaIOExtender).
   settings(
     sbtPlugin := false,
     organization := CommonSettings.settingValues.organization,
@@ -174,15 +172,6 @@ lazy val iscMisc = Project(id = "isc-misc", base = file("isc-misc")).dependsOn(c
     )
 ).settings(CommonSettings.defaultProjectSettings)
 
-lazy val iscWrapper = Project(id = "isc-wrapper", base = file("isc-wrapper")).dependsOn(xmlExtender, servletWrapper, iscMisc, jsonExtenderTypesafe, akkaExtender, coreDomains, jdbcWrapper).settings(
-
-    libraryDependencies ++= Seq(
-        CommonDeps.akkaActor,
-        CommonDeps.servletAPI % Provided,
-        CommonDeps.scalaTest
-    )
-).settings(CommonSettings.defaultProjectSettings)
-
 lazy val jdbcWrapper = Project(id = "jdbc-wrapper", base = file("jdbc-wrapper")).dependsOn(oraclePoolDataSources, scalaGen, coreDomains, coreLibrary).enablePlugins(JDBCPlugin).settings(
     com.simplesys.jdbc.plugins.jdbc.JDBCPlugin.autoImport.maxArity := 50,
 
@@ -190,17 +179,6 @@ lazy val jdbcWrapper = Project(id = "jdbc-wrapper", base = file("jdbc-wrapper"))
 
     libraryDependencies ++= Seq(
         CommonDeps.scalazCore,
-        CommonDeps.scalaTest
-    )
-).settings(CommonSettings.defaultProjectSettings)
-
-lazy val jsonExtenderTypesafe = Project(id = "json-extender-typesafe", base = file("json-extender-typesafe")).dependsOn(scalaGen).enablePlugins(JSONPlugin).settings(
-
-    scalacOptions += "-language:reflectiveCalls",
-    com.simplesys.jdbc.plugins.jdbc.JDBCPlugin.autoImport.maxArity := 50,
-
-    libraryDependencies ++= Seq(
-        CommonDeps.scalaParserCombinators,
         CommonDeps.scalaTest
     )
 ).settings(CommonSettings.defaultProjectSettings)
@@ -237,7 +215,7 @@ lazy val scalaIOExtender = Project(id = "scala-io-extender", base = file("scala-
     )
 ).settings(CommonSettings.defaultProjectSettings)
 
-lazy val servletWrapper = Project(id = "servlet-wrapper", base = file("servlet-wrapper")).dependsOn(coreUtils, oraclePoolDataSources, xmlExtender, jsonExtenderTypesafe).settings(
+lazy val servletWrapper = Project(id = "servlet-wrapper", base = file("servlet-wrapper")).dependsOn(coreUtils, oraclePoolDataSources, xmlExtender).settings(
     scalacOptions += "-Dscalac:patmat:analysisBudget=1024",
 
     libraryDependencies ++= Seq(
