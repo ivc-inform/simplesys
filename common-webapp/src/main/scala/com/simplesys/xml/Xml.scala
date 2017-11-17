@@ -1,31 +1,32 @@
 package com.simplesys.xml
 
 import com.simplesys.common.Strings._
-import com.simplesys.isc.dataBinging.DataSourceDyn
-import com.simplesys.isc.system.global.{PortalMode, _}
-import com.simplesys.json._
+import io.circe.{Json, JsonObject}
+import io.circe.Json._
 
 import scala.xml.{MetaData, Node, NodeSeq}
 
 object Xml {
     val fixedArrayNames = Seq("fields", "types", "valueMap")
 
-    def xmlToJson(xml: Elem): JsonObject = {
-         //println(xml.toPrettyString)
+    def xmlToJson(xml: Elem): Json = {
+        //println(xml.toPrettyString)
         def nameOf(node: Node) = (if (Option(node.prefix).nonEmpty) node.prefix + ":" else "") + node.label
 
-        def buildJson(node: Node): JsonElement = {
-            def buildAttributes(node: Node) = {
-                val res = JsonObject()
-                node.attributes.foreach {
+        def buildJson(node: Node): Json = {
+            def buildAttributes(node: Node): Json = {
+                fromFields(node.attributes.map {
                     (a: MetaData) =>
                         val value = a.value.text.trim
                         if (value != "")
-                            res += (a.key -> value.toJson)
-                }
-                res
+                            Some(a.key -> fromString(value))
+                        else
+                            None
+                }.filter(_.isDefined).map(_.get))
             }
+
             def directChildren(node: Node): NodeSeq = node.child.filter(_.isInstanceOf[Elem])
+
             def isLeaf(node: Node) = !node.descendant.find(_.isInstanceOf[Elem]).isDefined
 
             def isArray(nodes: NodeSeq) = {
@@ -33,7 +34,7 @@ object Xml {
                 nodeNames.size != 1 && nodeNames.distinct.size == 1
             }
 
-            val res = JsonObject()
+            val res = JsonObject.empty
             val attributes = buildAttributes(node)
             res ++= attributes
 
