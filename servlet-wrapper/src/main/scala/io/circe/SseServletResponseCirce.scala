@@ -1,7 +1,7 @@
 package io.circe
 
-import com.simplesys.servlet.http.sse._
 import com.simplesys.common.Strings._
+import com.simplesys.servlet.http.sse._
 
 trait SseServletResponseCirce {
     this: SseServletResponse ⇒
