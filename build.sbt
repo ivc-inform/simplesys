@@ -10,6 +10,7 @@ lazy val root = (project in file(".")).
   enablePlugins(GitVersioning).
   aggregate(
       logbackWrapper,
+      circeExtender,
       common,
       scalaIOExtender,
       classUtil,
@@ -50,7 +51,7 @@ lazy val root = (project in file(".")).
       publishArtifact in(Compile, packageSrc) := false
   )
 
-lazy val akkaExtender = Project(id = "akka-extender", base = file("akka-extender")).dependsOn().settings(
+lazy val akkaExtender = Project(id = "akka-extender", base = file("akka-extender")).dependsOn(circeExtender).settings(
     libraryDependencies ++= Seq(
         CommonDeps.akkaActor,
         CommonDeps.akkaAgent,
@@ -81,15 +82,24 @@ lazy val classUtil = Project(id = "class-util", base = file("class-util")).depen
 
 ).settings(CommonSettings.defaultProjectSettings)
 
+lazy val circeExtender = Project(id = "circe-extender", base = file("circe-extender")).dependsOn().settings(
+    scalacOptions += "-language:reflectiveCalls",
+
+    libraryDependencies ++= Seq(
+        CommonDeps.circeCore,
+        CommonDeps.circeGeneric,
+        CommonDeps.circeParcer,
+        CommonDeps.scalaTest
+    )
+
+).settings(CommonSettings.defaultProjectSettings)
+
 lazy val common = (project in file("common")).dependsOn(logbackWrapper).settings(
     libraryDependencies ++= Seq(
         CommonDeps.apacheCommonsLang,
         CommonDeps.apacheCommonsIO,
         CommonDeps.scalaXml,
         CommonDeps.scalaReflect.value,
-        CommonDeps.circeCore,
-        CommonDeps.circeGeneric,
-        CommonDeps.circeParcer,
         CommonDeps.junit,
         CommonDeps.scalaTest
     )
