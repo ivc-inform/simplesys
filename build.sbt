@@ -129,7 +129,7 @@ lazy val configWrapper = Project(id = "config-wrapper", base = file("config-wrap
     )
 ).settings(CommonSettings.defaultProjectSettings)
 
-lazy val coreDomains = Project(id = "core-domains", base = file("core-domains")).dependsOn(coreUtils, xmlExtender).settings(
+lazy val coreDomains = Project(id = "core-domains", base = file("core-domains")).dependsOn(coreUtils, xmlExtender, circeExtender).settings(
     libraryDependencies ++= Seq(
         CommonDeps.liquibaseWrapped,
         CommonDeps.scalaTest

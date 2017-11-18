@@ -2,11 +2,12 @@ package ru.simplesys
 package meta
 package types
 
+import java.time.LocalDateTime
+
 import com.simplesys.isc.system.{typesDyn ⇒ iscTypes}
 import com.simplesys.xml.Elem._
 import com.simplesys.xml.{Elem, TypeNull, XsiScore}
 import io.circe.Json
-import org.joda.time.{DateTime, LocalDateTime}
 
 import scala.xml.{NamespaceBinding, _}
 
@@ -98,21 +99,10 @@ object ScalaTypeLocalDateTime extends ScalaType[LocalDateTime] {
         else
             "LocalDateTime.parse(\"" + str + "\", DateTimeFormat.forPattern(\"dd.MM.yyyy\"))"
     }
-    override def default: LocalDateTime = new LocalDateTime(0)
+    override def default: LocalDateTime = LocalDateTime.now()
     override def toXML: Elem = <common:localDateTime>{default.toString()}</common:localDateTime>
 }
 
-object ScalaTypeDateTime extends ScalaType[DateTime] {
-    override def toString: String = "DateTime"
-    override def stringToSourceValue(str: String): String = {
-        if (str.contains(":") && str.length > 10)
-            "DateTime.parse(\"" + str + "\", DateTimeFormat.forPattern(\"dd.MM.yyyy HH:mm:ss\"))"
-        else
-            "DateTime.parse(\"" + str + "\", DateTimeFormat.forPattern(\"dd.MM.yyyy\"))"
-    }
-    override def default: DateTime = new DateTime(0)
-    override def toXML: Elem = <common:dateTime>{default.toString()}</common:dateTime>
-}
 
 object ScalaTypeDouble extends ScalaType[Double] {
     override def toString: String = "Double"
@@ -274,25 +264,6 @@ case object TimestampDataType extends DBDataTypeExt[LocalDateTime] {
         ))
     }
 }
-
-
-case object TimestampWTZDataType extends DBDataTypeExt[DateTime] {
-    override val dbDataType = new TimestampType
-    def sqlDataType: Int = java.sql.Types.TIMESTAMP
-    override def bind(value: DateTime): Unit = {}
-    override def allowedOperations: Option[Set[iscTypes.OperatorId]] = {
-        import iscTypes._
-        Some(Set(
-            //числовые
-            opIdEquals, opIdNotEqual, opIdGreaterThan, opIdLessThan, opIdGreaterOrEqual, opIdLessOrEqual, opIdBetweenInclusive, opIdBetween, opIdInSet, opIdNotInSet, opIdIsNull, opIdNotNull,
-            //строковые
-            opIdContains, opIdStartsWith, opIdEndsWith, opIdNotContains, opIdNotStartsWith, opIdNotEndsWith, opIdMatchesPattern, opIdContainsPattern, opIdRegexp,
-            //с полями по возможности без приведения типов:
-            opIdEqualsField, opIdNotEqualField, opIdGreaterThanField, opIdLessThanField, opIdGreaterOrEqualField, opIdLessOrEqualField
-        ))
-    }
-}
-
 
 //---------------------------------------------------------------------------------
 //SmartClient SimpleType
@@ -481,10 +452,6 @@ case object DomainTimestamp extends SimpleDataType("dTimestamp", ScalaTypeLocalD
     override val scInheritsFrom = Some(iscTypes.ftDateTime)
 }
 
-case object DomainTimestampWTZ extends SimpleDataType("dTimestampWithTZ", ScalaTypeDateTime, "tz", TimestampWTZDataType, "TIMESTAMP", Some("AsDateTime")) with MetaType[DateTime] {
-    override val scInheritsFrom = Some(iscTypes.ftDateTime)
-}
-
 case object DomainCode extends SimpleDataType("sCode", ScalaTypeString, "s", VarcharDataType(255), "VARCHAR.length(255)", None) with MetaType[String] {
     override val scInheritsFrom = Some(iscTypes.ftText)
 }
@@ -583,7 +550,6 @@ object Domain {
     val dDateOptTime = DomainDateOptTime
     val dDateTime = DomainDateTime
     val dTimestamp = DomainTimestamp
-    val dTimestampWithTZ = DomainTimestampWTZ
 
     val sCode = DomainCode
     val sCaption = DomainCaption
@@ -630,7 +596,6 @@ object DataTypes {
         Domain.dDateOptTime,
         Domain.dDateTime,
         Domain.dTimestamp,
-        Domain.dTimestampWithTZ,
 
         Domain.sCode,
         Domain.sCaption,
