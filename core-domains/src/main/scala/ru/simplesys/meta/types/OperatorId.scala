@@ -372,5 +372,5 @@ case object opIdBetweenInclusive extends OperatorId {
 object OperatorId {
     private val values = SealedEnumRuntime.values[OperatorId]
     private val mappedKeys: Map[String, OperatorId] = values.map(x => (x.toString, x))(collection.breakOut)
-    def getObject(objName: String): OperatorId = mappedKeys(objName)
+    def get(objName: String): OperatorId = mappedKeys(objName)
 }

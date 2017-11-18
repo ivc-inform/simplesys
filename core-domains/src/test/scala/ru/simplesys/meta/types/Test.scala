@@ -20,7 +20,7 @@ class Test extends FunSuite with Logging {
     }
 
     test("betweenInclusive"){
-      println(OperatorId.getObject("betweenInclusive").toSQL)
+      println(OperatorId.get("betweenInclusive").toSQL)
     }
 
 }
