@@ -180,7 +180,7 @@ lazy val iscMisc = Project(id = "isc-misc", base = file("isc-misc")).dependsOn(c
     )
 ).settings(CommonSettings.defaultProjectSettings)
 
-lazy val jdbcWrapper = Project(id = "jdbc-wrapper", base = file("jdbc-wrapper")).dependsOn(oraclePoolDataSources, scalaGen, coreDomains, coreLibrary).enablePlugins(JDBCPlugin).settings(
+lazy val jdbcWrapper = Project(id = "jdbc-wrapper", base = file("jdbc-wrapper")).dependsOn(oraclePoolDataSources, scalaGen, coreDomains, coreLibrary, circeExtender).enablePlugins(JDBCPlugin).settings(
     com.simplesys.jdbc.plugins.jdbc.JDBCPlugin.autoImport.maxArity := 50,
 
     scalacOptions += "-language:existentials",

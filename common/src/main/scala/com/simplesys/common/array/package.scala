@@ -11,7 +11,7 @@ package object array {
 
     implicit def toOption[T](value: Array[T]): Option[T] = if (value.length == 0) None else Some(value(0))
 
-    def toArray[T: ClassTag](value: T): Array[T] = value match {
+    def asArray[T: ClassTag](value: T): Array[T] = value match {
         case null => NotValue
         case _ => Array(value)
     }

@@ -6,7 +6,7 @@ import java.util.{Date ⇒ JDate}
 
 import com.simplesys.SQL.Gen._
 import com.simplesys.common.Strings._
-import com.simplesys.common.array.{NotValue, toArray}
+import com.simplesys.common.array.{NotValue, asArray}
 import com.simplesys.db.pool.PoolDataSource
 import com.simplesys.isc.system.typesDyn.IsInList
 import com.simplesys.jdbc.control.SessionStructures._
@@ -15,7 +15,6 @@ import com.simplesys.jdbc.control.table._
 import com.simplesys.log.Logging
 import com.simplesys.sql.{OracleDialect, SQLDialect}
 import com.simplesys.tuple.{TupleSS1, TupleSS2}
-import org.joda.time._
 import ru.simplesys.meta.types.{VarcharDataType, _}
 
 import scala.language.experimental.macros
@@ -94,7 +93,7 @@ trait Table[T <: Table[T]] extends Entity[T] with Logging {
         def default = NotValue
 
         @throws(classOf[SQLException])
-        def get(resultSet: ResultSet) = toArray(resultSet getBinaryStream getName)
+        def get(resultSet: ResultSet) = asArray(resultSet getBinaryStream getName)
 
         @throws(classOf[SQLException])
         def set(preparedStatement: PreparedStatement, parameterIndex: Int, value: Array[InputStream]) {
@@ -106,8 +105,6 @@ trait Table[T <: Table[T]] extends Entity[T] with Logging {
     }
 
     case class ClobColumnTable(name: String, isPrimaryKey: Boolean = false) extends ColumnTable[String] {
-
-        import com.simplesys.jdbc._
 
         def entity: Entity[_] = top
 
@@ -126,8 +123,6 @@ trait Table[T <: Table[T]] extends Entity[T] with Logging {
 
     case class ClobOptionColumnTable(name: String, isPrimaryKey: Boolean = false) extends OptionColumnTable[String] {
 
-        import com.simplesys.jdbc._
-
         def entity: Entity[_] = top
 
         def getDBDataType = VarcharDataType(-1)
@@ -135,7 +130,7 @@ trait Table[T <: Table[T]] extends Entity[T] with Logging {
         def default = NotValue
 
         @throws(classOf[SQLException])
-        def get(resultSet: ResultSet) = toArray(resultSet getClob getName)
+        def get(resultSet: ResultSet) = asArray(resultSet getClob getName)
 
         @throws(classOf[SQLException])
         def set(preparedStatement: PreparedStatement, parameterIndex: Int, value: Array[String]) {
@@ -147,8 +142,6 @@ trait Table[T <: Table[T]] extends Entity[T] with Logging {
     }
 
     case class JsonColumnTable(name: String, isPrimaryKey: Boolean = false) extends ColumnTable[String] {
-
-        import com.simplesys.jdbc._
 
         def entity: Entity[_] = top
 
@@ -167,8 +160,6 @@ trait Table[T <: Table[T]] extends Entity[T] with Logging {
 
     case class JsonOptionColumnTable(name: String, isPrimaryKey: Boolean = false) extends OptionColumnTable[String] {
 
-        import com.simplesys.jdbc._
-
         def entity: Entity[_] = top
 
         def getDBDataType = VarcharDataType(-1)
@@ -176,7 +167,7 @@ trait Table[T <: Table[T]] extends Entity[T] with Logging {
         def default = NotValue
 
         @throws(classOf[SQLException])
-        def get(resultSet: ResultSet) = toArray(resultSet getClob getName)
+        def get(resultSet: ResultSet) = asArray(resultSet getClob getName)
 
         @throws(classOf[SQLException])
         def set(preparedStatement: PreparedStatement, parameterIndex: Int, value: Array[String]) {
@@ -212,7 +203,7 @@ trait Table[T <: Table[T]] extends Entity[T] with Logging {
         def default = NotValue
 
         @throws(classOf[SQLException])
-        def get(resultSet: ResultSet) = toArray(resultSet getInt getName)
+        def get(resultSet: ResultSet) = asArray(resultSet getInt getName)
 
         @throws(classOf[SQLException])
         def set(preparedStatement: PreparedStatement, parameterIndex: Int, value: Array[Int]) {
@@ -247,7 +238,7 @@ trait Table[T <: Table[T]] extends Entity[T] with Logging {
         def default = NotValue
 
         @throws(classOf[SQLException])
-        def get(resultSet: ResultSet) = toArray(resultSet getDouble getName)
+        def get(resultSet: ResultSet) = asArray(resultSet getDouble getName)
 
         @throws(classOf[SQLException])
         def set(preparedStatement: PreparedStatement, parameterIndex: Int, value: Array[Double]) {
@@ -282,7 +273,7 @@ trait Table[T <: Table[T]] extends Entity[T] with Logging {
         def default = NotValue
 
         @throws(classOf[SQLException])
-        def get(resultSet: ResultSet) = toArray(resultSet getLong getName)
+        def get(resultSet: ResultSet) = asArray(resultSet getLong getName)
 
         @throws(classOf[SQLException])
         def set(preparedStatement: PreparedStatement, parameterIndex: Int, value: Array[Long]) {
@@ -317,7 +308,7 @@ trait Table[T <: Table[T]] extends Entity[T] with Logging {
         def default = NotValue
 
         @throws(classOf[SQLException])
-        def get(resultSet: ResultSet) = toArray(resultSet getBigDecimal getName)
+        def get(resultSet: ResultSet) = asArray(resultSet getBigDecimal getName)
 
         @throws(classOf[SQLException])
         def set(preparedStatement: PreparedStatement, parameterIndex: Int, value: Array[BigDecimal]) {
@@ -352,7 +343,7 @@ trait Table[T <: Table[T]] extends Entity[T] with Logging {
         def default = NotValue
 
         @throws(classOf[SQLException])
-        def get(resultSet: ResultSet) = toArray(resultSet getBoolean getName)
+        def get(resultSet: ResultSet) = asArray(resultSet getBoolean getName)
 
         @throws(classOf[SQLException])
         def set(preparedStatement: PreparedStatement, parameterIndex: Int, value: Array[Boolean]) {
@@ -387,7 +378,7 @@ trait Table[T <: Table[T]] extends Entity[T] with Logging {
         def default = NotValue
 
         @throws(classOf[SQLException])
-        def get(resultSet: ResultSet) = toArray(resultSet getString getName)
+        def get(resultSet: ResultSet) = asArray(resultSet getString getName)
 
         @throws(classOf[SQLException])
         def set(preparedStatement: PreparedStatement, parameterIndex: Int, value: Array[String]) {
@@ -425,7 +416,7 @@ trait Table[T <: Table[T]] extends Entity[T] with Logging {
         def default = NotValue
 
         @throws(classOf[SQLException])
-        def get(resultSet: ResultSet) = toArray(new DateTime(resultSet getDate getName))
+        def get(resultSet: ResultSet) = asArray(new DateTime(resultSet getDate getName))
 
 
         @throws(classOf[SQLException])
@@ -462,7 +453,7 @@ trait Table[T <: Table[T]] extends Entity[T] with Logging {
         def default = NotValue
 
         @throws(classOf[SQLException])
-        def get(resultSet: ResultSet) = toArray(new DateTime(resultSet getDate getName))
+        def get(resultSet: ResultSet) = asArray(new DateTime(resultSet getDate getName))
 
 
         @throws(classOf[SQLException])
@@ -499,7 +490,7 @@ trait Table[T <: Table[T]] extends Entity[T] with Logging {
         def default = NotValue
 
         @throws(classOf[SQLException])
-        def get(resultSet: ResultSet) = toArray(new LocalDateTime(resultSet getDate getName))
+        def get(resultSet: ResultSet) = asArray(new LocalDateTime(resultSet getDate getName))
 
 
         @throws(classOf[SQLException])

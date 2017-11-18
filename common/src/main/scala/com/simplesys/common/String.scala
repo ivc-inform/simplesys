@@ -79,6 +79,7 @@ object Strings {
 
     implicit class LocalDateTimeOpt(localDateTime: LocalDateTime) {
         def getMillis: Long = localDateTime.atZone(ZoneId.systemDefault()).toInstant.toEpochMilli
+        def asString(dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME) = localDateTime.format(dateTimeFormatter)
     }
 
     implicit class LonfToLocalDateTime(millis: Long) {

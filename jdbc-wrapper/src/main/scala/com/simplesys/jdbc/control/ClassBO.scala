@@ -1,25 +1,26 @@
 package com.simplesys.jdbc.control
 
 import java.io.{InputStream, StringReader}
-import java.sql.{Connection, Date, PreparedStatement, ResultSet, SQLException, Time, Timestamp}
+import java.sql.{Connection, PreparedStatement, ResultSet, SQLException, Timestamp}
+import java.time.LocalDateTime
 
 import com.simplesys.SQL.Gen._
 import com.simplesys.SQL._
 import com.simplesys.common.Strings._
-import com.simplesys.common.array.{NotValue, toArray}
+import com.simplesys.common.array.{NotValue, asArray}
 import com.simplesys.common.equality.SimpleEquality._
 import com.simplesys.config.Config
 import com.simplesys.db.pool.PoolDataSource
 import com.simplesys.isc.system.typesDyn._
+import com.simplesys.jdbc.JDBC._
 import com.simplesys.jdbc.control.SessionStructures._
 import com.simplesys.jdbc.control.SuperTuple1._
 import com.simplesys.jdbc.control.classBO._
-import com.simplesys.jdbc.control.table.{From, TableInnerJoinCaseClass, TableJoinCondition, TableJoinCondition1, TableLeftJoinCaseClass}
-import com.simplesys.json.JsonElement
+import com.simplesys.jdbc.control.table.{TableInnerJoinCaseClass, TableJoinCondition, TableJoinCondition1, TableLeftJoinCaseClass}
 import com.simplesys.log.Logging
 import com.simplesys.sql.OracleDialect
 import com.simplesys.tuple.{TupleSS1, TupleSS2}
-import org.joda.time._
+import io.circe.Json
 import ru.simplesys.meta.types._
 
 import scala.BigDecimal._
@@ -106,7 +107,7 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
         def default = NotValue
 
         @throws(classOf[SQLException])
-        override def get(resultSet: ResultSet): Array[To] = toArray(resultSet getString getName)
+        override def get(resultSet: ResultSet): Array[To] = asArray(resultSet getString getName)
 
         @throws(classOf[SQLException])
         def set(preparedStatement: PreparedStatement, parameterIndex: Int, value: Array[To]) {
@@ -144,7 +145,7 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
         def default = NotValue
 
         @throws(classOf[SQLException])
-        def get(resultSet: ResultSet) = toArray(resultSet getBinaryStream getName)
+        def get(resultSet: ResultSet) = asArray(resultSet getBinaryStream getName)
 
         @throws(classOf[SQLException])
         def set(preparedStatement: PreparedStatement, parameterIndex: Int, value: Array[InputStream]) {
@@ -157,8 +158,6 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
     }
 
     case class ClobColumn(name: String, nameInBo: String, caption: String = strEmpty, tableColumn: BasicTableColumn[String]) extends Column[String] {
-
-        import com.simplesys.jdbc._
 
         def entity = top
 
@@ -178,8 +177,6 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
 
     case class ClobOptionColumn(name: String, nameInBo: String, caption: String = strEmpty, tableColumn: BasicTableColumn[Array[String]]) extends OptionColumn[String] {
 
-        import com.simplesys.jdbc._
-
         def entity = top
 
         def getDBDataType: DBDataType = VarcharDataType(-1)
@@ -187,7 +184,7 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
         def default = NotValue
 
         @throws(classOf[SQLException])
-        def get(resultSet: ResultSet) = toArray(resultSet getClob getName)
+        def get(resultSet: ResultSet) = asArray(resultSet getClob getName)
 
         @throws(classOf[SQLException])
         def set(preparedStatement: PreparedStatement, parameterIndex: Int, value: Array[String]) {
@@ -200,8 +197,6 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
     }
 
     case class JsonColumn(name: String, nameInBo: String, caption: String = strEmpty, tableColumn: BasicTableColumn[String]) extends Column[String] {
-
-        import com.simplesys.jdbc._
 
         def entity = top
 
@@ -221,8 +216,6 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
 
     case class JsonOptionColumn(name: String, nameInBo: String, caption: String = strEmpty, tableColumn: BasicTableColumn[Array[String]]) extends OptionColumn[String] {
 
-        import com.simplesys.jdbc._
-
         def entity = top
 
         def getDBDataType: DBDataType = VarcharDataType(-1)
@@ -230,7 +223,7 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
         def default = NotValue
 
         @throws(classOf[SQLException])
-        def get(resultSet: ResultSet) = toArray(resultSet getClob getName)
+        def get(resultSet: ResultSet) = asArray(resultSet getClob getName)
 
         @throws(classOf[SQLException])
         def set(preparedStatement: PreparedStatement, parameterIndex: Int, value: Array[String]) {
@@ -274,7 +267,7 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
             if (resultSet.wasNull())
                 Array.empty
             else
-                toArray(res)
+                asArray(res)
         }
 
         @throws(classOf[SQLException])
@@ -319,7 +312,7 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
             if (resultSet.wasNull())
                 Array.empty
             else
-                toArray(res)
+                asArray(res)
         }
 
         @throws(classOf[SQLException])
@@ -363,7 +356,7 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
             if (resultSet.wasNull())
                 Array.empty[Long]
             else
-                toArray(res)
+                asArray(res)
         }
 
         @throws(classOf[SQLException])
@@ -401,7 +394,7 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
         def default = NotValue
 
         @throws(classOf[SQLException])
-        def get(resultSet: ResultSet): Array[BigDecimal] = toArray(resultSet getBigDecimal getName)
+        def get(resultSet: ResultSet): Array[BigDecimal] = asArray(resultSet getBigDecimal getName)
 
         @throws(classOf[SQLException])
         def set(preparedStatement: PreparedStatement, parameterIndex: Int, value: Array[BigDecimal]) {
@@ -444,7 +437,7 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
             if (resultSet.wasNull())
                 Array.empty[Boolean]
             else
-                toArray(res)
+                asArray(res)
         }
 
         @throws(classOf[SQLException])
@@ -482,7 +475,7 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
         def default = NotValue
 
         @throws(classOf[SQLException])
-        def get(resultSet: ResultSet) = toArray(resultSet getString getName)
+        def get(resultSet: ResultSet) = asArray(resultSet getString getName)
 
         @throws(classOf[SQLException])
         def set(preparedStatement: PreparedStatement, parameterIndex: Int, value: Array[String]) {
@@ -494,113 +487,20 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
         }
     }
 
-    case class DateColumn(name: String, nameInBo: String, caption: String = strEmpty, tableColumn: BasicTableColumn[DateTime]) extends Column[DateTime] {
-        def entity = top
-
-        def getDBDataType = DateTimeDataType
-
-        def default = new DateTime()
-
-        @throws(classOf[SQLException])
-        def get(resultSet: ResultSet) = new DateTime(resultSet getDate getName)
-
-
-        @throws(classOf[SQLException])
-        def set(preparedStatement: PreparedStatement, parameterIndex: Int, value: DateTime) {
-            preparedStatement setDate(parameterIndex, new Date(value.getMillis))
-            logger trace s"DateColumn Set (parameterIndex: ${parameterIndex}, value: ${value})"
-        }
-    }
-
-    case class DateOptionColumn(name: String, nameInBo: String, caption: String = strEmpty, tableColumn: BasicTableColumn[Array[DateTime]]) extends OptionColumn[DateTime] {
-        def entity = top
-
-        def getDBDataType = DateTimeDataType
-
-        def default = NotValue
-
-        @throws(classOf[SQLException])
-        def get(resultSet: ResultSet) = {
-            val res = resultSet getDate getName
-
-            if (resultSet.wasNull())
-                Array.empty[DateTime]
-            else
-                toArray(new DateTime(res))
-        }
-
-
-        @throws(classOf[SQLException])
-        def set(preparedStatement: PreparedStatement, parameterIndex: Int, value: Array[DateTime]) {
-            value.headOption match {
-                case None => preparedStatement setNull(parameterIndex, getDBDataType.sqlDataType)
-                case Some(value) => preparedStatement setDate(parameterIndex, new Date(value.getMillis))
-            }
-            logger trace s"DateOptionColumn Set (parameterIndex: ${parameterIndex}, value: ${value})"
-        }
-    }
-
-    case class DateTimeColumn(name: String, nameInBo: String, caption: String = strEmpty, tableColumn: BasicTableColumn[DateTime]) extends Column[DateTime] {
-        def entity = top
-
-        def getDBDataType = DateTimeDataType
-
-        def default = new DateTime()
-
-        @throws(classOf[SQLException])
-        def get(resultSet: ResultSet) = new DateTime(resultSet getDate getName)
-
-
-        @throws(classOf[SQLException])
-        def set(preparedStatement: PreparedStatement, parameterIndex: Int, value: DateTime) {
-            preparedStatement setTimestamp(parameterIndex, new Timestamp(value.getMillis))
-            logger trace s"DateTimeColumn Set (parameterIndex: ${parameterIndex}, value: ${value})"
-        }
-    }
-
-    case class DateTimeOptionColumn(name: String, nameInBo: String, caption: String = strEmpty, tableColumn: BasicTableColumn[Array[DateTime]]) extends OptionColumn[DateTime] {
-        def entity = top
-
-        def getDBDataType = DateTimeDataType
-
-        def default = NotValue
-
-        @throws(classOf[SQLException])
-        def get(resultSet: ResultSet) = {
-            val res = resultSet getDate getName
-
-            if (resultSet.wasNull())
-                Array.empty[DateTime]
-            else
-                toArray(new DateTime(res))
-        }
-
-
-        @throws(classOf[SQLException])
-        def set(preparedStatement: PreparedStatement, parameterIndex: Int, value: Array[DateTime]) {
-            value.headOption match {
-                case None => preparedStatement setNull(parameterIndex, getDBDataType.sqlDataType)
-                case Some(value) => preparedStatement setTimestamp(parameterIndex, new Timestamp(value.getMillis))
-            }
-            logger trace s"DateTimeOptionColumn Set (parameterIndex: ${parameterIndex}, value: ${value})"
-        }
-    }
-
     case class LocalDateTimeColumn(name: String, nameInBo: String, caption: String = strEmpty, tableColumn: BasicTableColumn[LocalDateTime]) extends Column[LocalDateTime] {
         def entity = top
 
         def getDBDataType = DateTimeDataType
 
-        def default = new LocalDateTime()
+        def default = LocalDateTime.now()
 
         @throws(classOf[SQLException])
-        def get(resultSet: ResultSet): LocalDateTime = {
-            new LocalDateTime((resultSet getTimestamp getName).getTime)
-        }
+        def get(resultSet: ResultSet): LocalDateTime = (resultSet getTimestamp getName).toLocalDateTime
+
 
         @throws(classOf[SQLException])
         def set(preparedStatement: PreparedStatement, parameterIndex: Int, value: LocalDateTime) {
-            preparedStatement setTimestamp(parameterIndex, new Timestamp(value.toDateTime.getMillis))
+            preparedStatement setTimestamp(parameterIndex, Timestamp.valueOf(value))
             logger trace s"LocalDateTimeColumn Set (parameterIndex: ${parameterIndex}, value: ${value})"
         }
     }
@@ -619,14 +519,14 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
             if (resultSet.wasNull())
                 Array.empty[LocalDateTime]
             else
-                toArray(new LocalDateTime(res.getTime))
+                asArray(res.toLocalDateTime)
         }
 
         @throws(classOf[SQLException])
         def set(preparedStatement: PreparedStatement, parameterIndex: Int, value: Array[LocalDateTime]) {
             value.headOption match {
                 case None => preparedStatement setNull(parameterIndex, getDBDataType.sqlDataType)
-                case Some(value) => preparedStatement setTimestamp(parameterIndex, new Timestamp(value.toDateTime.getMillis))
+                case Some(value) => preparedStatement setTimestamp(parameterIndex, Timestamp.valueOf(value))
             }
             logger trace s"LocalDateTimeOptionColumn Set (parameterIndex: ${parameterIndex}, value: ${value})"
         }
@@ -712,8 +612,6 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
                 }
         }
 
-        import com.simplesys.jdbc.joda._
-
         bindMap.foreach {
             case BindingColumn(column: BasicClassBOColumn[_], value) =>
                 if (column.isInstanceOf[IntColumn]) {
@@ -764,29 +662,13 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
                     column.asInstanceOf[StringOptionColumn].set(preparedStatement, _offset, Array(value))
                     logger trace (s"Binding StringOptionColumn index: ${_offset}, value: Array($value)")
                     _offset += 1
-                } else if (column.isInstanceOf[DateColumn]) {
-                    column.asInstanceOf[DateColumn].set(preparedStatement, _offset, value.toDateTimeS())
-                    logger trace (s"Binding DateColumn index: ${_offset}, value: ${value.toDateTimeS()}")
-                    _offset += 1
-                } else if (column.isInstanceOf[DateOptionColumn]) {
-                    column.asInstanceOf[DateOptionColumn].set(preparedStatement, _offset, Array(value.toDateTimeS()))
-                    logger trace (s"Binding DateOptionColumn index: ${_offset}, value: Array(${value.toDateTimeS()})")
-                    _offset += 1
-                } else if (column.isInstanceOf[DateTimeColumn]) {
-                    column.asInstanceOf[DateTimeColumn].set(preparedStatement, _offset, value.toDateTimeS())
-                    logger trace (s"Binding DateTimeColumn index: ${_offset}, value: ${value.toDateTimeS()}")
-                    _offset += 1
-                } else if (column.isInstanceOf[DateTimeOptionColumn]) {
-                    column.asInstanceOf[DateTimeOptionColumn].set(preparedStatement, _offset, Array(value.toDateTimeS()))
-                    logger trace (s"Binding DateTimeOptionColumn index: ${_offset}, value: Array(${value.toDateTimeS()})")
-                    _offset += 1
                 } else if (column.isInstanceOf[LocalDateTimeColumn]) {
-                    column.asInstanceOf[LocalDateTimeColumn].set(preparedStatement, _offset, value.toLocalDateTimeS())
-                    logger trace (s"Binding LocalDateTimeColumn index: ${_offset}, value: ${value.toLocalDateTimeS()}")
+                    column.asInstanceOf[LocalDateTimeColumn].set(preparedStatement, _offset, value.toLocalDateTime())
+                    logger trace (s"Binding LocalDateTimeColumn index: ${_offset}, value: ${value.toLocalDateTime()}")
                     _offset += 1
                 } else if (column.isInstanceOf[LocalDateTimeOptionColumn]) {
-                    column.asInstanceOf[LocalDateTimeOptionColumn].set(preparedStatement, _offset, Array(value.toLocalDateTimeS()))
-                    logger trace (s"Binding LocalDateTimeOptionColumn index: ${_offset}, value: Array(${value.toLocalDateTimeS()})")
+                    column.asInstanceOf[LocalDateTimeOptionColumn].set(preparedStatement, _offset, Array(value.toLocalDateTime()))
+                    logger trace (s"Binding LocalDateTimeOptionColumn index: ${_offset}, value: Array(${value.toLocalDateTime()})")
                     _offset += 1
                 } else
                     throw new RuntimeException(s"Bad branch of $column")
@@ -873,7 +755,7 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
 
     import com.simplesys.jdbc.control.classBO.WheresList._
 
-    def selectPIteratorRoot[R, FT <: Product with FieldProduct](columns: FT /*= allColumns*/ , from: FromParam, join: JoinParam, where: JsonElement, discriminator: WhereParam, orderBy: OrderByParam, fetchSize: Int, dsRequest: DSRequest)(f: FT#ReturnType => R): ValidationExIterator[Iterator[R]] =
+    def selectPIteratorRoot[R, FT <: Product with FieldProduct](columns: FT /*= allColumns*/ , from: FromParam, join: JoinParam, where: Json, discriminator: WhereParam, orderBy: OrderByParam, fetchSize: Int, dsRequest: DSRequest)(f: FT#ReturnType => R): ValidationExIterator[Iterator[R]] =
         selectPIteratorRoot(columns, from, join, json2WhereParam(where), discriminator, orderBy, fetchSize, dsRequest)(f)
 
     def selectPIteratorRoot[R, FT <: Product with FieldProduct](columns: FT /*= allColumns*/ , from: FromParam, join: JoinParam, where: WhereParam, discriminator: WhereParam, orderBy: OrderByParam, fetchSize: Int, dsRequest: DSRequest)(f: FT#ReturnType => R): ValidationExIterator[Iterator[R]] = {
@@ -1009,21 +891,17 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
         }
 
         def getJoinsBoColumns: List[BasicClassBOColumn[_]] = joinsBo.map {
-            _ match {
-                case BoInnerJoinCaseClass(_, joinConditions) =>
-                    fieldFromJoins(joinConditions)
-                case BoLeftJoinCaseClass(_, joinConditions) =>
-                    fieldFromJoins(joinConditions)
-            }
+            case BoInnerJoinCaseClass(_, joinConditions) =>
+                fieldFromJoins(joinConditions)
+            case BoLeftJoinCaseClass(_, joinConditions) =>
+                fieldFromJoins(joinConditions)
         }.flatten
 
         def getJoinsDsColumns: List[BasicClassBOColumn[_]] = joinsDs.map {
-            _ match {
-                case DsInnerJoinCaseClass(_, joinConditions) =>
-                    fieldFromJoins(joinConditions)
-                case DsLeftJoinCaseClass(_, joinConditions) =>
-                    fieldFromJoins(joinConditions)
-            }
+            case DsInnerJoinCaseClass(_, joinConditions) =>
+                fieldFromJoins(joinConditions)
+            case DsLeftJoinCaseClass(_, joinConditions) =>
+                fieldFromJoins(joinConditions)
         }.flatten
 
         lazy val compoundAllColumns: List[BasicClassBOColumn[_]] = ((_columns match {
@@ -1449,13 +1327,13 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
         preparedStatement.addBatch()
     }
 
-    def updateWithoutCommit(connection: Connection, setters: SetParam, where: WhereParam, table: SQLTable): List[Int] = {
+    def updateWithoutCommit(connection: Connection, setters: SetParam, where: WhereParam, table: SQLTable): Array[Int] = {
         val updateStr = MakeUpdateSQL(setters, where, table = table)
 
         prepareStatement(connection, updateStr, dataSource.settings.fetchSize) {
             preparedStatement =>
                 batch4Update(preparedStatement = preparedStatement, setters = setters, where = where)
-                preparedStatement.executeBatch().toList
+                preparedStatement.executeBatch()
         }
     }
 
@@ -1485,14 +1363,14 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
         }
 
         statement.addBatch()
-        statement.executeBatch().toList
+        statement.executeBatch()
     }
 
-    def deleteWithoutCommit(connection: Connection, where: WhereParam, table: SQLTable): List[Int] = {
+    def deleteWithoutCommit(connection: Connection, where: WhereParam, table: SQLTable): Array[Int] = {
         prepareStatement(connection, makeDeleteSQL(where, table), dataSource.settings.fetchSize) {
             statement =>
                 batch4Delete(statement = statement, where = where)
-                statement.executeBatch().toList
+                statement.executeBatch()
         }
     }
 }

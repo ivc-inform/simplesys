@@ -1,13 +1,12 @@
 package com.simplesys.xml
 
-import com.simplesys.common.Strings._
 import io.circe.Json._
 import io.circe.{Json, JsonObject}
 
 import scala.xml.{MetaData, Node, NodeSeq}
-import io.circe._
 
 object Xml {
+
     val fixedArrayNames = Seq("fields", "types", "valueMap")
 
     def xmlToJson(xml: Elem): JsonObject = {
