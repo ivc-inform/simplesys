@@ -19,8 +19,6 @@ object CommonDeps {
     val scalaParserCombinators = "org.scala-lang.modules" %% "scala-parser-combinators" % versions.scalaParserCombinatorsVersion
     val scalaReflect = Def.setting("org.scala-lang" % "scala-reflect" % scalaVersion.value)
     val scalazCore = "org.scalaz" %% "scalaz-core" % versions.scalazVersion
-    val jodaTime = "joda-time" % "joda-time" % versions.jodaVersion
-    val jodaConvert = "org.joda" % "joda-convert" % versions.jodaConvertVersion
     val logbackClassic = "ch.qos.logback" % "logback-classic" % versions.logbackVersion
     val logbackAccess = "ch.qos.logback" % "logback-access" % versions.logbackVersion
     val logbackCore = "ch.qos.logback" % "logback-core" % versions.logbackVersion
@@ -74,9 +72,6 @@ object CommonDeps {
         val scalazVersion = "7.2.8"
 
         val doobieVersion = "0.4.1"
-
-        val jodaVersion = "2.9.4"
-        val jodaConvertVersion = "1.8.1"
 
         val logbackVersion = "1.2.3"
 

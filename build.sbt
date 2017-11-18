@@ -83,8 +83,6 @@ lazy val classUtil = Project(id = "class-util", base = file("class-util")).depen
 ).settings(CommonSettings.defaultProjectSettings)
 
 lazy val circeExtender = Project(id = "circe-extender", base = file("circe-extender")).dependsOn().settings(
-    scalacOptions += "-language:reflectiveCalls",
-
     libraryDependencies ++= Seq(
         CommonDeps.circeCore,
         CommonDeps.circeGeneric,
@@ -133,8 +131,6 @@ lazy val configWrapper = Project(id = "config-wrapper", base = file("config-wrap
 
 lazy val coreDomains = Project(id = "core-domains", base = file("core-domains")).dependsOn(coreUtils, xmlExtender).settings(
     libraryDependencies ++= Seq(
-        CommonDeps.jodaTime,
-        CommonDeps.jodaConvert,
         CommonDeps.liquibaseWrapped,
         CommonDeps.scalaTest
     )
