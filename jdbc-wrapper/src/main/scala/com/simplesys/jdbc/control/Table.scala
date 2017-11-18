@@ -2,10 +2,12 @@ package com.simplesys.jdbc.control
 
 import java.io.{InputStream, StringReader}
 import java.sql.{Connection, Date, PreparedStatement, ResultSet, SQLException, Timestamp}
+import java.time.LocalDateTime
 import java.util.{Date ⇒ JDate}
 
 import com.simplesys.SQL.Gen._
 import com.simplesys.common.Strings._
+import com.simplesys.jdbc.JDBC._
 import com.simplesys.common.array.{NotValue, asArray}
 import com.simplesys.db.pool.PoolDataSource
 import com.simplesys.isc.system.typesDyn.IsInList
@@ -17,6 +19,7 @@ import com.simplesys.sql.{OracleDialect, SQLDialect}
 import com.simplesys.tuple.{TupleSS1, TupleSS2}
 import ru.simplesys.meta.types.{VarcharDataType, _}
 
+import scala.collection.JavaConverters
 import scala.language.experimental.macros
 import scala.reflect.ClassTag
 
@@ -391,94 +394,20 @@ trait Table[T <: Table[T]] extends Entity[T] with Logging {
 
     implicit def StringOption2String(column: StringOptionColumnTable): StringColumnTable = StringColumnTable(name = column.name, isPrimaryKey = column.isPrimaryKey)
 
-    case class DateColumnTable(name: String, isPrimaryKey: Boolean = false) extends ColumnTable[DateTime] {
-        def entity: Entity[_] = top
-
-        def getDBDataType = DateTimeDataType
-
-        def default = new DateTime()
-
-        @throws(classOf[SQLException])
-        def get(resultSet: ResultSet) = new DateTime(resultSet getDate getName)
-
-
-        @throws(classOf[SQLException])
-        def set(preparedStatement: PreparedStatement, parameterIndex: Int, value: DateTime) {
-            preparedStatement setDate(parameterIndex, new Date(value.getMillis))
-        }
-    }
-
-    case class DateOptionColumnTable(name: String, isPrimaryKey: Boolean = false) extends OptionColumnTable[DateTime] {
-        def entity: Entity[_] = top
-
-        def getDBDataType = DateTimeDataType
-
-        def default = NotValue
-
-        @throws(classOf[SQLException])
-        def get(resultSet: ResultSet) = asArray(new DateTime(resultSet getDate getName))
-
-
-        @throws(classOf[SQLException])
-        def set(preparedStatement: PreparedStatement, parameterIndex: Int, value: Array[DateTime]) {
-            value.headOption match {
-                case None => preparedStatement setNull(parameterIndex, getDBDataType.sqlDataType)
-                case Some(value) => preparedStatement setDate(parameterIndex, new Date(value.getMillis))
-            }
-        }
-    }
-
-    case class DateTimeColumnTable(name: String, isPrimaryKey: Boolean = false) extends ColumnTable[DateTime] {
-        def entity: Entity[_] = top
-
-        def getDBDataType = DateTimeDataType
-
-        def default = new DateTime()
-
-        @throws(classOf[SQLException])
-        def get(resultSet: ResultSet) = new DateTime(resultSet getDate getName)
-
-
-        @throws(classOf[SQLException])
-        def set(preparedStatement: PreparedStatement, parameterIndex: Int, value: DateTime) {
-            preparedStatement setTimestamp(parameterIndex, new Timestamp(value.getMillis))
-        }
-    }
-
-    case class DateTimeOptionColumnTable(name: String, isPrimaryKey: Boolean = false) extends OptionColumnTable[DateTime] {
-        def entity: Entity[_] = top
-
-        def getDBDataType = DateTimeDataType
-
-        def default = NotValue
-
-        @throws(classOf[SQLException])
-        def get(resultSet: ResultSet) = asArray(new DateTime(resultSet getDate getName))
-
-
-        @throws(classOf[SQLException])
-        def set(preparedStatement: PreparedStatement, parameterIndex: Int, value: Array[DateTime]) {
-            value.headOption match {
-                case None => preparedStatement setNull(parameterIndex, getDBDataType.sqlDataType)
-                case Some(value) => preparedStatement setTimestamp(parameterIndex, new Timestamp(value.getMillis))
-            }
-        }
-    }
-
     case class LocalDateTimeColumnTable(name: String, isPrimaryKey: Boolean = false) extends ColumnTable[LocalDateTime] {
         def entity: Entity[_] = top
 
         def getDBDataType = DateTimeDataType
 
-        def default = new LocalDateTime()
+        def default = LocalDateTime.now()
 
         @throws(classOf[SQLException])
-        def get(resultSet: ResultSet) = new LocalDateTime(resultSet getDate getName)
+        def get(resultSet: ResultSet) = (resultSet getTimestamp getName).toLocalDateTime
 
 
         @throws(classOf[SQLException])
         def set(preparedStatement: PreparedStatement, parameterIndex: Int, value: LocalDateTime) {
-            preparedStatement setTimestamp(parameterIndex, new Timestamp(value.toDateTime.getMillis))
+            preparedStatement setTimestamp(parameterIndex, Timestamp.valueOf(value))
         }
     }
 
@@ -490,14 +419,14 @@ trait Table[T <: Table[T]] extends Entity[T] with Logging {
         def default = NotValue
 
         @throws(classOf[SQLException])
-        def get(resultSet: ResultSet) = asArray(new LocalDateTime(resultSet getDate getName))
+        def get(resultSet: ResultSet) = asArray((resultSet getTimestamp getName).toLocalDateTime)
 
 
         @throws(classOf[SQLException])
         def set(preparedStatement: PreparedStatement, parameterIndex: Int, value: Array[LocalDateTime]) {
             value.headOption match {
                 case None => preparedStatement setNull(parameterIndex, getDBDataType.sqlDataType)
-                case Some(value) => preparedStatement setTimestamp(parameterIndex, new Timestamp(value.toDateTime.getMillis))
+                case Some(value) => preparedStatement setTimestamp(parameterIndex, Timestamp.valueOf(value))
             }
         }
     }
@@ -603,7 +532,7 @@ trait Table[T <: Table[T]] extends Entity[T] with Logging {
         (sql, wheres)
     }
 
-    def insertRoot[FT <: Product with TableFieldProduct](columns: FT, values: Seq[InsertParam]): ValidationEx[List[Int]] = {
+    def insertRoot[FT <: Product with TableFieldProduct](columns: FT, values: Seq[InsertParam]): ValidationEx[Array[Int]] = {
 
         def sqlInsert: SQLAbsTable = sqlDialect match {
             case OracleDialect =>
@@ -617,7 +546,7 @@ trait Table[T <: Table[T]] extends Entity[T] with Logging {
             connection => prepareStatement(connection, sqlInsert.toInsertSQL(), dataSource.settings.fetchSize) {
                 statement =>
                     batch4Insert(statement = statement, values)
-                    statement.executeBatch().toList
+                    statement.executeBatch()
             }
         }
     }
@@ -640,7 +569,7 @@ trait Table[T <: Table[T]] extends Entity[T] with Logging {
         }
     }
 
-    def insertWithoutCommit[FT <: Product with TableFieldProduct](connection: Connection, columns: FT, values: Seq[InsertParam]): List[Int] = {
+    def insertWithoutCommit[FT <: Product with TableFieldProduct](connection: Connection, columns: FT, values: Seq[InsertParam]): Array[Int] = {
         def sqlInsert: SQLAbsTable = sqlDialect match {
             case OracleDialect =>
                 SQLCompoundTable(fields = columns.getColumns, from = SQLFrom(table = getDatabaseTable))
@@ -656,7 +585,7 @@ trait Table[T <: Table[T]] extends Entity[T] with Logging {
         prepareStatement(connection, sqlInsert.toInsertSQL(), dataSource.settings.fetchSize) {
             statement =>
                 PrepareInsert(values = values, statement = statement)
-                statement.executeBatch().toList
+                statement.executeBatch()
         }
     }
 
@@ -693,23 +622,23 @@ trait Table[T <: Table[T]] extends Entity[T] with Logging {
         res
     }
 
-    def update(setters: SetParam, where: WhereParam = null): ValidationEx[List[Int]] = {
+    def update(setters: SetParam, where: WhereParam = null): ValidationEx[Array[Int]] = {
         transaction(dataSource) {
             connection => prepareStatement(connection, MakeUpdateSQL(setters, where), dataSource.settings.fetchSize) {
                 preparedStatement =>
                     batch4Update(preparedStatement = preparedStatement, setters = setters, where = where)
-                    preparedStatement.executeBatch().toList
+                    preparedStatement.executeBatch()
             }
         }
     }
 
-    def updateWithoutCommit(connection: Connection, setters: SetParam, where: WhereParam = null): List[Int] = {
+    def updateWithoutCommit(connection: Connection, setters: SetParam, where: WhereParam = null): Array[Int] = {
         val updateStr = MakeUpdateSQL(setters, where)
 
         prepareStatement(connection, updateStr, dataSource.settings.fetchSize) {
             preparedStatement =>
                 batch4Update(preparedStatement = preparedStatement, setters = setters, where = where)
-                preparedStatement.executeBatch().toList
+                preparedStatement.executeBatch()
         }
     }
 
@@ -739,12 +668,12 @@ trait Table[T <: Table[T]] extends Entity[T] with Logging {
         preparedStatement.addBatch()
     }
 
-    def delete(where: WhereParam = null): ValidationEx[List[Int]] = {
+    def delete(where: WhereParam = null): ValidationEx[Array[Int]] = {
         transaction(dataSource) {
             connection => prepareStatement(connection, MakeDeleteSQL(where), dataSource.settings.fetchSize) {
                 statement =>
                     batch4Delete(statement = statement, where = where)
-                    statement.executeBatch().toList
+                    statement.executeBatch()
             }
         }
     }
@@ -773,11 +702,11 @@ trait Table[T <: Table[T]] extends Entity[T] with Logging {
         sqlDelete.toDeleteSQL()
     }
 
-    def deleteWithoutCommit(connection: Connection, where: WhereParam = null): List[Int] = {
+    def deleteWithoutCommit(connection: Connection, where: WhereParam = null): Array[Int] = {
         prepareStatement(connection, MakeDeleteSQL(where), dataSource.settings.fetchSize) {
             statement =>
                 batch4Delete(statement = statement, where = where)
-                statement.executeBatch().toList
+                statement.executeBatch()
         }
     }
 
@@ -795,7 +724,7 @@ trait Table[T <: Table[T]] extends Entity[T] with Logging {
         }
 
         statement.addBatch()
-        statement.executeBatch().toList
+        statement.executeBatch()
     }
 
     protected def dataSource: PoolDataSource

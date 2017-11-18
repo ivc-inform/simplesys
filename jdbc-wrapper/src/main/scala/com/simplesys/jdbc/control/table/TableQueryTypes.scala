@@ -5,7 +5,7 @@ import java.sql.PreparedStatement
 import com.simplesys.SQL.Gen.{AscOrderBy, DirOrderBy}
 import com.simplesys.isc.system.typesDyn.{OperatorId, opIdAnd, opIdNot, opIdOr}
 import com.simplesys.jdbc.control._
-import com.simplesys.json.{JsonObject, JsonElement}
+import io.circe.Json
 
 import scala.collection.mutable.ArrayBuffer
 
@@ -46,7 +46,7 @@ case class OrderByCaseClass(column: BasicTableColumn[_], order: DirOrderBy) exte
 object WheresList {
     def apply() = new WheresList
 
-    implicit def json2WhereParam(json:JsonElement):WhereParam = WheresList()
+    implicit def json2WhereParam(json:Json):WhereParam = WheresList()
 }
 
 class WheresList extends WhereParam {

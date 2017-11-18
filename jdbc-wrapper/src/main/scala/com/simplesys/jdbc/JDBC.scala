@@ -12,7 +12,7 @@ import io.circe.Json._
 
 import scala.reflect.ClassTag
 
-package object JDBC extends Logging{
+object JDBC extends Logging{
     val quoted = true
 
     implicit def tt[S <: Table[S]](table: S): Option[S] = Some(table)

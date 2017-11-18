@@ -1,8 +1,6 @@
 package com.simplesys.jdbc.control
 
-import com.simplesys.json.JsonElement
 import com.simplesys.log.Logging
-
 
 trait OrderByParam
 

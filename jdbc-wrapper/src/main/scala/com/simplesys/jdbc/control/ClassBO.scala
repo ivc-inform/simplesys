@@ -12,11 +12,11 @@ import com.simplesys.common.equality.SimpleEquality._
 import com.simplesys.config.Config
 import com.simplesys.db.pool.PoolDataSource
 import com.simplesys.isc.system.typesDyn._
+import com.simplesys.jdbc.control.table.{From, TableInnerJoinCaseClass, TableJoinCondition, TableJoinCondition1, TableLeftJoinCaseClass}
 import com.simplesys.jdbc.JDBC._
 import com.simplesys.jdbc.control.SessionStructures._
 import com.simplesys.jdbc.control.SuperTuple1._
 import com.simplesys.jdbc.control.classBO._
-import com.simplesys.jdbc.control.table.{TableInnerJoinCaseClass, TableJoinCondition, TableJoinCondition1, TableLeftJoinCaseClass}
 import com.simplesys.log.Logging
 import com.simplesys.sql.OracleDialect
 import com.simplesys.tuple.{TupleSS1, TupleSS2}
@@ -1066,19 +1066,17 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
                 case _ =>
                     dataSource.sqlDialect match {
                         case OracleDialect =>
-                            val sb = dsRequest.sortBy
-                            sb match {
-                                case null =>
-                                case sortBy =>
-                                    sortBy.getProxyList.foreach(
-                                        f => {
+                            dsRequest.sortBy.asArray.foreach {
+                                _.foreach {
+                                    _.asString.foreach {
+                                        f ⇒
                                             getColumnInBase(SQLField(name = f)) match {
                                                 case Some(field) =>
                                                     res += SQLOrderBy(field = field, dir = if (f.toString.indexOf("-") > -1) DescOrderBy else AscOrderBy)
                                                 case _ =>
                                             }
-                                        }
-                                    )
+                                    }
+                                }
                             }
                         case _ =>
                     }
