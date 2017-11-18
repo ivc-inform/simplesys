@@ -38,17 +38,17 @@ package object time {
             def today(hour: Int = 23, min: Int = 59, sec: Int = 59): LocalDateTime = LocalDateTime.of(now.getYear, now.getMonth, now.getDayOfMonth, hour, min, sec)
 
             parse(string) match {
-                case Left(failure) ⇒
+                case Left(_) ⇒
                     None
                 case Right(json) ⇒
                     val cursor: HCursor = json.hcursor
 
                     cursor.get[String]("_constructor") match {
-                        case Left(failure) =>
+                        case Left(_) =>
                             None
                         case Right(constructor) if constructor == "RelativeDate" =>
                             cursor.get[String]("value") match {
-                                case Left(failure) ⇒
+                                case Left(_) ⇒
                                     None
                                 case Right(x) ⇒
                                     x match {
