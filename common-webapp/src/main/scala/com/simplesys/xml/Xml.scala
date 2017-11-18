@@ -16,7 +16,7 @@ object Xml {
 
         //implicit def jsobj2json1(jsonobg: (String, JsonObject)): (String, Json) = jsonobg._1 → fromJsonObject(jsonobg._2)
 
-        def buildJson(node: Node): JsonObject = {
+        def buildJson(node: Node): Json = {
             def buildAttributes(node: Node): JsonObject = {
                 val res = JsonObject.empty
                 node.attributes.foreach {
@@ -51,7 +51,18 @@ object Xml {
                         val res = JsonObject.empty
                         children.foreach {
                             node =>
-                                buildJson(node).toVector.foreach(item ⇒ res add(item._1, item._2))
+                                buildJson(node).asArray match {
+                                    case Some(array) ⇒
+                                        array.foreach{
+                                            item ⇒
+                                                item.asObject match {
+                                                    case Some(obj) ⇒
+                                                        obj.toMap.foreach(item ⇒ res add(item._1, item._2))
+                                                    case None ⇒
+                                                }
+                                        }
+                                    case None ⇒
+                                }
                             //res.log
                         }
                         res
@@ -64,11 +75,11 @@ object Xml {
                         }
                         res
                     }
-                    res add(nameOf(child), childrenJson)
+                    res add(nameOf(child), fromJsonObject(childrenJson))
                 //res.log()
             }
 
-            if (isLeaf(node) && node.text.trim != "") fromString(node.text) else res
+            if (isLeaf(node) && node.text.trim != "") fromString(node.text) else fromJsonObject(res)
         }
 
         JsonObject.singleton(nameOf(xml), buildJson(xml))
@@ -79,8 +90,8 @@ object Xml {
         
         json.toMap.headOption match {
             case Some(item) if item._1 == "DataSource" =>
-                item._2 match {
-                    case item: JsonObject =>
+                item._2.asObject match {
+                    case Some(item) =>
                         item
                     case x =>
                         throw new RuntimeException(s"Bad branch $x on component: $componentName")
