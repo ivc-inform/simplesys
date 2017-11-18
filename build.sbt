@@ -106,7 +106,7 @@ lazy val common = (project in file("common")).dependsOn(logbackWrapper).settings
 ).settings(CommonSettings.defaultProjectSettings)
 
 
-lazy val commonWebApp = Project(id = "common-webapp", base = file("common-webapp")).enablePlugins(SbtCoffeeScript).dependsOn(akkaExtender, classUtil).settings(
+lazy val commonWebApp = Project(id = "common-webapp", base = file("common-webapp")).enablePlugins(SbtCoffeeScript).dependsOn(servletWrapper, classUtil).settings(
     sbtPlugin := false,
     organization := CommonSettings.settingValues.organization,
     CoffeeScriptKeys.sourceMap := false,

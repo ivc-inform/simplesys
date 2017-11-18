@@ -68,20 +68,15 @@ trait SseServletResponseCirce {
 
         channels match {
             case JArray(channels) ⇒
-                val _channels: Vector[SseChannel] = channels.length match {
-                    case 0 => Vector.empty[SseChannel]
-                    case _ =>
-                        channels.map(
-                            _ match {
-                                case JString(string) => SseStringChannel(string)
-                                case any => throw new RuntimeException(s"Bad branch. ${any}")
-                            }
-                        )
+                val _channels: Vector[SseChannel] = channels.map {
+                    case JString(string) => SseStringChannel(string)
+                    case any => throw new RuntimeException(s"Bad branch. ${any}")
                 }
 
                 SendMessage(data = data, event = event, id = _id, channels = _channels)
 
-            case _ ⇒
+            case any ⇒
+                throw new RuntimeException(s"Bad branch. ${any}")
         }
     }
 }

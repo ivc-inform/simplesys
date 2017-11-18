@@ -13,13 +13,6 @@ object Xml {
         //println(xml.toPrettyString)
         def nameOf(node: Node): String = (if (Option(node.prefix).nonEmpty) node.prefix + ":" else "") + node.label
 
-        implicit def jsonObj2json(jsonobg: JsonObject): Json = fromJsonObject(jsonobg)
-
-        implicit def json2jsonObj(json: Json): JsonObject = json match {
-            case JObject(jsonObj) ⇒ jsonObj
-            case _ ⇒ JsonObject.empty
-        }
-
         //implicit def jsobj2json1(jsonobg: (String, JsonObject)): (String, Json) = jsonobg._1 → fromJsonObject(jsonobg._2)
 
         def buildJson(node: Node): JsonObject = {
