@@ -21,22 +21,22 @@ object JDBC extends Logging{
 
     implicit def basicClassBOColumn2Array[T: ClassTag](column: BasicClassBOColumn[T]): Array[T] = Array(column.default)
 
-    implicit def arrayString2OptionJsonString(value: Array[String]): Option[Json] = if (value.length == 0) None else Some(fromString(value(0)))
-    implicit def arrayString2OptionString(value: Array[String]): Option[String] = if (value.length == 0) None else Some(value(0))
+    implicit def arrayString2OptionJsonString(value: Array[String]): Option[Json] = if (value.length == 0) None else Some(fromString(value.head))
+    implicit def arrayString2OptionString(value: Array[String]): Option[String] = if (value.length == 0) None else Some(value.head)
 
-    implicit def arrayBigDecimal2JsonElement(value: Array[BigDecimal]): Option[Json] = if (value.length == 0) None else Some(fromString(value(0).toString()))
+    implicit def arrayBigDecimal2JsonElement(value: Array[BigDecimal]): Option[Json] = if (value.length == 0) None else Some(fromString(value.head.toString()))
 
-    implicit def arrayLocalDateTime2JsonElement(value: Array[LocalDateTime]): Option[Json] = if (value.length == 0) None else Some(fromString(value(0).asString()))
+    implicit def arrayLocalDateTime2JsonElement(value: Array[LocalDateTime]): Option[Json] = if (value.length == 0) None else Some(fromString(value.head.asString()))
 
-    implicit def arrayLong2JsonElement(value: Array[Long]): Option[Json] = if (value.length == 0) None else Some(fromLong(value(0)))
+    implicit def arrayLong2JsonElement(value: Array[Long]): Option[Json] = if (value.length == 0) None else Some(fromLong(value.head))
 
-    implicit def arrayInt2JsonElement(value: Array[Int]): Option[Json] = if (value.length == 0) None else Some(fromInt(value(0)))
+    implicit def arrayInt2JsonElement(value: Array[Int]): Option[Json] = if (value.length == 0) None else Some(fromInt(value.head))
 
-    implicit def arrayDouble2JsonElement(value: Array[Double]): Option[Json] = if (value.length == 0) None else fromDouble(value(0))
+    implicit def arrayDouble2JsonElement(value: Array[Double]): Option[Json] = if (value.length == 0) None else fromDouble(value.head)
 
-    implicit def arrayBoolean2JsonElement(value: Array[Boolean]): Option[Json] = if (value.length == 0) None else Some(fromBoolean(value(0)))
+    implicit def arrayBoolean2JsonElement(value: Array[Boolean]): Option[Json] = if (value.length == 0) None else Some(fromBoolean(value.head))
 
-    implicit def arrayInputStream2JsonElement(value: Array[InputStream]): Option[Json] = if (value.length == 0) None else Some(fromString(value(0).asString))
+    implicit def arrayInputStream2JsonElement(value: Array[InputStream]): Option[Json] = if (value.length == 0) None else Some(fromString(value.head.asString))
 
     //implicit def unwrapOpt[T: ClassTag](value: T): Option[T] = Option(value)
     implicit def seqBigDecimal2BigDecimal(value: Seq[BigDecimal]): BigDecimal = value.head
