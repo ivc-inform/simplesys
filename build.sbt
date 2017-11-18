@@ -51,7 +51,7 @@ lazy val root = (project in file(".")).
       publishArtifact in(Compile, packageSrc) := false
   )
 
-lazy val akkaExtender = Project(id = "akka-extender", base = file("akka-extender")).dependsOn(circeExtender).settings(
+lazy val akkaExtender = Project(id = "akka-extender", base = file("akka-extender")).dependsOn().settings(
     libraryDependencies ++= Seq(
         CommonDeps.akkaActor,
         CommonDeps.akkaAgent,
@@ -223,7 +223,7 @@ lazy val scalaIOExtender = Project(id = "scala-io-extender", base = file("scala-
     )
 ).settings(CommonSettings.defaultProjectSettings)
 
-lazy val servletWrapper = Project(id = "servlet-wrapper", base = file("servlet-wrapper")).dependsOn(coreUtils, oraclePoolDataSources, xmlExtender, akkaExtender).settings(
+lazy val servletWrapper = Project(id = "servlet-wrapper", base = file("servlet-wrapper")).dependsOn(coreUtils, oraclePoolDataSources, xmlExtender, akkaExtender, circeExtender).settings(
     scalacOptions += "-Dscalac:patmat:analysisBudget=1024",
 
     libraryDependencies ++= Seq(
