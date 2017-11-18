@@ -1,23 +1,15 @@
 package com.simplesys.servlet.actor
 
-import com.simplesys.common.Strings._
-import com.simplesys.isc.dataBinging.{DSRequestDyn, DSResponseDyn}
-import com.simplesys.isc.system.ServletActorDyn
 import com.simplesys.servlet._
 import com.simplesys.servlet.http.{HttpServletRequest, HttpServletResponse}
+import io.circe.Json
 
 //@RSTransfer(urlPattern = "/isomorphic/LoadSchemas")
-class BaseLoaderSchemas(val request: HttpServletRequest, val response: HttpServletResponse, val servletContext: ServletContext) extends ServletActorDyn {
-    val requestData = new DSRequestDyn(request)
-
+class BaseLoaderSchemas(val request: HttpServletRequest, val response: HttpServletResponse, val servletContext: ServletContext) extends ServletActor {
     def receive = {
         case GetData => {
-            val data = requestData.Data
-
-            logger debug s"data: ${newLine + data.toPrettyString}"
-
             servletContext.Attribute("schemaList") match {
-                case Some(schemaList: DSResponseDyn) =>
+                case Some(schemaList: Json) =>
                     Out(schemaList)
 
                 case Some(_) =>

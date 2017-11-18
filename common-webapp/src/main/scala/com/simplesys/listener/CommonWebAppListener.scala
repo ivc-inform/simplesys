@@ -17,8 +17,13 @@ import com.simplesys.log.Logging
 import com.simplesys.servlet._
 import com.simplesys.servlet.http.sse.{SseServletRequest, SseServletResponse}
 import com.simplesys.servlet.http.{HttpServletRequest, HttpServletResponse}
+import com.simplesys.smartClient.{DSResponse, RPCResponse, RPCResponseData}
 import com.simplesys.xml.Xml
 import com.simplesys.xml.factory.XMLLoader
+import io.circe.Json._
+import io.circe.{Json, JsonObject}
+import io.circe.syntax._
+import io.circe.generic.auto._
 
 import scala.annotation.StaticAnnotation
 import scala.collection.mutable.ListBuffer
@@ -247,29 +252,29 @@ trait CommonWebAppListener extends ServletContextListener with ServletContextIni
             val path = s"${sce.ServletContext.RealPath(".").getOrElse("")}/${getString("app.isomorphicDir")}${getString("app.schemasDir")}"
             val schemasFiles = new File(path).listFiles.filter(_.getName.endsWith("ds.xml")).sortWith(_.getName < _.getName)
 
-            val list = JsonList()
 
             logger debug "/////////////////////////////////////////////////////////////// Schema files: ///////////////////////////////////////////////////////////////////"
-            schemasFiles.foreach {
+            val array: Array[Json] = schemasFiles.map {
                 file =>
                     val componentName = file.getName.replace(".ds.xml", "")
-                    val json = Xml.getJS(loadFile(file)(scala.io.Codec.UTF8), componentName, getBoolean("app.jsonSchemaPrettyPrint")).trim
+                    val json = Xml.getJS(loadFile(file)(scala.io.Codec.UTF8), componentName, getBoolean("app.jsonSchemaPrettyPrint"))
 
-                    if (json != "") {
-                        list += JsonObject("component" -> componentName, "jsonStr" -> json)
+                    if (json != JsonObject.empty) {
                         logger debug s"Parsed schema: $componentName"
                         if (getBoolean("app.jsonSchemaPrettyPrint"))
-                          logger debug s"JSON: $json"
-                    }
-            }
+                            logger debug s"JSON: $json"
+                        Some(JsonObject.fromIterable(Seq("component" -> fromString(componentName), "jsonStr" -> fromJsonObject(json))))
+                    } else None
+            }.filter(_.isDefined).map(item ⇒ fromJsonObject(item.get))
+            val list = Json.arr(array: _*)
             logger debug "/////////////////////////////////////////////////////////////// End Schema files: ///////////////////////////////////////////////////////////////"
 
-            val schemaList = new DSResponseDyn {
-                Status = RPCResponseDyn.statusSuccess
-                Data = list
-            }
+            val schemaList = DSResponse(
+                status = RPCResponse.statusSuccess,
+                data = list
+            )
 
-            sce.ServletContext.Attribute("schemaList", Some(schemaList))
+            sce.ServletContext.Attribute("schemaList", Some(schemaList.asJson))
         }
     }
 }

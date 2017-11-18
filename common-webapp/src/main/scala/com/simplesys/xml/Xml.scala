@@ -1,42 +1,51 @@
 package com.simplesys.xml
 
 import com.simplesys.common.Strings._
-import io.circe.{Json, JsonObject}
 import io.circe.Json._
+import io.circe.{Json, JsonObject}
 
 import scala.xml.{MetaData, Node, NodeSeq}
 
 object Xml {
     val fixedArrayNames = Seq("fields", "types", "valueMap")
 
-    def xmlToJson(xml: Elem): Json = {
+    def xmlToJson(xml: Elem): JsonObject = {
         //println(xml.toPrettyString)
-        def nameOf(node: Node) = (if (Option(node.prefix).nonEmpty) node.prefix + ":" else "") + node.label
+        def nameOf(node: Node): String = (if (Option(node.prefix).nonEmpty) node.prefix + ":" else "") + node.label
 
-        def buildJson(node: Node): Json = {
-            def buildAttributes(node: Node): Json = {
-                fromFields(node.attributes.map {
+        implicit def jsonObj2json(jsonobg: JsonObject): Json = fromJsonObject(jsonobg)
+
+        implicit def json2jsonObj(json: Json): JsonObject = json match {
+            case JObject(jsonObj) ⇒ jsonObj
+            case _ ⇒ JsonObject.empty
+        }
+
+        //implicit def jsobj2json1(jsonobg: (String, JsonObject)): (String, Json) = jsonobg._1 → fromJsonObject(jsonobg._2)
+
+        def buildJson(node: Node): JsonObject = {
+            def buildAttributes(node: Node): JsonObject = {
+                val res = JsonObject.empty
+                node.attributes.foreach {
                     (a: MetaData) =>
                         val value = a.value.text.trim
                         if (value != "")
-                            Some(a.key -> fromString(value))
-                        else
-                            None
-                }.filter(_.isDefined).map(_.get))
+                            res add(a.key, fromString(value))
+                }
+                res
             }
 
             def directChildren(node: Node): NodeSeq = node.child.filter(_.isInstanceOf[Elem])
 
-            def isLeaf(node: Node) = !node.descendant.find(_.isInstanceOf[Elem]).isDefined
+            def isLeaf(node: Node): Boolean = !node.descendant.find(_.isInstanceOf[Elem]).isDefined
 
-            def isArray(nodes: NodeSeq) = {
+            def isArray(nodes: NodeSeq): Boolean = {
                 val nodeNames = nodes.map(nameOf(_))
                 nodeNames.size != 1 && nodeNames.distinct.size == 1
             }
 
             val res = JsonObject.empty
             val attributes = buildAttributes(node)
-            res ++= attributes
+            attributes.toVector.foreach(item ⇒ res add(item._1, item._2))
 
             //res.log()
 
@@ -45,51 +54,46 @@ object Xml {
                 child =>
                     val children = directChildren(child)
                     val childrenJson = if (isArray(children) || fixedArrayNames.exists(_ == nameOf(child))) {
-                        val res = JsonList()
+                        val res = JsonObject.empty
                         children.foreach {
                             node =>
-                                res += buildJson(node)
+                                buildJson(node).toVector.foreach(item ⇒ res add(item._1, item._2))
                             //res.log
                         }
                         res
                     } else {
-                        val res = JsonObject()
+                        val res = JsonObject.empty
                         children.foreach {
                             node =>
-                                res += nameOf(node) -> buildJson(node)
+                                res add(nameOf(node), buildJson(node))
                             //res.log()
                         }
                         res
                     }
-                    res += (nameOf(child) -> childrenJson)
+                    res add(nameOf(child), childrenJson)
                 //res.log()
             }
 
-            if (isLeaf(node) && node.text.trim != "") node.text.toJson else res
+            if (isLeaf(node) && node.text.trim != "") fromString(node.text) else res
         }
 
-        JsonObject(nameOf(xml) -> buildJson(xml))
+        JsonObject.singleton(nameOf(xml), buildJson(xml))
     }
 
-    def getJS(xml: Elem, componentName: String, prettyString: Boolean): String = {
+    def getJS(xml: Elem, componentName: String, prettyString: Boolean): JsonObject = {
         val json = Xml.xmlToJson(xml)
-
-        ModeNames = PortalMode
-
-        json.headOption match {
+        
+        json.toMap.headOption match {
             case Some(item) if item._1 == "DataSource" =>
                 item._2 match {
                     case item: JsonObject =>
-                        if (prettyString)
-                            (new DataSourceDyn(item, true)).toPrettyString
-                        else
-                            (new DataSourceDyn(item, true)).toString()
+                        item
                     case x =>
                         throw new RuntimeException(s"Bad branch $x on component: $componentName")
                 }
 
             case Some(item) if item._1 == "Object" =>
-                strEmpty
+                JsonObject.empty
             case x =>
                 throw new RuntimeException(s"Bad branch $x on component: $componentName")
         }
