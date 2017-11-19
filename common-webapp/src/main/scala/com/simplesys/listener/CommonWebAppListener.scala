@@ -13,11 +13,12 @@ import com.simplesys.akka.http.{AkkaMap, Endpoint, FutureResponse, ServletContex
 import com.simplesys.annotation.{RSTransfer, SseTransfer}
 import com.simplesys.common.Strings._
 import com.simplesys.common._
+import com.simplesys.isc.dataBinging.{DSResponse, RPCResponse}
 import com.simplesys.log.Logging
 import com.simplesys.servlet._
 import com.simplesys.servlet.http.sse.{SseServletRequest, SseServletResponse}
 import com.simplesys.servlet.http.{HttpServletRequest, HttpServletResponse}
-import com.simplesys.smartClient.{DSResponse, RPCResponse, RPCResponseData}
+import com.simplesys.isc.dataBinging.RPCResponseData
 import com.simplesys.xml.Xml
 import com.simplesys.xml.factory.XMLLoader
 import io.circe.Json._

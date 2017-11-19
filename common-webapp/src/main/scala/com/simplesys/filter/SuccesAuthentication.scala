@@ -1,10 +1,11 @@
 package com.simplesys.filter
 
 import akka.actor.ActorSystem
+import com.simplesys.isc.dataBinging.{RPCResponse, RPCResponseData}
 import com.simplesys.log.Logging
 import com.simplesys.servlet.http.{HttpServletRequest, HttpServletResponse}
-import com.simplesys.smartClient.RPCResponse._
-import com.simplesys.smartClient.{RPCResponse, RPCResponseData}
+import com.simplesys.isc.dataBinging.RPCResponse._
+import com.simplesys.isc.dataBinging.RPCResponseData
 import io.circe.Json
 import io.circe.syntax._
 import io.circe.generic.auto._

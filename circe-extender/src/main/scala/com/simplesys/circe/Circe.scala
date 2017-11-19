@@ -4,6 +4,6 @@ import io.circe.Json
 
 object Circe {
     implicit class CirceOpt(json: Json) {
-        def toPrettyprint = json.spaces4
+        def toPrettyString = json.spaces4
     }
 }

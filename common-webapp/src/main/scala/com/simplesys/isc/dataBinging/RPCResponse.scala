@@ -1,4 +1,4 @@
-package com.simplesys.smartClient
+package com.simplesys.isc.dataBinging
 
 import io.circe.Json
 
