@@ -21,4 +21,4 @@ object RPCResponse {
     val statusServerTimeout = -100
 }
 case class RPCResponse(data: Json)
-case class DSResponse(data: Json, status: Int)
+
