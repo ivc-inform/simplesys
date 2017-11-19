@@ -1,8 +1,9 @@
-package com.simplesys.servlet
+package com.simplesys.servlet.isc
 
 import akka.actor.{Actor, PoisonPill}
 import com.simplesys.config.Config
 import com.simplesys.log.Logging
+import com.simplesys.servlet.ServletContext
 import com.simplesys.servlet.http.{HttpServletRequest, HttpServletResponse}
 import com.simplesys.xml.Elem
 import io.circe.Json

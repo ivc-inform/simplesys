@@ -2,6 +2,7 @@ package com.simplesys.servlet.actor
 
 import com.simplesys.servlet._
 import com.simplesys.servlet.http.{HttpServletRequest, HttpServletResponse}
+import com.simplesys.servlet.isc.{GetData, ServletActor}
 import io.circe.Json
 
 //@RSTransfer(urlPattern = "/isomorphic/LoadSchemas")

@@ -9,10 +9,11 @@ import com.simplesys.annotation.RSTransfer
 import com.simplesys.log.Logging
 import com.simplesys.servlet.http.sse.{SseServletRequest, SseServletResponse}
 import com.simplesys.servlet.http.{HttpServletRequest, HttpServletResponse}
+import com.simplesys.servlet.isc.{GetData, ServletActor}
 
 import scala.reflect.ClassTag
 import scala.reflect.runtime.universe._
-import scala.reflect.runtime.{universe => ru}
+import scala.reflect.runtime.{universe ⇒ ru}
 
 trait RSTransferTrait {
 
