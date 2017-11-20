@@ -45,13 +45,17 @@ object Circe {
 
     implicit def impString(str: String): Json = fromString(str)
     implicit def impStringopt(str: Option[String]): Json = if (str.isEmpty) Json.Null else fromString(str.get)
+    implicit def impStringarr(str: Array[String]): Json = if (str.isEmpty) Json.Null else fromString(str.head)
 
     implicit def impLong(long: Long): Json = fromLong(long)
     implicit def impLongopt(long: Option[Long]): Json = if (long.isEmpty) Json.Null else fromLong(long.get)
+    implicit def impLongarr(long: Array[Long]): Json = if (long.isEmpty) Json.Null else fromLong(long.head)
 
     implicit def impDouble(double: Double): Json = fromDouble(double)getOrElse(Json.Null)
     implicit def impDoubleopt(double: Option[Double]): Json = if (double.isEmpty) Json.Null else fromDouble(double.get).getOrElse(Json.Null)
+    implicit def impDoublearr(double: Array[Double]): Json = if (double.isEmpty) Json.Null else fromDouble(double.head).getOrElse(Json.Null)
 
     implicit def impLocalDateTime(localDateTime: LocalDateTime): Json = fromString(localDateTime.asString())
     implicit def impLocalDateTime(localDateTime: Option[LocalDateTime]): Json = if (localDateTime.isEmpty) Json.Null else  fromString(localDateTime.get.asString())
+    implicit def impLocalDateTime(localDateTime: Array[LocalDateTime]): Json = if (localDateTime.isEmpty) Json.Null else  fromString(localDateTime.head.asString())
 }
