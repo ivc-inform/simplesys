@@ -19,8 +19,9 @@ case class DSResponseFailureEx(result: ValidationEx[_], status: Int = RPCRespons
     override val totalRows = None
 
     override val data = if (result.printException.isEmpty)
-      Json.Null
-    else JsonObject.singleton("error", fromJsonObject(JsonObject.fromIterable(Seq("message" → fromString(result.printException.get.message), "stackTrace" → fromString(result.printException.get.stackTrace)))))
+        Json.Null
+    else
+        JsonObject.singleton("error", fromJsonObject(JsonObject.fromIterable(Seq("message" → fromString(result.printException.get.message), "stackTrace" → fromString(result.printException.get.stackTrace)))))
 
     result printException match {
         case None =>
