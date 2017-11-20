@@ -51,11 +51,15 @@ object Circe {
     implicit def impLongopt(long: Option[Long]): Json = if (long.isEmpty) Json.Null else fromLong(long.get)
     implicit def impLongarr(long: Array[Long]): Json = if (long.isEmpty) Json.Null else fromLong(long.head)
 
-    implicit def impDouble(double: Double): Json = fromDouble(double)getOrElse(Json.Null)
+    implicit def impInt(long: Int): Json = fromInt(long)
+    implicit def impIntopt(long: Option[Int]): Json = if (long.isEmpty) Json.Null else fromInt(long.get)
+    implicit def impIntarr(long: Array[Int]): Json = if (long.isEmpty) Json.Null else fromInt(long.head)
+
+    implicit def impDouble(double: Double): Json = fromDouble(double) getOrElse (Json.Null)
     implicit def impDoubleopt(double: Option[Double]): Json = if (double.isEmpty) Json.Null else fromDouble(double.get).getOrElse(Json.Null)
     implicit def impDoublearr(double: Array[Double]): Json = if (double.isEmpty) Json.Null else fromDouble(double.head).getOrElse(Json.Null)
 
     implicit def impLocalDateTime(localDateTime: LocalDateTime): Json = fromString(localDateTime2Str(localDateTime))
-    implicit def impLocalDateTime(localDateTime: Option[LocalDateTime]): Json = if (localDateTime.isEmpty) Json.Null else  fromString(localDateTime2Str(localDateTime.get))
-    implicit def impLocalDateTime(localDateTime: Array[LocalDateTime]): Json = if (localDateTime.isEmpty) Json.Null else  fromString(localDateTime2Str(localDateTime.head))
+    implicit def impLocalDateTime(localDateTime: Option[LocalDateTime]): Json = if (localDateTime.isEmpty) Json.Null else fromString(localDateTime2Str(localDateTime.get))
+    implicit def impLocalDateTime(localDateTime: Array[LocalDateTime]): Json = if (localDateTime.isEmpty) Json.Null else fromString(localDateTime2Str(localDateTime.head))
 }
