@@ -84,20 +84,20 @@ object Xml {
         JsonObject.singleton(nameOf(xml), buildJson(xml))
     }
 
-    def getJS(xml: Elem, componentName: String, prettyString: Boolean): JsonObject = {
+    def getJS(xml: Elem, componentName: String, prettyString: Boolean): Json = {
         val json = Xml.xmlToJson(xml)
         
         json.toMap.headOption match {
             case Some(item) if item._1 == "DataSource" =>
                 item._2.asObject match {
                     case Some(item) =>
-                        item
+                       fromJsonObject(item)
                     case x =>
                         throw new RuntimeException(s"Bad branch $x on component: $componentName")
                 }
 
             case Some(item) if item._1 == "Object" =>
-                JsonObject.empty
+                arr()
             case x =>
                 throw new RuntimeException(s"Bad branch $x on component: $componentName")
         }

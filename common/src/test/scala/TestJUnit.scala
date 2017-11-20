@@ -2,7 +2,6 @@ import com.simplesys.log.Logging
 import junit.framework.TestCase
 import com.simplesys.common.Strings._
 import com.simplesys.common._
-import org.joda.time.format.DateTimeFormat
 
 class TestJUnit extends TestCase with Logging {
     def testHelloWorld {
@@ -54,23 +53,9 @@ class TestJUnit extends TestCase with Logging {
 
     }
 
-    def testDateTime {
-        logger debug ((new org.joda.time.DateTime(0)).toString())
-        val str = (new org.joda.time.DateTime(0)).toString()
-        val date = str.toLocalDateTime()
-        //val date = org.joda.time.DateTime.parse(str)
-        logger debug (date.toString())
-    }
-
     def testLocalDateTime {
         val d = "2014-04-18T20:00:00.000".toLocalDateTime()
         logger debug d.toString
-    }
-
-    def testLocalDate {
-        val fmt = DateTimeFormat.forPattern("dd.MM.yyyy")
-        val d = "01.01.2010".toLocalDate(dateTimeFormatter = fmt)
-        logger debug fmt.print(d)
     }
 
     def testasDouble {
