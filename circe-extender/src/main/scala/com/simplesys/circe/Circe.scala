@@ -55,7 +55,7 @@ object Circe {
     implicit def impDoubleopt(double: Option[Double]): Json = if (double.isEmpty) Json.Null else fromDouble(double.get).getOrElse(Json.Null)
     implicit def impDoublearr(double: Array[Double]): Json = if (double.isEmpty) Json.Null else fromDouble(double.head).getOrElse(Json.Null)
 
-    implicit def impLocalDateTime(localDateTime: LocalDateTime): Json = fromString(localDateTime.asString())
-    implicit def impLocalDateTime(localDateTime: Option[LocalDateTime]): Json = if (localDateTime.isEmpty) Json.Null else  fromString(localDateTime.get.asString())
-    implicit def impLocalDateTime(localDateTime: Array[LocalDateTime]): Json = if (localDateTime.isEmpty) Json.Null else  fromString(localDateTime.head.asString())
+    implicit def impLocalDateTime(localDateTime: LocalDateTime): Json = fromString(localDateTime2Str(localDateTime))
+    implicit def impLocalDateTime(localDateTime: Option[LocalDateTime]): Json = if (localDateTime.isEmpty) Json.Null else  fromString(localDateTime2Str(localDateTime.get))
+    implicit def impLocalDateTime(localDateTime: Array[LocalDateTime]): Json = if (localDateTime.isEmpty) Json.Null else  fromString(localDateTime2Str(localDateTime.head))
 }
