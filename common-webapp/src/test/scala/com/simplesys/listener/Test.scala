@@ -174,7 +174,7 @@ class Test extends FunSuite with Config with Logging with XMLLoader {
                                |        <field name="mapping" type="string" multiple="true"/>
                                |    </fields>
                                |</DataSource>""".stripMargin)
-        val json = Xml.getJS(xml, "Action", false).trim
+        val json = Xml.getJS(xml, "Action", false)
         println(json)
     }
 }

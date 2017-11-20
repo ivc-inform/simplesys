@@ -265,7 +265,7 @@ trait CommonWebAppListener extends ServletContextListener with ServletContextIni
                         logger debug s"Parsed schema: $componentName"
                         if (getBoolean("app.jsonSchemaPrettyPrint"))
                             logger debug s"JSON: $json"
-                        Some(JsonObject.fromIterable(Seq("component" -> fromString(componentName), "jsonStr" -> fromJsonObject(json))))
+                        Some(JsonObject.fromIterable(Seq("component" -> fromString(componentName), "jsonStr" -> fromString(json))))
                     } else None
             }.filter(_.isDefined).map(item ⇒ fromJsonObject(item.get))
             val list = Json.arr(array: _*)
