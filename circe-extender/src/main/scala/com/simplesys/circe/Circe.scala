@@ -2,7 +2,7 @@ package com.simplesys.circe
 
 import java.time.LocalDateTime
 
-import io.circe.{HCursor, Json}
+import io.circe.{HCursor, Json, JsonObject}
 import io.circe.Json._
 import com.simplesys.common.Strings._
 
@@ -72,4 +72,6 @@ object Circe {
     implicit def impLocalDateTime(localDateTime: LocalDateTime): Json = fromString(localDateTime2Str(localDateTime))
     implicit def impLocalDateTime(localDateTime: Option[LocalDateTime]): Json = if (localDateTime.isEmpty) Json.Null else fromString(localDateTime2Str(localDateTime.get))
     implicit def impLocalDateTime(localDateTime: Array[LocalDateTime]): Json = if (localDateTime.isEmpty) Json.Null else fromString(localDateTime2Str(localDateTime.head))
+
+    implicit def seq2Json(seq: Seq[(String, Json)]): Json = fromJsonObject(JsonObject.fromIterable(seq))
 }
