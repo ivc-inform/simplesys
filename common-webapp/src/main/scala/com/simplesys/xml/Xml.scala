@@ -16,12 +16,15 @@ object Xml {
 
         def buildJson(node: Node): Json = {
             def buildAttributes(node: Node) = {
-                val res = JsonObject.empty
+                println((node: Elem).toPrettyString)
+                var res = JsonObject.empty
                 node.attributes.foreach {
                     (a: MetaData) =>
                         val value = a.value.text.trim
-                        if (value != "")
-                            res add(a.key, fromString(value))
+                        if (value != "") {
+                            res = res add(a.key, fromString(value))
+                            //println(fromJsonObject(res).spaces4)
+                        }
                 }
                 res
             }
@@ -35,10 +38,10 @@ object Xml {
                 nodeNames.size != 1 && nodeNames.distinct.size == 1
             }
 
-            val res = JsonObject.empty
+            var res = JsonObject.empty
             val attributes: JsonObject = buildAttributes(node)
 
-            attributes.toMap.foreach(item ⇒ res add(item._1, item._2))
+            attributes.toMap.foreach(item ⇒ res = res add(item._1, item._2))
 
             //res.log()
 
@@ -49,11 +52,11 @@ object Xml {
                     val childrenJson: Json = if (isArray(children) || fixedArrayNames.exists(_ == nameOf(child))) {
                         arr(children.map(buildJson): _*)
                     } else {
-                        val res = JsonObject.empty
-                        children.foreach(node => res add(nameOf(node), buildJson(node)))
+                        var res = JsonObject.empty
+                        children.foreach(node => res = res add(nameOf(node), buildJson(node)))
                         fromJsonObject(res)
                     }
-                    res add(nameOf(child), childrenJson)
+                    res = res add(nameOf(child), childrenJson)
                 //res.log()
             }
 
@@ -65,7 +68,7 @@ object Xml {
 
     def getJS(xml: Elem, componentName: String, prettyString: Boolean): String = {
         val json = Xml.xmlToJson(xml)
-        
+
         json.toMap.headOption match {
             case Some(item) if item._1 == "DataSource" =>
                 item._2.asObject match {
