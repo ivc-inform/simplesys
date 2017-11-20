@@ -119,10 +119,10 @@ object DsRequest {
     }
 }
 
-case class DsRequest(sqlDialect: SQLDialect, startRow: Number, endRow: Number, sortBy: Json, data: Json, textMatchStyle: String = "exact") extends Logging {
+case class DsRequest(sqlDialect: SQLDialect, startRow: Int, endRow: Int, sortBy: Json, data: Json, textMatchStyle: String = "exact") extends Logging {
     val cursor: HCursor = data.hcursor
 
-    logger trace (newLine + s"sqlDialect: ${sqlDialect.toString} startRow: ${startRow.toString()} endRow: ${endRow.toString()} sortBy: ${sortBy.spaces4} textMatchStyle: ${textMatchStyle} data: ${data.spaces4}")
+    logger trace (newLine + s"sqlDialect: ${sqlDialect.toString} startRow: $startRow endRow: $endRow sortBy: ${sortBy.spaces4} textMatchStyle: $textMatchStyle data: ${data.spaces4}")
 
     def isAdvancedFilter: Boolean = cursor.get[String]("_constructor") match {
         case Left(_) ⇒ false
