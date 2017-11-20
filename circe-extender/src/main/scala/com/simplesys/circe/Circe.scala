@@ -15,7 +15,7 @@ object Circe {
 
         def getStringOpt(key: String): Option[String] = cursor.downField(key).as[String] match {
             case Right(x) ⇒ Some(x)
-            case Left(failure) ⇒ None
+            case Left(_) ⇒ None
         }
 
         def getLong(key: String): Long = cursor.downField(key).as[Long] match {
@@ -25,7 +25,7 @@ object Circe {
 
         def getLongOpt(key: String): Option[Long] = cursor.downField(key).as[Long] match {
             case Right(x) ⇒ Some(x)
-            case Left(failure) ⇒ None
+            case Left(_) ⇒ None
         }
 
         def getDouble(key: String): Double = cursor.downField(key).as[Double] match {
@@ -35,7 +35,7 @@ object Circe {
 
         def getDoubleOpt(key: String): Option[Double] = cursor.downField(key).as[Double] match {
             case Right(x) ⇒ Some(x)
-            case Left(failure) ⇒ None
+            case Left(_) ⇒ None
         }
     }
 }
