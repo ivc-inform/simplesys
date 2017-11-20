@@ -4,17 +4,11 @@ import ch.qos.logback.core.db.dialect.SQLDialect
 import com.simplesys.sql.SQLDialect
 import io.circe.Decoder.Result
 import io.circe.{HCursor, Json}
+import com.simplesys.circe.Circe._
 
 case class DSRequest(data: Json) extends CirceHelper {
-    private val cursor: HCursor = data.hcursor
 
-    def getString(key: String): String = cursor.downField(key).as[String] match {
-        case Right(x) ⇒ x
-        case Left(failure) ⇒ throw failure
-    }
+    def getString(key: String): String = data getString key
 
-    def getStringOpt(key: String): Option[String] = cursor.downField(key).as[String] match {
-        case Right(x) ⇒ Some(x)
-        case Left(failure) ⇒ None
-    }
+    def getStringOpt(key: String): Option[String] = data getStringOpt key
 }
