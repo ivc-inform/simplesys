@@ -1,6 +1,10 @@
 package com.simplesys.circe
 
+import java.time.LocalDateTime
+
 import io.circe.{HCursor, Json}
+import io.circe.Json._
+import com.simplesys.common.Strings._
 
 object Circe {
     implicit class CirceOpt(json: Json) {
@@ -38,4 +42,16 @@ object Circe {
             case Left(_) ⇒ None
         }
     }
+
+    implicit def impString(str: String): Json = fromString(str)
+    implicit def impStringopt(str: Option[String]): Json = if (str.isEmpty) Json.Null else fromString(str.get)
+
+    implicit def impLong(long: Long): Json = fromLong(long)
+    implicit def impLongopt(long: Option[Long]): Json = if (long.isEmpty) Json.Null else fromLong(long.get)
+
+    implicit def impDouble(double: Double): Json = fromDouble(double)getOrElse(Json.Null)
+    implicit def impDoubleopt(double: Option[Double]): Json = if (double.isEmpty) Json.Null else fromDouble(double.get).getOrElse(Json.Null)
+
+    implicit def impLocalDateTime(localDateTime: LocalDateTime): Json = fromString(localDateTime.asString())
+    implicit def impLocalDateTime(localDateTime: Option[LocalDateTime]): Json = if (localDateTime.isEmpty) Json.Null else  fromString(localDateTime.get.asString())
 }

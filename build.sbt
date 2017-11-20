@@ -82,7 +82,11 @@ lazy val classUtil = Project(id = "class-util", base = file("class-util")).depen
 
 ).settings(CommonSettings.defaultProjectSettings)
 
-lazy val circeExtender = Project(id = "circe-extender", base = file("circe-extender")).dependsOn().settings(
+lazy val circeExtender = Project(id = "circe-extender", base = file("circe-extender"))
+  .dependsOn(
+      common
+  )
+  .settings(
     libraryDependencies ++= Seq(
         CommonDeps.circeCore,
         CommonDeps.circeGeneric,
