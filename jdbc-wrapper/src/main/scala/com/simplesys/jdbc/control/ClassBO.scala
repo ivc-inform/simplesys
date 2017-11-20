@@ -541,7 +541,7 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
         }
     }
 
-    def binding(offset: Int, preparedStatement: PreparedStatement, wheres: List[WhereParam], discriptors: List[WhereParam], joinsDs: List[JoinParam], joinsBo: List[JoinParam], joinsTable: List[JoinParam], bindMap: Seq[BindingColumn] = Seq.empty, dsRequest: DSRequest = null): Int = {
+    def binding(offset: Int, preparedStatement: PreparedStatement, wheres: List[WhereParam], discriptors: List[WhereParam], joinsDs: List[JoinParam], joinsBo: List[JoinParam], joinsTable: List[JoinParam], bindMap: Seq[BindingColumn] = Seq.empty, dsRequest: DsRequest = null): Int = {
         var _offset = offset
 
         joinsTable foreach {
@@ -699,10 +699,10 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
         _offset
     }
 
-    def selectList[FT <: Product with FieldProduct](columns: FT = allColumns, join: JoinParam, where: WhereParam, orderBy: OrderByParam, fetchSize: Int = dataSource.settings.fetchSize, dsRequest: DSRequest): ValidationEx[List[FT#ReturnType]]
-    def selectIterator[FT <: Product with FieldProduct](columns: FT = allColumns, join: JoinParam, where: WhereParam, orderBy: OrderByParam, fetchSize: Int = dataSource.settings.fetchSize, dsRequest: DSRequest): ValidationExIterator[Iterator[FT#ReturnType]]
+    def selectList[FT <: Product with FieldProduct](columns: FT = allColumns, join: JoinParam, where: WhereParam, orderBy: OrderByParam, fetchSize: Int = dataSource.settings.fetchSize, dsRequest: DsRequest): ValidationEx[List[FT#ReturnType]]
+    def selectIterator[FT <: Product with FieldProduct](columns: FT = allColumns, join: JoinParam, where: WhereParam, orderBy: OrderByParam, fetchSize: Int = dataSource.settings.fetchSize, dsRequest: DsRequest): ValidationExIterator[Iterator[FT#ReturnType]]
 
-    def selectListRoot[FT <: Product with FieldProduct](columns: FT = allColumns, from: FromParam, join: JoinParam, where: WhereParam, discriminator: WhereParam, orderBy: OrderByParam, fetchSize: Int, dsRequest: DSRequest): ValidationEx[List[FT#ReturnType]] = {
+    def selectListRoot[FT <: Product with FieldProduct](columns: FT = allColumns, from: FromParam, join: JoinParam, where: WhereParam, discriminator: WhereParam, orderBy: OrderByParam, fetchSize: Int, dsRequest: DsRequest): ValidationEx[List[FT#ReturnType]] = {
         prepareSelect(from = from, columns = columns.fields, join = join, where = where, discriminator = discriminator, orderBy = orderBy, dsRequest = dsRequest) match {
             case PreparedResult(sql, joinsDs, joinsBo, joinsTable, wheres, discriptors, bindMap) =>
                 session(dataSource) {
@@ -722,7 +722,7 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
         }
     }
 
-    def selectIteratorRoot[FT <: Product with FieldProduct](columns: FT = allColumns, from: FromParam, join: JoinParam, where: WhereParam, discriminator: WhereParam, orderBy: OrderByParam, fetchSize: Int, dsRequest: DSRequest): ValidationExIterator[Iterator[FT#ReturnType]] = {
+    def selectIteratorRoot[FT <: Product with FieldProduct](columns: FT = allColumns, from: FromParam, join: JoinParam, where: WhereParam, discriminator: WhereParam, orderBy: OrderByParam, fetchSize: Int, dsRequest: DsRequest): ValidationExIterator[Iterator[FT#ReturnType]] = {
         prepareSelect(from = from, columns = columns.fields, join = join, where = where, discriminator = discriminator, orderBy = orderBy, dsRequest = dsRequest) match {
             case PreparedResult(sql, joinsDs, joinsBo, joinsTable, wheres, discriptors, bindMap) => {
                 val _sql = sql.toSQL()
@@ -755,10 +755,10 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
 
     import com.simplesys.jdbc.control.classBO.WheresList._
 
-    def selectPIteratorRoot[R, FT <: Product with FieldProduct](columns: FT /*= allColumns*/ , from: FromParam, join: JoinParam, where: Json, discriminator: WhereParam, orderBy: OrderByParam, fetchSize: Int, dsRequest: DSRequest)(f: FT#ReturnType => R): ValidationExIterator[Iterator[R]] =
+    def selectPIteratorRoot[R, FT <: Product with FieldProduct](columns: FT /*= allColumns*/ , from: FromParam, join: JoinParam, where: Json, discriminator: WhereParam, orderBy: OrderByParam, fetchSize: Int, dsRequest: DsRequest)(f: FT#ReturnType => R): ValidationExIterator[Iterator[R]] =
         selectPIteratorRoot(columns, from, join, json2WhereParam(where), discriminator, orderBy, fetchSize, dsRequest)(f)
 
-    def selectPIteratorRoot[R, FT <: Product with FieldProduct](columns: FT /*= allColumns*/ , from: FromParam, join: JoinParam, where: WhereParam, discriminator: WhereParam, orderBy: OrderByParam, fetchSize: Int, dsRequest: DSRequest)(f: FT#ReturnType => R): ValidationExIterator[Iterator[R]] = {
+    def selectPIteratorRoot[R, FT <: Product with FieldProduct](columns: FT /*= allColumns*/ , from: FromParam, join: JoinParam, where: WhereParam, discriminator: WhereParam, orderBy: OrderByParam, fetchSize: Int, dsRequest: DsRequest)(f: FT#ReturnType => R): ValidationExIterator[Iterator[R]] = {
         prepareSelect(from = from, columns = columns.fields, join = join, where = where, discriminator = discriminator, orderBy = orderBy, dsRequest = dsRequest) match {
             case PreparedResult(sql, joinsDs, joinsBo, joinsTable, wheres, discriptors, bindMap) => {
                 val _sql = sql.toSQL()
@@ -795,13 +795,13 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
 
     def Fetch(): ValidationEx[List[RT]] = selectList(columns = getFetchColumns, join = _join, where = _where, orderBy = _orderBy, fetchSize = dataSource.settings.fetchSize, dsRequest = null)
     def Fetch(fetchSize: Int): ValidationEx[List[RT]] = selectList(columns = getFetchColumns, join = _join, where = _where, orderBy = _orderBy, fetchSize = fetchSize, dsRequest = null)
-    def Fetch(fetchSize: Int, dsRequest: DSRequest): ValidationEx[List[RT]] = selectList(columns = getFetchColumns, join = _join, where = _where, orderBy = _orderBy, fetchSize = fetchSize, dsRequest = dsRequest)
-    def Fetch(dsRequest: DSRequest): ValidationEx[List[RT]] = selectList(columns = getFetchColumns, join = _join, where = _where, orderBy = _orderBy, fetchSize = dataSource.settings.fetchSize, dsRequest = dsRequest)
+    def Fetch(fetchSize: Int, dsRequest: DsRequest): ValidationEx[List[RT]] = selectList(columns = getFetchColumns, join = _join, where = _where, orderBy = _orderBy, fetchSize = fetchSize, dsRequest = dsRequest)
+    def Fetch(dsRequest: DsRequest): ValidationEx[List[RT]] = selectList(columns = getFetchColumns, join = _join, where = _where, orderBy = _orderBy, fetchSize = dataSource.settings.fetchSize, dsRequest = dsRequest)
 
     def FetchIterator(): ValidationExIterator[Iterator[RT]] = selectIterator(columns = getFetchColumns, join = _join, where = _where, orderBy = _orderBy, fetchSize = dataSource.settings.fetchSize, dsRequest = null)
     def FetchIterator(fetchSize: Int): ValidationExIterator[Iterator[RT]] = selectIterator(columns = getFetchColumns, join = _join, where = _where, orderBy = _orderBy, fetchSize = fetchSize, dsRequest = null)
-    def FetchIterator(dsRequest: DSRequest): ValidationExIterator[Iterator[RT]] = selectIterator(columns = getFetchColumns, join = _join, where = _where, orderBy = _orderBy, fetchSize = dataSource.settings.fetchSize, dsRequest = dsRequest)
-    def FetchIterator(fetchSize: Int, dsRequest: DSRequest): ValidationExIterator[Iterator[RT]] = selectIterator(columns = getFetchColumns, join = _join, where = _where, orderBy = _orderBy, fetchSize = fetchSize, dsRequest = dsRequest)
+    def FetchIterator(dsRequest: DsRequest): ValidationExIterator[Iterator[RT]] = selectIterator(columns = getFetchColumns, join = _join, where = _where, orderBy = _orderBy, fetchSize = dataSource.settings.fetchSize, dsRequest = dsRequest)
+    def FetchIterator(fetchSize: Int, dsRequest: DsRequest): ValidationExIterator[Iterator[RT]] = selectIterator(columns = getFetchColumns, join = _join, where = _where, orderBy = _orderBy, fetchSize = fetchSize, dsRequest = dsRequest)
 
     def FetchOne(): ValidationEx[(Product with FieldProduct)#ReturnType] = selectOne(getFetchColumns, _join, _where)
 
@@ -845,7 +845,7 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
 
     def preparedBO4Wrap(columns: List[BasicClassBOColumn[_]]): PreparedResult
 
-    def prepareSelect(columns: List[BasicClassBOColumn[_]], from: FromParam, join: JoinParam, where: WhereParam, discriminator: WhereParam, orderBy: OrderByParam, dsRequest: DSRequest = null): PreparedResult = {
+    def prepareSelect(columns: List[BasicClassBOColumn[_]], from: FromParam, join: JoinParam, where: WhereParam, discriminator: WhereParam, orderBy: OrderByParam, dsRequest: DsRequest = null): PreparedResult = {
         //log()
 
         implicit class impl1(columns: List[BasicClassBOColumn[_]]) {

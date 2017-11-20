@@ -16,7 +16,7 @@
     <logger name="com.simplesys.connectionStack.PostgreSQLConfig" level="warn"/>
     <logger name="com.simplesys.connectionStack.OracleBCPConfig" level="warn"/>
     <logger name="com.simplesys.connectionStack.ConnectionPool" level="warn"/>
-    <logger name="com.simplesys.jdbc.control.DSRequest" level="debug"/>
+    <logger name="com.simplesys.jdbc.control.DsRequest" level="debug"/>
     <logger name="com.simplesys.connectionStack.PostgreSQLConfig" level="debug"/>
     <logger name="Tests" level="debug"/>
     <logger name="com.simplesys.SQL.Gen.SQLField" level="debug"/>

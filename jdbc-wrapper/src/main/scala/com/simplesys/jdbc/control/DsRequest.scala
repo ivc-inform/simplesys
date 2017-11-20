@@ -5,7 +5,7 @@ import com.simplesys.common.Strings._
 import com.simplesys.common.equality.SimpleEquality._
 import com.simplesys.isc.system.misc.Number
 import com.simplesys.isc.system.typesDyn._
-import com.simplesys.jdbc.control.DSRequest._
+import com.simplesys.jdbc.control.DsRequest._
 import com.simplesys.log.Logging
 import com.simplesys.sql.{OracleDialect, SQLDialect}
 import io.circe.Json._
@@ -14,8 +14,8 @@ import io.circe.{HCursor, Json}
 import scala.collection.immutable
 import scala.collection.mutable.ArrayBuffer
 
-object DSRequest {
-    def apply(sqlDialect: SQLDialect, data: Json) = new DSRequest(sqlDialect, 0, 0, arr(), data, "exact")
+object DsRequest {
+    def apply(sqlDialect: SQLDialect, data: Json) = new DsRequest(sqlDialect, 0, 0, arr(), data, "exact")
 
     implicit class JsonObjectToSQL(json: Json) extends Logging {
         val cursor: HCursor = json.hcursor
@@ -119,7 +119,7 @@ object DSRequest {
     }
 }
 
-case class DSRequest(sqlDialect: SQLDialect, startRow: Number, endRow: Number, sortBy: Json, data: Json, textMatchStyle: String = "exact") extends Logging {
+case class DsRequest(sqlDialect: SQLDialect, startRow: Number, endRow: Number, sortBy: Json, data: Json, textMatchStyle: String = "exact") extends Logging {
     val cursor: HCursor = data.hcursor
 
     logger trace (newLine + s"sqlDialect: ${sqlDialect.toString} startRow: ${startRow.toString()} endRow: ${endRow.toString()} sortBy: ${sortBy.spaces4} textMatchStyle: ${textMatchStyle} data: ${data.spaces4}")
