@@ -89,16 +89,6 @@ object Xml {
 
             case Some(item) if item._1 == "Object" =>
                 strEmpty
-                /*item._2 match {
-                    case item: JsonObject =>
-                        if (prettyString)
-                            item.toPrettyString
-                        else
-                            item.toString()
-
-                    case x =>
-                        throw new RuntimeException(s"Bad branch $x on component: $componentName")
-                }*/
             case x =>
                 throw new RuntimeException(s"Bad branch $x on component: $componentName")
         }
