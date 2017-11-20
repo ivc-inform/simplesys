@@ -34,3 +34,4 @@ case class DSResponseFailureEx(result: ValidationEx[_]) extends DSResponseBase w
             logger error s"stackTrace: $stackTrace"
 
     }
+}
