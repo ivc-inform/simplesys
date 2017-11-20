@@ -1,5 +1,7 @@
 package com.simplesys.isc.dataBinging
 
+import java.time.LocalDateTime
+
 import com.simplesys.circe.Circe._
 import io.circe.Json
 import io.circe.Json._
@@ -11,4 +13,16 @@ case class DSRequest(data: Json, startRow: Option[Int] = None, endRow: Option[In
     def getString(key: String): String = data getString key
 
     def getStringOpt(key: String): Option[String] = data getStringOpt key
+
+    def getLong(key: String): Long = data getLong key
+
+    def getLongOpt(key: String): Option[Long] = data getLongOpt key
+
+    def getDouble(key: String): Double = data getDouble key
+
+    def getDoubleOpt(key: String): Option[Double] = data getDoubleOpt key
+
+    def getLocalDateTime(key: String): LocalDateTime = data getLocalDateTime key
+
+    def getLocalDateTimeOpt(key: String): Option[LocalDateTime] = data getLocalDateTimeOpt key
 }
