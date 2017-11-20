@@ -2,5 +2,5 @@ package com.simplesys.isc.dataBinging
 
 trait CirceHelper {
     this: DSRequest ⇒
-    def toPrettyString = request.spaces4
+    def toPrettyString = data.spaces4
 }
