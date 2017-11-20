@@ -13,11 +13,13 @@ trait DSResponseBase {
     val totalRows: Option[Int]
 }
 case class DSResponse(data: Json, status: Int, totalRows: Option[Int] = None) extends DSResponseBase
-case class DSResponseFailureEx(result: ValidationEx[_], status: Int = RPCResponse.statusFailure) extends DSResponseBase with Logging {
+case class DSResponseFailureEx(result: ValidationEx[_]) extends DSResponseBase with Logging {
 
 
     override val totalRows = None
 
+    override val status = RPCResponse.statusFailure
+    
     override val data = if (result.printException.isEmpty)
         Json.Null
     else
