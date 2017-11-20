@@ -41,6 +41,16 @@ object Circe {
             case Right(x) ⇒ Some(x)
             case Left(_) ⇒ None
         }
+
+        def getLocalDateTime(key: String): LocalDateTime = cursor.downField(key).as[String] match {
+            case Right(x) ⇒ x.toLocalDateTime()
+            case Left(failure) ⇒ throw failure
+        }
+
+        def getLocalDateTimeOpt(key: String): Option[LocalDateTime] = cursor.downField(key).as[String] match {
+            case Right(x) ⇒ Some(x.toLocalDateTime())
+            case Left(_) ⇒ None
+        }
     }
 
     implicit def impString(str: String): Json = fromString(str)
