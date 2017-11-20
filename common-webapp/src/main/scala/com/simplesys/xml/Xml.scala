@@ -21,10 +21,8 @@ object Xml {
                 node.attributes.foreach {
                     (a: MetaData) =>
                         val value = a.value.text.trim
-                        if (value != "") {
+                        if (value != "")
                             res = res add(a.key, fromString(value))
-                            //println(fromJsonObject(res).spaces4)
-                        }
                 }
                 res
             }
