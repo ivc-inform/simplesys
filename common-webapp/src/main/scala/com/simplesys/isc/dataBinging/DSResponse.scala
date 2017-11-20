@@ -20,17 +20,16 @@ case class DSResponseFailureEx(result: ValidationEx[_]) extends DSResponseBase w
 
     override val status = RPCResponse.statusFailure
     
-    override val data = if (result.printException.isEmpty)
+    override val data: Json = if (result.printException.isEmpty)
         Json.Null
     else
-        JsonObject.singleton("error", fromJsonObject(JsonObject.fromIterable(Seq("message" → fromString(result.printException.get.message), "stackTrace" → fromString(result.printException.get.stackTrace)))))
+        fromJsonObject(JsonObject.singleton("error", fromJsonObject(JsonObject.fromIterable(Seq("message" → fromString(result.printException.get.message), "stackTrace" → fromString(result.printException.get.stackTrace))))))
 
     result printException match {
         case None =>
             throw RuntimeIscException("Invalid branch")
 
         case Some(ValidationResult(message, stackTrace)) =>
-
             logger error s"message: $message"
             logger error s"stackTrace: $stackTrace"
 
