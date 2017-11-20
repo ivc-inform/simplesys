@@ -104,7 +104,13 @@ lazy val common = (project in file("common")).dependsOn(logbackWrapper).settings
 ).settings(CommonSettings.defaultProjectSettings)
 
 
-lazy val commonWebApp = Project(id = "common-webapp", base = file("common-webapp")).enablePlugins(SbtCoffeeScript).dependsOn(servletWrapper, classUtil).settings(
+lazy val commonWebApp = Project(id = "common-webapp", base = file("common-webapp"))
+  .enablePlugins(SbtCoffeeScript)
+  .dependsOn(
+      servletWrapper,
+      classUtil
+  )
+  .settings(
     sbtPlugin := false,
     organization := CommonSettings.settingValues.organization,
     CoffeeScriptKeys.sourceMap := false,
@@ -180,7 +186,16 @@ lazy val iscMisc = Project(id = "isc-misc", base = file("isc-misc")).dependsOn(c
     )
 ).settings(CommonSettings.defaultProjectSettings)
 
-lazy val jdbcWrapper = Project(id = "jdbc-wrapper", base = file("jdbc-wrapper")).dependsOn(oraclePoolDataSources, scalaGen, coreDomains, coreLibrary, circeExtender).enablePlugins(JDBCPlugin).settings(
+lazy val jdbcWrapper = Project(id = "jdbc-wrapper", base = file("jdbc-wrapper"))
+  .dependsOn(
+      oraclePoolDataSources,
+      scalaGen,
+      coreDomains,
+      coreLibrary,
+      circeExtender
+  )
+  .enablePlugins(JDBCPlugin)
+  .settings(
     com.simplesys.jdbc.plugins.jdbc.JDBCPlugin.autoImport.maxArity := 50,
 
     scalacOptions += "-language:existentials",
@@ -223,7 +238,16 @@ lazy val scalaIOExtender = Project(id = "scala-io-extender", base = file("scala-
     )
 ).settings(CommonSettings.defaultProjectSettings)
 
-lazy val servletWrapper = Project(id = "servlet-wrapper", base = file("servlet-wrapper")).dependsOn(coreUtils, oraclePoolDataSources, xmlExtender, akkaExtender, circeExtender).settings(
+lazy val servletWrapper = Project(id = "servlet-wrapper", base = file("servlet-wrapper"))
+  .dependsOn(
+      jdbcWrapper,
+      coreUtils,
+      oraclePoolDataSources,
+      xmlExtender,
+      akkaExtender,
+      circeExtender
+  )
+  .settings(
     scalacOptions += "-Dscalac:patmat:analysisBudget=1024",
 
     libraryDependencies ++= Seq(
