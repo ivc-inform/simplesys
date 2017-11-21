@@ -2,12 +2,39 @@ package com.simplesys.circe
 
 import java.time.LocalDateTime
 
-import io.circe.{HCursor, Json, JsonObject}
-import io.circe.Json._
 import com.simplesys.common.Strings._
+import io.circe.Json._
+import io.circe.{HCursor, Json, JsonObject, Printer}
 
 object Circe {
     implicit class CirceOpt(json: Json) {
+        def noSpaces1 = Printer(
+            preserveOrder = true,
+            dropNullKeys = true,
+            indent = ""
+        ).pretty(json)
+
+
+        private def indented(indent: String): Printer = Printer(
+            preserveOrder = true,
+            dropNullKeys = true,
+            indent = indent,
+            lbraceRight = "\n",
+            rbraceLeft = "\n",
+            lbracketRight = "\n",
+            rbracketLeft = "\n",
+            lrbracketsEmpty = "\n",
+            arrayCommaRight = "\n",
+            objectCommaRight = "\n",
+            colonLeft = " ",
+            colonRight = " "
+        )
+
+        def spaces21 = indented("  ").pretty(json)
+        
+        def spaces41 = indented("    ").pretty(json)
+
+
         def toPrettyString = json.spaces4
 
         val cursor: HCursor = json.hcursor

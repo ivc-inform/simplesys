@@ -11,6 +11,9 @@ import com.simplesys.servlet.http.HttpServletResponse
 import com.simplesys.servlet.http.sse.SseServletResponse
 import com.simplesys.xml.Elem
 import io.circe.Json
+import io.circe.generic.auto._
+import io.circe.Printer
+import io.circe.syntax._
 
 import scala.io.Codec
 
@@ -61,6 +64,7 @@ class ServletResponse(protected[servlet] val proxy: JServletResponse) extends Lo
     def PrintAndFlush(elem: Elem) {
         PrintAndFlush(elem.toUnEscapeString)
     }
+
 
     def PrintAndFlush(json: Json, prettyString: Boolean = false) {
         if (prettyString)
