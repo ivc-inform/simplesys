@@ -177,7 +177,7 @@ case class DsRequest(sqlDialect: SQLDialect, startRow: Int, endRow: Int, sortBy:
                             whereItems += SQLWhereItem(field = columns.fields.filter(field => field.nameInBo === key).head, operator = opIdInSet, value = SQLValues(placeHolders: _*))
 
                             logger.trace(s"whereItems is: ${newLine + whereItems.toSQL()}")
-
+                                                                                                                                                                
                         case (key, value) if value.noSpaces1 != "null" =>
 
                             fields.filter(_.nameInBo === key).headOption match {
