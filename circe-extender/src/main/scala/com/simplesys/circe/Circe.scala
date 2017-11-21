@@ -72,7 +72,7 @@ object Circe {
             case Left(_) ⇒ None
         }
 
-        def ++(_json: Json): Json = json.asObject match {
+        def append(_json: Json): Json = json.asObject match {
             case None ⇒ _json
             case Some(jsonObject) ⇒
                 _json.asObject match {
@@ -83,7 +83,7 @@ object Circe {
 
         }
 
-        def ++(_json: Option[Json]): Json = json.asObject match {
+        def append(_json: Option[Json]): Json = json.asObject match {
             case None ⇒ _json.getOrElse(Json.Null)
             case Some(jsonObject) ⇒
                 _json.getOrElse(Json.Null).asObject match {
@@ -95,7 +95,7 @@ object Circe {
         }
 
         implicit class Circe1Opt(json: Option[Json]) {
-            def ++(_json: Json): Json = json.getOrElse(Json.Null).asObject match {
+            def append(_json: Json): Json = json.getOrElse(Json.Null).asObject match {
                 case None ⇒ _json
                 case Some(jsonObject) ⇒
                     _json.asObject match {
@@ -106,11 +106,11 @@ object Circe {
 
             }
 
-            def ++(_json: Option[Json]): Json = json.getOrElse(Json.Null).asObject match {
+            def append(_json: Option[Json]): Json = json.getOrElse(Json.Null).asObject match {
                 case None ⇒ _json.getOrElse(Json.Null)
                 case Some(jsonObject) ⇒
                     _json.getOrElse(Json.Null).asObject match {
-                        case None ⇒ json
+                        case None ⇒ json.getOrElse(Json.Null)
                         case Some(_jsonObject) ⇒
                             fromFields(jsonObject.toMap ++ _jsonObject.toMap)
                     }
