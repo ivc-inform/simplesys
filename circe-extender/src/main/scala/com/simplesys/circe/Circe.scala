@@ -71,6 +71,51 @@ object Circe {
             case Right(x) ⇒ Some(x)
             case Left(_) ⇒ None
         }
+
+        def ++(_json: Json): Json = json.asObject match {
+            case None ⇒ _json
+            case Some(jsonObject) ⇒
+                _json.asObject match {
+                    case None ⇒ json
+                    case Some(_jsonObject) ⇒
+                        fromFields(jsonObject.toMap ++ _jsonObject.toMap)
+                }
+
+        }
+
+        def ++(_json: Option[Json]): Json = json.asObject match {
+            case None ⇒ _json.getOrElse(Json.Null)
+            case Some(jsonObject) ⇒
+                _json.getOrElse(Json.Null).asObject match {
+                    case None ⇒ json
+                    case Some(_jsonObject) ⇒
+                        fromFields(jsonObject.toMap ++ _jsonObject.toMap)
+                }
+
+        }
+
+        implicit class Circe1Opt(json: Option[Json]) {
+            def ++(_json: Json): Json = json.getOrElse(Json.Null).asObject match {
+                case None ⇒ _json
+                case Some(jsonObject) ⇒
+                    _json.asObject match {
+                        case None ⇒ json.getOrElse(Json.Null)
+                        case Some(_jsonObject) ⇒
+                            fromFields(jsonObject.toMap ++ _jsonObject.toMap)
+                    }
+
+            }
+
+            def ++(_json: Option[Json]): Json = json.getOrElse(Json.Null).asObject match {
+                case None ⇒ _json.getOrElse(Json.Null)
+                case Some(jsonObject) ⇒
+                    _json.getOrElse(Json.Null).asObject match {
+                        case None ⇒ json
+                        case Some(_jsonObject) ⇒
+                            fromFields(jsonObject.toMap ++ _jsonObject.toMap)
+                    }
+            }
+        }
     }
 
     implicit def impString(str: String): Json = fromString(str)
