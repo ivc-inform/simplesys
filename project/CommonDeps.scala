@@ -67,7 +67,7 @@ object CommonDeps {
     object versions {
         val scalaModulesVersion = "1.0.6"
 
-        val akkaVersion = "2.5.6"
+        val akkaVersion = "2.5.7"
 
         val scalazVersion = "7.2.8"
 
