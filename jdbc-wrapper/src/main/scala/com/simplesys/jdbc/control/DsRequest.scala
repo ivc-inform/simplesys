@@ -97,14 +97,14 @@ object DsRequest {
                     }
 
                     res
-                case x =>
+                case x =>                                                                                                                                     
                     throw new RuntimeException(s"Bad branch of $x")
             }
         }
     }
 }
 
-case class DsRequest(sqlDialect: SQLDialect, startRow: Number, endRow: Number, sortBy: Vector[Json], data: JsonObject, textMatchStyle: String = "exact") extends Logging {
+case class DsRequest(sqlDialect: SQLDialect, startRow: Int, endRow: Int, sortBy: Vector[Json], data: JsonObject, textMatchStyle: String = "exact") extends Logging {
 
     logger trace (newLine + s"sqlDialect: ${sqlDialect.toString} startRow: ${startRow.toString()} endRow: ${endRow.toString()} sortBy: ${sortBy.toPrettyString} textMatchStyle: ${textMatchStyle} data: ${data.toPrettyString}")
 
