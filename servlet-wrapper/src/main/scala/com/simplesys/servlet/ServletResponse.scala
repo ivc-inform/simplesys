@@ -11,11 +11,9 @@ import com.simplesys.servlet.http.HttpServletResponse
 import com.simplesys.servlet.http.sse.SseServletResponse
 import com.simplesys.xml.Elem
 import io.circe.Json
-import io.circe.generic.auto._
-import io.circe.Printer
-import io.circe.syntax._
 
 import scala.io.Codec
+import com.simplesys.circe.Circe._
 
 object ServletResponse {
     def apply(response: JServletResponse) = new ServletResponse(response)
@@ -68,9 +66,9 @@ class ServletResponse(protected[servlet] val proxy: JServletResponse) extends Lo
 
     def PrintAndFlush(json: Json, prettyString: Boolean = false) {
         if (prettyString)
-            PrintAndFlush(json.spaces4)
+            PrintAndFlush(json.spaces41)
         else
-            PrintAndFlush(json.noSpaces)
+            PrintAndFlush(json.noSpaces1)
 
     }
 
