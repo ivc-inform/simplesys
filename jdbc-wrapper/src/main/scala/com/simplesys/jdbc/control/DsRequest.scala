@@ -1,6 +1,7 @@
 package com.simplesys.jdbc.control
 
 import com.simplesys.SQL.Gen._
+import com.simplesys.circe.Circe._
 import com.simplesys.common.Strings._
 import com.simplesys.common.equality.SimpleEquality._
 import com.simplesys.isc.system.misc.Number
@@ -9,7 +10,6 @@ import com.simplesys.jdbc.control.DsRequest._
 import com.simplesys.log.Logging
 import com.simplesys.sql.{OracleDialect, SQLDialect}
 import io.circe.{Json, JsonObject}
-import com.simplesys.circe.Circe._
 
 import scala.collection.mutable.ArrayBuffer
 
@@ -22,13 +22,13 @@ object DsRequest {
                 case OracleDialect =>
                     jsonObject.getJsonListOpt("criteria") match {
                         case None =>
-                            val operator = OperatorId.getObject(jsonObject.getString("operator"))
+                            val operator = OperatorId.get(jsonObject.getString("operator"))
                             val fieldName = jsonObject.getString("fieldName")
 
                             operator.kind match {
                                 case x: IsBetween.type =>
-                                    bindMap += BindingColumn(getColumn(fieldName), jsonObject.getJsonElement("start").get.toString)
-                                    bindMap += BindingColumn(getColumn(fieldName), jsonObject.getJsonElement("end").get.toString)
+                                    bindMap += BindingColumn(getColumn(fieldName), jsonObject.getJsonElement("start").get.noSpaces1)
+                                    bindMap += BindingColumn(getColumn(fieldName), jsonObject.getJsonElement("end").get.noSpaces1)
                                     SQLWhereBetweenItem(field = getColumnInBase(fieldName), operator = operator, start = SQLValue(operator.getBindPlaceholder), end = SQLValue(operator.getBindPlaceholder))
 
                                 case x: IsNull.type =>
@@ -58,7 +58,7 @@ object DsRequest {
                                     SQLWhereItem(field = getColumnInBase(fieldName), operator = operator, value = SQLValue(operator.getBindPlaceholder))
                             }
                         case Some(list) =>
-                            list.appendCriteria(sqlDialect = sqlDialect, getColumnNameInBase = getColumnInBase, getColumn, operator = OperatorId.getObject(jsonObject.getString("operator")))
+                            list.appendCriteria(sqlDialect = sqlDialect, getColumnNameInBase = getColumnInBase, getColumn, operator = OperatorId.get(jsonObject.getString("operator")))
                     }
 
                 case x =>
@@ -67,15 +67,15 @@ object DsRequest {
         }
     }
 
-    implicit class JsonListToSQL(jsonList: JsonList) {
+    implicit class JsonListToSQL(jsonList: Vector[Json]) {
         def appendCriteria(sqlDialect: SQLDialect, getColumnNameInBase: String => SQLField, getColumn: String => BasicClassBOColumn[_], operator: OperatorId)(implicit bindMap: ArrayBuffer[BindingColumn]): SQLWhereItems = {
             sqlDialect match {
                 case OracleDialect =>
                     val res = SQLWhereItems()
 
                     jsonList foreach {
-                        case item: JsonObject =>
-                            item appendCriteria(sqlDialect, getColumnNameInBase, getColumn) match {
+                        case item if item.isObject =>
+                            item.asObject.get appendCriteria(sqlDialect, getColumnNameInBase, getColumn) match {
                                 case whereItem: SQLWhereItem =>
                                     if (res.length > 0)
                                         res += SQLWhereItemClause(operator)
@@ -90,15 +90,15 @@ object DsRequest {
                                     res += betweenItem
                                 case SQLNullWhereItem =>
                                 case x =>
-                                    throw new RuntimeException(s"Bad branch of ${x}")
+                                    throw new RuntimeException(s"Bad branch of $x")
                             }
                         case x =>
-                            throw new RuntimeException(s"Bad branch of ${x}")
+                            throw new RuntimeException(s"Bad branch of $x")
                     }
 
                     res
                 case x =>
-                    throw new RuntimeException(s"Bad branch of ${x}")
+                    throw new RuntimeException(s"Bad branch of $x")
             }
         }
     }
@@ -150,26 +150,27 @@ case class DsRequest(sqlDialect: SQLDialect, startRow: Number, endRow: Number, s
                         case betweenItem: SQLWhereBetweenItem =>
                             SQLWhereItem(betweenItem)
                         case x =>
-                            throw new RuntimeException(s"Bad branch of ${x}")
+                            throw new RuntimeException(s"Bad branch of $x")
                         //SQLWhereItem()
                     }
                 } else {
                     val whereItems = SQLWhereItems()
                     val items = data.getProxyObject.filter(_._1 !== "ts")
                     items.foreach {
-                        case (key, values: JsonList) =>
+                        case (key, values: Json) if values.isArray =>
                             fields.filter(_.nameInBo === key).headOption match {
                                 case None =>
-                                    throw new RuntimeException(s"Key ${key} not found")
+                                    throw new RuntimeException(s"Key $key not found")
                                 case _ =>
                             }
 
-                            val _values = values.filter(_.toString != "null")
+
+                            val _values: Vector[Json] = values.asArray.getOrElse(Vector.empty).filter(_.noSpaces1 != "null")
                             _values foreach (value => bindMap += BindingColumn(fields.filter(_.nameInBo === key).head, value.toString))
 
                             val _textMachStyle = TextMatchStyle getObject textMatchStyle
 
-                            val placeHolders: ArrayBuffer[SQLValue] = _values.map(item => SQLValue(_textMachStyle.getBindPlaceholder))
+                            val placeHolders: Vector[SQLValue] = _values.map(_ => SQLValue(_textMachStyle.getBindPlaceholder))
 
                             if (whereItems.length > 0)
                                 whereItems += SQLWhereItemClause(opIdAnd)
@@ -177,11 +178,11 @@ case class DsRequest(sqlDialect: SQLDialect, startRow: Number, endRow: Number, s
 
                             logger.trace(s"whereItems is: ${newLine + whereItems.toSQL()}")
 
-                        case (key, value) if value.toString != "null" =>
+                        case (key, value) if value.noSpaces1 != "null" =>
 
                             fields.filter(_.nameInBo === key).headOption match {
                                 case None =>
-                                    throw new RuntimeException(s"Key ${key} not found")
+                                    throw new RuntimeException(s"Key $key not found")
                                 case _ =>
                             }
 
@@ -201,7 +202,7 @@ case class DsRequest(sqlDialect: SQLDialect, startRow: Number, endRow: Number, s
                             whereItems += SQLWhereItem(field = columns.fields.filter(field => field.nameInBo === key).head, operator = getOperator, value = SQLValue(_textMachStyle.getBindPlaceholder))
                             logger.trace(s"whereItems is: ${newLine + whereItems.toSQL()}")
 
-                        case (key, value) if value.toString == "null" =>
+                        case (key, value) if value.noSpaces1 == "null" =>
                             logger warn s"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Key : $key = null !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 
                         case x =>

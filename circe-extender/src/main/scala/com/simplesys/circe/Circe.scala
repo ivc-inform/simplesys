@@ -8,6 +8,7 @@ import io.circe.{HCursor, Json, JsonObject, Printer}
 
 object Circe {
     implicit class CirceOpt(json: Json) {
+
         def noSpaces1 = Printer(
             preserveOrder = true,
             dropNullKeys = true,
@@ -37,6 +38,11 @@ object Circe {
         def toPrettyString = json.spaces41
 
         val cursor: HCursor = json.hcursor
+
+        def getJsonElement(key: String): Option[Json] = cursor.downField(key).as[Json] match {
+            case Right(x) ⇒ Some(x)
+            case Left(failure) ⇒ None
+        }
 
         def getString(key: String): String = cursor.downField(key).as[String] match {
             case Right(x) ⇒ x
@@ -98,6 +104,22 @@ object Circe {
             case Left(_) ⇒ None
         }
 
+        def getJsonList(key: String): Vector[Json] = cursor.downField(key).as[Json] match {
+            case Right(x) ⇒ x.asArray match {
+                case None ⇒ throw new RuntimeException(s"Bad branch for key: $key")
+                case Some(x) ⇒ x
+            }
+            case Left(failure) ⇒ throw failure
+        }
+
+        def getJsonListOpt(key: String): Option[Vector[Json]] = cursor.downField(key).as[Json] match {
+            case Right(x) ⇒ x.asArray match {
+                case None ⇒ None
+                case Some(x) ⇒ Some(x)
+            }
+            case Left(failure) ⇒ throw failure
+        }
+
         def ++(_json: Json): Json = json.asObject match {
             case None ⇒ _json
             case Some(jsonObject) ⇒
@@ -124,12 +146,14 @@ object Circe {
     implicit class Circe1Opt(json: Option[Json]) {
 
         def noSpaces1 = json.getOrElse(Json.Null).noSpaces1
-        
+
         def spaces21 = json.getOrElse(Json.Null).spaces21
 
         def spaces41 = json.getOrElse(Json.Null).spaces41
 
         def toPrettyString = json.spaces41
+
+        def getJsonElement(key: String): Option[Json] = json.getOrElse(Json.Null).getJsonElement(key)
 
         def getString(key: String): String = json.getOrElse(Json.Null).getString(key)
 
@@ -155,49 +179,65 @@ object Circe {
 
         def getBooleanOpt(key: String): Option[Boolean] = json.getOrElse(Json.Null).getBooleanOpt(key)
 
+        def getJsonList(key: String): Vector[Json] = json.getOrElse(Json.Null).getJsonList(key)
+
+        def getJsonListOpt(key: String): Option[Vector[Json]] = json.getOrElse(Json.Null).getJsonListOpt(key)
+
         def ++(_json: Json): Json = json.getOrElse(Json.Null) ++ _json
 
         def ++(_json: Option[Json]): Json = json.getOrElse(Json.Null) ++ _json
     }
 
-    implicit class Circe2Opt(json: JsonObject) {
+    implicit class Circe2Opt(jsonObject: JsonObject) {
 
-            def noSpaces1 = fromJsonObject(json).noSpaces1
+        def noSpaces1 = fromJsonObject(jsonObject).noSpaces1
 
-            def spaces21 = fromJsonObject(json).spaces21
+        def spaces21 = fromJsonObject(jsonObject).spaces21
 
-            def spaces41 = fromJsonObject(json).spaces41
+        def spaces41 = fromJsonObject(jsonObject).spaces41
 
-            def toPrettyString = json.spaces41
+        def toPrettyString = jsonObject.spaces41
 
-            def getString(key: String): String = fromJsonObject(json).getString(key)
+        def getJsonElement(key: String): Option[Json] = fromJsonObject(jsonObject).getJsonElement(key)
 
-            def getStringOpt(key: String): Option[String] = fromJsonObject(json).getStringOpt(key)
+        def getString(key: String): String = fromJsonObject(jsonObject).getString(key)
 
-            def getLong(key: String): Long = fromJsonObject(json).getLong(key)
+        def getStringOpt(key: String): Option[String] = fromJsonObject(jsonObject).getStringOpt(key)
 
-            def getLongOpt(key: String): Option[Long] = fromJsonObject(json).getLongOpt(key)
+        def getLong(key: String): Long = fromJsonObject(jsonObject).getLong(key)
 
-            def getDouble(key: String): Double = fromJsonObject(json).getDouble(key)
+        def getLongOpt(key: String): Option[Long] = fromJsonObject(jsonObject).getLongOpt(key)
 
-            def getDoubleOpt(key: String): Option[Double] = fromJsonObject(json).getDoubleOpt(key)
+        def getDouble(key: String): Double = fromJsonObject(jsonObject).getDouble(key)
 
-            def getLocalDateTime(key: String): LocalDateTime = fromJsonObject(json).getLocalDateTime(key)
+        def getDoubleOpt(key: String): Option[Double] = fromJsonObject(jsonObject).getDoubleOpt(key)
 
-            def getLocalDateTimeOpt(key: String): Option[LocalDateTime] = fromJsonObject(json).getLocalDateTimeOpt(key)
+        def getLocalDateTime(key: String): LocalDateTime = fromJsonObject(jsonObject).getLocalDateTime(key)
 
-            def getJsonObject(key: String): Json = fromJsonObject(json).getJsonObject(key)
+        def getLocalDateTimeOpt(key: String): Option[LocalDateTime] = fromJsonObject(jsonObject).getLocalDateTimeOpt(key)
 
-            def getJsonObjectOpt(key: String): Option[Json] = fromJsonObject(json).getJsonObjectOpt(key)
+        def getJsonObject(key: String): Json = fromJsonObject(jsonObject).getJsonObject(key)
 
-            def getBoolean(key: String): Boolean = fromJsonObject(json).getBoolean(key)
+        def getJsonObjectOpt(key: String): Option[Json] = fromJsonObject(jsonObject).getJsonObjectOpt(key)
 
-            def getBooleanOpt(key: String): Option[Boolean] = fromJsonObject(json).getBooleanOpt(key)
+        def getBoolean(key: String): Boolean = fromJsonObject(jsonObject).getBoolean(key)
 
-            def ++(_json: JsonObject): Json = fromJsonObject(json) ++ fromJsonObject(_json)
+        def getBooleanOpt(key: String): Option[Boolean] = fromJsonObject(jsonObject).getBooleanOpt(key)
 
-            def ++(_json: Option[JsonObject]): Json = fromJsonObject(json) ++ fromJsonObject(_json.getOrElse(JsonObject.empty))
-        }
+        def getJsonList(key: String): Vector[Json] = fromJsonObject(jsonObject).getJsonList(key)
+
+        def getJsonListOpt(key: String): Option[Vector[Json]] = fromJsonObject(jsonObject).getJsonListOpt(key)
+
+        def getProxyObject: Map[String, Json] = jsonObject.toMap
+
+        def ++(_json: JsonObject): Json = fromJsonObject(jsonObject) ++ fromJsonObject(_json)
+
+        def ++(_json: Option[JsonObject]): Json = fromJsonObject(jsonObject) ++ fromJsonObject(_json.getOrElse(JsonObject.empty))
+    }
+
+    implicit class Circe3Opt(json: Vector[Json]) {
+        def toPrettyString = arr(json:_*).toPrettyString
+    }
 
     implicit def impString(str: String): Json = fromString(str)
     implicit def impStringopt(str: Option[String]): Json = if (str.isEmpty) Json.Null else fromString(str.get)
