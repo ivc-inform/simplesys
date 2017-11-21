@@ -95,6 +95,8 @@ object Circe {
         }
 
         implicit class Circe1Opt(json: Option[Json]) {
+            def toPrettyString = json.getOrElse(Json.Null).spaces4
+
             def append(_json: Json): Json = json.getOrElse(Json.Null).asObject match {
                 case None ⇒ _json
                 case Some(jsonObject) ⇒
