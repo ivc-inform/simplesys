@@ -11,7 +11,7 @@ object Circe {
         def noSpaces1 = Printer(
             preserveOrder = true,
             dropNullKeys = true,
-            indent = ""
+            indent = strEmpty
         ).pretty(json)
 
 
@@ -19,15 +19,15 @@ object Circe {
             preserveOrder = true,
             dropNullKeys = true,
             indent = indent,
-            lbraceRight = "\n",
-            rbraceLeft = "\n",
-            lbracketRight = "\n",
-            rbracketLeft = "\n",
-            lrbracketsEmpty = "\n",
-            arrayCommaRight = "\n",
-            objectCommaRight = "\n",
-            colonLeft = " ",
-            colonRight = " "
+            lbraceRight = newLine,
+            rbraceLeft = newLine,
+            lbracketRight = newLine,
+            rbracketLeft = newLine,
+            lrbracketsEmpty = newLine,
+            arrayCommaRight = newLine,
+            objectCommaRight = newLine,
+            colonLeft = space,
+            colonRight = space
         )
 
         def spaces21 = indented("  ").pretty(json)
