@@ -14,7 +14,7 @@ import io.circe.{Json, JsonObject}
 import scala.collection.mutable.ArrayBuffer
 
 object DsRequest {
-    def apply(sqlDialect: SQLDialect, data: JsonObject) = new DsRequest(sqlDialect, 0, 0, Vector.empty, data, "exact")
+    def apply(sqlDialect: SQLDialect, data: Json) = new DsRequest(sqlDialect, 0, 0, Vector.empty, data, "exact")
 
     implicit class JsonObjectToSQL(jsonObject: JsonObject) extends Logging {
         def appendCriteria(sqlDialect: SQLDialect, getColumnInBase: String => SQLField, getColumn: String => BasicClassBOColumn[_])(implicit bindMap: ArrayBuffer[BindingColumn]): SQLAbsWhereItem = {
@@ -75,7 +75,7 @@ object DsRequest {
 
                     jsonList foreach {
                         case item if item.isObject =>
-                            item.asObject.get appendCriteria(sqlDialect, getColumnNameInBase, getColumn) match {
+                            item.asObject.get.appendCriteria(sqlDialect, getColumnNameInBase, getColumn) match {
                                 case whereItem: SQLWhereItem =>
                                     if (res.length > 0)
                                         res += SQLWhereItemClause(operator)
@@ -104,7 +104,7 @@ object DsRequest {
     }
 }
 
-case class DsRequest(sqlDialect: SQLDialect, startRow: Int, endRow: Int, sortBy: Vector[Json], data: JsonObject, textMatchStyle: String = "exact") extends Logging {
+case class DsRequest(sqlDialect: SQLDialect, startRow: Int, endRow: Int, sortBy: Vector[Json], data: Json, textMatchStyle: String = "exact") extends Logging {
 
     logger trace (newLine + s"sqlDialect: ${sqlDialect.toString} startRow: $startRow endRow: $endRow sortBy: ${sortBy.toPrettyString} textMatchStyle: $textMatchStyle data: ${data.toPrettyString}")
 
@@ -138,11 +138,11 @@ case class DsRequest(sqlDialect: SQLDialect, startRow: Int, endRow: Int, sortBy:
         }
 
         data match {
-            case item if item.isEmpty =>
+            case item if item.isNull =>
                 SQLWhereItem()
-            case _ =>
+            case item if item.isObject =>
                 if (isAdvancedFilter) {
-                    data.appendCriteria(sqlDialect = sqlDialect, getColumnInBase = getColumnInBase, getColumn = getColumn) match {
+                    data.asObject.get.appendCriteria(sqlDialect = sqlDialect, getColumnInBase = getColumnInBase, getColumn = getColumn) match {
                         case whereItem: SQLWhereItem =>
                             whereItem
                         case whereItems: SQLWhereItems =>
@@ -155,7 +155,7 @@ case class DsRequest(sqlDialect: SQLDialect, startRow: Int, endRow: Int, sortBy:
                     }
                 } else {
                     val whereItems = SQLWhereItems()
-                    val items = data.getProxyObject.filter(_._1 !== "ts")
+                    val items = data.asObject.get.getProxyObject.filter(_._1 !== "ts")
                     items.foreach {
                         case (key, values: Json) if values.isArray =>
                             fields.filter(_.nameInBo === key).headOption match {
