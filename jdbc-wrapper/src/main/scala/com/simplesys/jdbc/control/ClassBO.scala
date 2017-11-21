@@ -680,7 +680,7 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
         dsRequest match {
             case null =>
             case _ =>
-                if ((dsRequest.endRow.toLong !== 0) || (dsRequest.startRow.toLong !== 0))
+                if ((dsRequest.endRow !== 0) || (dsRequest.startRow !== 0))
                     dataSource.sqlDialect match {
                         case OracleDialect =>
                             val endRow = dsRequest.endRow.toLong + getInt("config.tailToEndRow")
@@ -1193,7 +1193,7 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
             case null =>
                 preSQL(true)
             case _ =>
-                if (dsRequest.endRow.toLong != 0 || dsRequest.startRow.toLong != 0)
+                if (dsRequest.endRow != 0 || dsRequest.startRow != 0)
                     dataSource.sqlDialect match {
                         case OracleDialect =>
                             val _fields: SQLFields = getSQLColumns.sqlFieldsWithTableOwner(SQLTable("T1")) + SQLField(name = "ROWNUM", isSystem = true, quoted = false, alias = "sys$$simplesys$$rownum".als)
