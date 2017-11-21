@@ -8,7 +8,7 @@ import io.circe.Json._
 
 case class Transaction(transactionNum: Option[String] = None, operations: Seq[Json] = Seq.empty)
 
-case class DSRequest(data: JsonObject, startRow: Option[Int] = None, endRow: Option[Int] = None, textMatchStyle: Option[String] = None, sortBy: Vector[Json] = Vector(fromString("exact")), transaction: Option[Transaction] = None, oldValues: Option[Json] = None) {
+case class DSRequest(data: JsonObject, startRow: Option[Int] = None, endRow: Option[Int] = None, textMatchStyle: Option[String] = None, sortBy: Vector[Json] = Vector(fromString("exact")), transaction: Option[Transaction] = None, oldValues: Option[JsonObject] = None) {
 
     def toPrettyString = data.toPrettyString
 
