@@ -155,10 +155,49 @@ object Circe {
 
         def getBooleanOpt(key: String): Option[Boolean] = json.getOrElse(Json.Null).getBooleanOpt(key)
 
-        def ++(_json: Json): Json = json.getOrElse(Json.Null) ++ json
+        def ++(_json: Json): Json = json.getOrElse(Json.Null) ++ _json
 
-        def ++(_json: Option[Json]): Json = json.getOrElse(Json.Null) ++ json
+        def ++(_json: Option[Json]): Json = json.getOrElse(Json.Null) ++ _json
     }
+
+    implicit class Circe2Opt(json: JsonObject) {
+
+            def noSpaces1 = fromJsonObject(json).noSpaces1
+
+            def spaces21 = fromJsonObject(json).spaces21
+
+            def spaces41 = fromJsonObject(json).spaces41
+
+            def toPrettyString = json.spaces41
+
+            def getString(key: String): String = fromJsonObject(json).getString(key)
+
+            def getStringOpt(key: String): Option[String] = fromJsonObject(json).getStringOpt(key)
+
+            def getLong(key: String): Long = fromJsonObject(json).getLong(key)
+
+            def getLongOpt(key: String): Option[Long] = fromJsonObject(json).getLongOpt(key)
+
+            def getDouble(key: String): Double = fromJsonObject(json).getDouble(key)
+
+            def getDoubleOpt(key: String): Option[Double] = fromJsonObject(json).getDoubleOpt(key)
+
+            def getLocalDateTime(key: String): LocalDateTime = fromJsonObject(json).getLocalDateTime(key)
+
+            def getLocalDateTimeOpt(key: String): Option[LocalDateTime] = fromJsonObject(json).getLocalDateTimeOpt(key)
+
+            def getJsonObject(key: String): Json = fromJsonObject(json).getJsonObject(key)
+
+            def getJsonObjectOpt(key: String): Option[Json] = fromJsonObject(json).getJsonObjectOpt(key)
+
+            def getBoolean(key: String): Boolean = fromJsonObject(json).getBoolean(key)
+
+            def getBooleanOpt(key: String): Option[Boolean] = fromJsonObject(json).getBooleanOpt(key)
+
+            def ++(_json: JsonObject): Json = fromJsonObject(json) ++ fromJsonObject(_json)
+
+            def ++(_json: Option[JsonObject]): Json = fromJsonObject(json) ++ fromJsonObject(_json.getOrElse(JsonObject.empty))
+        }
 
     implicit def impString(str: String): Json = fromString(str)
     implicit def impStringopt(str: Option[String]): Json = if (str.isEmpty) Json.Null else fromString(str.get)

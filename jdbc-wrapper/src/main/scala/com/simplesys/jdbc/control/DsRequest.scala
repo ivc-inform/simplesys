@@ -9,13 +9,12 @@ import com.simplesys.jdbc.control.DsRequest._
 import com.simplesys.log.Logging
 import com.simplesys.sql.{OracleDialect, SQLDialect}
 import io.circe.{Json, JsonObject}
-import io.circe.Json._
 import com.simplesys.circe.Circe._
 
 import scala.collection.mutable.ArrayBuffer
 
 object DsRequest {
-    def apply(sqlDialect: SQLDialect, data: JsonObject) = new DsRequest(sqlDialect, 0, 0, arr(), data, "exact")
+    def apply(sqlDialect: SQLDialect, data: JsonObject) = new DsRequest(sqlDialect, 0, 0, Vector.empty, data, "exact")
 
     implicit class JsonObjectToSQL(jsonObject: JsonObject) extends Logging {
         def appendCriteria(sqlDialect: SQLDialect, getColumnInBase: String => SQLField, getColumn: String => BasicClassBOColumn[_])(implicit bindMap: ArrayBuffer[BindingColumn]): SQLAbsWhereItem = {
@@ -68,7 +67,7 @@ object DsRequest {
         }
     }
 
-    implicit class JsonListToSQL(jsonList: Json) {
+    implicit class JsonListToSQL(jsonList: JsonList) {
         def appendCriteria(sqlDialect: SQLDialect, getColumnNameInBase: String => SQLField, getColumn: String => BasicClassBOColumn[_], operator: OperatorId)(implicit bindMap: ArrayBuffer[BindingColumn]): SQLWhereItems = {
             sqlDialect match {
                 case OracleDialect =>
@@ -105,7 +104,7 @@ object DsRequest {
     }
 }
 
-case class DsRequest(sqlDialect: SQLDialect, startRow: Number, endRow: Number, sortBy: Json, data: JsonObject, textMatchStyle: String = "exact") extends Logging {
+case class DsRequest(sqlDialect: SQLDialect, startRow: Number, endRow: Number, sortBy: Vector[Json], data: JsonObject, textMatchStyle: String = "exact") extends Logging {
 
     logger trace (newLine + s"sqlDialect: ${sqlDialect.toString} startRow: ${startRow.toString()} endRow: ${endRow.toString()} sortBy: ${sortBy.toPrettyString} textMatchStyle: ${textMatchStyle} data: ${data.toPrettyString}")
 
