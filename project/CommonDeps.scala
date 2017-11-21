@@ -74,7 +74,7 @@ object CommonDeps {
         val doobieVersion = "0.4.1"
 
         val logbackVersion = "1.2.3"
-
+                                                                                                                                             
         val apacheCommonsLangVersion = "3.4"
 
         val javaxTransactionVersion = "1.1"
