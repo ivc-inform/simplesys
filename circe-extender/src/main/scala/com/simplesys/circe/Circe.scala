@@ -122,116 +122,42 @@ object Circe {
     }
 
     implicit class Circe1Opt(json: Option[Json]) {
-        val cursor: HCursor = json.getOrElse(Json.Null).hcursor
 
-        def noSpaces1 = Printer(
-            preserveOrder = true,
-            dropNullKeys = true,
-            indent = strEmpty
-        ).pretty(json.getOrElse(Json.Null))
+        def noSpaces1 = json.getOrElse(Json.Null).noSpaces1
+        
+        def spaces21 = json.getOrElse(Json.Null).spaces21
 
-
-        private def indented(indent: String): Printer = Printer(
-            preserveOrder = true,
-            dropNullKeys = true,
-            indent = indent,
-            lbraceRight = newLine,
-            rbraceLeft = newLine,
-            lbracketRight = newLine,
-            rbracketLeft = newLine,
-            lrbracketsEmpty = newLine,
-            arrayCommaRight = newLine,
-            objectCommaRight = newLine,
-            colonLeft = space,
-            colonRight = space
-        )
-
-        def spaces21 = indented("  ").pretty(json.getOrElse(Json.Null))
-
-        def spaces41 = indented("    ").pretty(json.getOrElse(Json.Null))
+        def spaces41 = json.getOrElse(Json.Null).spaces41
 
         def toPrettyString = json.spaces41
 
-        def getString(key: String): String = cursor.downField(key).as[String] match {
-            case Right(x) ⇒ x
-            case Left(failure) ⇒ throw failure
-        }
+        def getString(key: String): String = json.getOrElse(Json.Null).getString(key)
 
-        def getStringOpt(key: String): Option[String] = cursor.downField(key).as[String] match {
-            case Right(x) ⇒ Some(x)
-            case Left(_) ⇒ None
-        }
+        def getStringOpt(key: String): Option[String] = json.getOrElse(Json.Null).getStringOpt(key)
 
-        def getLong(key: String): Long = cursor.downField(key).as[Long] match {
-            case Right(x) ⇒ x
-            case Left(failure) ⇒ throw failure
-        }
+        def getLong(key: String): Long = json.getOrElse(Json.Null).getLong(key)
 
-        def getLongOpt(key: String): Option[Long] = cursor.downField(key).as[Long] match {
-            case Right(x) ⇒ Some(x)
-            case Left(_) ⇒ None
-        }
+        def getLongOpt(key: String): Option[Long] = json.getOrElse(Json.Null).getLongOpt(key)
 
-        def getDouble(key: String): Double = cursor.downField(key).as[Double] match {
-            case Right(x) ⇒ x
-            case Left(failure) ⇒ throw failure
-        }
+        def getDouble(key: String): Double = json.getOrElse(Json.Null).getDouble(key)
 
-        def getDoubleOpt(key: String): Option[Double] = cursor.downField(key).as[Double] match {
-            case Right(x) ⇒ Some(x)
-            case Left(_) ⇒ None
-        }
+        def getDoubleOpt(key: String): Option[Double] = json.getOrElse(Json.Null).getDoubleOpt(key)
 
-        def getLocalDateTime(key: String): LocalDateTime = cursor.downField(key).as[String] match {
-            case Right(x) ⇒ x.toLocalDateTime()
-            case Left(failure) ⇒ throw failure
-        }
+        def getLocalDateTime(key: String): LocalDateTime = json.getOrElse(Json.Null).getLocalDateTime(key)
 
-        def getLocalDateTimeOpt(key: String): Option[LocalDateTime] = cursor.downField(key).as[String] match {
-            case Right(x) ⇒ Some(x.toLocalDateTime())
-            case Left(_) ⇒ None
-        }
+        def getLocalDateTimeOpt(key: String): Option[LocalDateTime] = json.getOrElse(Json.Null).getLocalDateTimeOpt(key)
 
-        def getJsonObject(key: String): Json = cursor.downField(key).as[Json] match {
-            case Right(x) ⇒ x
-            case Left(failure) ⇒ throw failure
-        }
+        def getJsonObject(key: String): Json = json.getOrElse(Json.Null).getJsonObject(key)
 
-        def getJsonObjectOpt(key: String): Option[Json] = cursor.downField(key).as[Json] match {
-            case Right(x) ⇒ Some(x)
-            case Left(_) ⇒ None
-        }
+        def getJsonObjectOpt(key: String): Option[Json] = json.getOrElse(Json.Null).getJsonObjectOpt(key)
 
-        def getBoolean(key: String): Boolean = cursor.downField(key).as[Boolean] match {
-            case Right(x) ⇒ x
-            case Left(failure) ⇒ throw failure
-        }
+        def getBoolean(key: String): Boolean = json.getOrElse(Json.Null).getBoolean(key)
 
-        def getBooleanOpt(key: String): Option[Boolean] = cursor.downField(key).as[Boolean] match {
-            case Right(x) ⇒ Some(x)
-            case Left(_) ⇒ None
-        }
+        def getBooleanOpt(key: String): Option[Boolean] = json.getOrElse(Json.Null).getBooleanOpt(key)
 
-        def ++(_json: Json): Json = json.getOrElse(Json.Null).asObject match {
-            case None ⇒ _json
-            case Some(jsonObject) ⇒
-                _json.asObject match {
-                    case None ⇒ json.getOrElse(Json.Null)
-                    case Some(_jsonObject) ⇒
-                        fromFields(jsonObject.toMap ++ _jsonObject.toMap)
-                }
+        def ++(_json: Json): Json = json.getOrElse(Json.Null) ++ json
 
-        }
-
-        def ++(_json: Option[Json]): Json = json.getOrElse(Json.Null).asObject match {
-            case None ⇒ _json.getOrElse(Json.Null)
-            case Some(jsonObject) ⇒
-                _json.getOrElse(Json.Null).asObject match {
-                    case None ⇒ json.getOrElse(Json.Null)
-                    case Some(_jsonObject) ⇒
-                        fromFields(jsonObject.toMap ++ _jsonObject.toMap)
-                }
-        }
+        def ++(_json: Option[Json]): Json = json.getOrElse(Json.Null) ++ json
     }
 
     implicit def impString(str: String): Json = fromString(str)

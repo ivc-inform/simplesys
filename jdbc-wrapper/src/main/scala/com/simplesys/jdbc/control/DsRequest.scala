@@ -8,71 +8,58 @@ import com.simplesys.isc.system.typesDyn._
 import com.simplesys.jdbc.control.DsRequest._
 import com.simplesys.log.Logging
 import com.simplesys.sql.{OracleDialect, SQLDialect}
+import io.circe.{Json, JsonObject}
 import io.circe.Json._
-import io.circe.{HCursor, Json}
+import com.simplesys.circe.Circe._
 
-import scala.collection.immutable
 import scala.collection.mutable.ArrayBuffer
 
 object DsRequest {
-    def apply(sqlDialect: SQLDialect, data: Json) = new DsRequest(sqlDialect, 0, 0, arr(), data, "exact")
+    def apply(sqlDialect: SQLDialect, data: JsonObject) = new DsRequest(sqlDialect, 0, 0, arr(), data, "exact")
 
-    implicit class JsonObjectToSQL(json: Json) extends Logging {
-        val cursor: HCursor = json.hcursor
-
+    implicit class JsonObjectToSQL(jsonObject: JsonObject) extends Logging {
         def appendCriteria(sqlDialect: SQLDialect, getColumnInBase: String => SQLField, getColumn: String => BasicClassBOColumn[_])(implicit bindMap: ArrayBuffer[BindingColumn]): SQLAbsWhereItem = {
             sqlDialect match {
                 case OracleDialect =>
-                    cursor.get[Json]("criteria") match {
-                        case Left(_) =>
-                            cursor.get[String]("operator").map {
-                                _operator ⇒
-                                    val operator = OperatorId.get(_operator)
-                                    cursor.get[String]("fieldName").map {
-                                        fieldName ⇒
-                                            operator.kind match {
-                                                case x: IsBetween.type =>
-                                                    cursor.get[String]("start").foreach(bindMap += BindingColumn(getColumn(fieldName), _))
-                                                    cursor.get[String]("end").foreach(bindMap += BindingColumn(getColumn(fieldName), _))
-                                                    SQLWhereBetweenItem(field = getColumnInBase(fieldName), operator = operator, start = SQLValue(operator.getBindPlaceholder), end = SQLValue(operator.getBindPlaceholder))
+                    jsonObject.getJsonListOpt("criteria") match {
+                        case None =>
+                            val operator = OperatorId.getObject(jsonObject.getString("operator"))
+                            val fieldName = jsonObject.getString("fieldName")
 
-                                                case x: IsNull.type =>
-                                                    SQLWhereItem(field = getColumnInBase(fieldName), operator = operator, value = SQLEmptyValue)
+                            operator.kind match {
+                                case x: IsBetween.type =>
+                                    bindMap += BindingColumn(getColumn(fieldName), jsonObject.getJsonElement("start").get.toString)
+                                    bindMap += BindingColumn(getColumn(fieldName), jsonObject.getJsonElement("end").get.toString)
+                                    SQLWhereBetweenItem(field = getColumnInBase(fieldName), operator = operator, start = SQLValue(operator.getBindPlaceholder), end = SQLValue(operator.getBindPlaceholder))
 
-                                                case x: IsInList.type =>
-                                                    cursor.get[Json]("value").map {
-                                                        value ⇒
-                                                            value.asArray.map {
-                                                                list ⇒
-                                                                    val placesHolder = ArrayBuffer.empty[SQLAbsValue]
-                                                                    list foreach {
-                                                                        item =>
-                                                                            if (!item.toString.unQuoted.isEmpty) {
-                                                                                placesHolder += SQLValue(operator.getBindPlaceholder)
-                                                                                bindMap += BindingColumn(getColumn(fieldName), item.toString)
-                                                                            }
-                                                                    }
-                                                                    if (placesHolder.length > 0)
-                                                                        SQLWhereItem(field = getColumnInBase(fieldName), operator = operator, value = SQLValues(placesHolder: _*))
-                                                                    else
-                                                                        SQLNullWhereItem
-                                                            }.getOrElse(SQLNullWhereItem)
-                                                    }.getOrElse(SQLNullWhereItem)
+                                case x: IsNull.type =>
+                                    SQLWhereItem(field = getColumnInBase(fieldName), operator = operator, value = SQLEmptyValue)
 
-                                                case _ =>
-                                                    cursor.get[String]("value").foreach(bindMap += BindingColumn(getColumn(fieldName), _))
-                                                    SQLWhereItem(field = getColumnInBase(fieldName), operator = operator, value = SQLValue(operator.getBindPlaceholder))
+                                case x: IsInList.type =>
+                                    jsonObject.getJsonListOpt("value") match {
+                                        case None =>
+                                            SQLNullWhereItem
+                                        case Some(list) =>
+                                            val placesHolder = ArrayBuffer.empty[SQLAbsValue]
+                                            list foreach {
+                                                item =>
+                                                    if (!item.toString.unQuoted.isEmpty) {
+                                                        placesHolder += SQLValue(operator.getBindPlaceholder)
+                                                        bindMap += BindingColumn(getColumn(fieldName), item.toString)
+                                                    }
                                             }
-                                    }.getOrElse(SQLNullWhereItem)
-                            }.getOrElse(SQLNullWhereItem)
-                        case Right(criteria) =>
-                            criteria.asArray.map {
-                                array ⇒
-                                    cursor.get[String]("operator").map {
-                                        operator ⇒
-                                            array.appendCriteria(sqlDialect = sqlDialect, getColumnNameInBase = getColumnInBase, getColumn, operator = OperatorId.get(operator))
-                                    }.getOrElse(SQLNullWhereItem)
-                            }.getOrElse(SQLNullWhereItem)
+                                            if (placesHolder.length > 0)
+                                                SQLWhereItem(field = getColumnInBase(fieldName), operator = operator, value = SQLValues(placesHolder: _*))
+                                            else
+                                                SQLNullWhereItem
+                                    }
+
+                                case _ =>
+                                    bindMap += BindingColumn(getColumn(fieldName), jsonObject.getJsonElement("value").get.toString)
+                                    SQLWhereItem(field = getColumnInBase(fieldName), operator = operator, value = SQLValue(operator.getBindPlaceholder))
+                            }
+                        case Some(list) =>
+                            list.appendCriteria(sqlDialect = sqlDialect, getColumnNameInBase = getColumnInBase, getColumn, operator = OperatorId.getObject(jsonObject.getString("operator")))
                     }
 
                 case x =>
@@ -81,34 +68,33 @@ object DsRequest {
         }
     }
 
-    implicit class JsonListToSQL(jsonList: Vector[Json]) {
+    implicit class JsonListToSQL(jsonList: Json) {
         def appendCriteria(sqlDialect: SQLDialect, getColumnNameInBase: String => SQLField, getColumn: String => BasicClassBOColumn[_], operator: OperatorId)(implicit bindMap: ArrayBuffer[BindingColumn]): SQLWhereItems = {
             sqlDialect match {
                 case OracleDialect =>
                     val res = SQLWhereItems()
 
                     jsonList foreach {
-                        item ⇒
-                            item.asObject.foreach {
-                                item ⇒
-                                    fromJsonObject(item) appendCriteria(sqlDialect, getColumnNameInBase, getColumn) match {
-                                        case whereItem: SQLWhereItem =>
-                                            if (res.length > 0)
-                                                res += SQLWhereItemClause(operator)
-                                            res += whereItem
-                                        case whereItems: SQLWhereItems =>
-                                            if (res.length > 0)
-                                                res += SQLWhereItemClause(operator)
-                                            res += whereItems
-                                        case betweenItem: SQLWhereBetweenItem =>
-                                            if (res.length > 0)
-                                                res += SQLWhereItemClause(operator)
-                                            res += betweenItem
-                                        case SQLNullWhereItem =>
-                                        case x =>
-                                            throw new RuntimeException(s"Bad branch of ${x}")
-                                    }
+                        case item: JsonObject =>
+                            item appendCriteria(sqlDialect, getColumnNameInBase, getColumn) match {
+                                case whereItem: SQLWhereItem =>
+                                    if (res.length > 0)
+                                        res += SQLWhereItemClause(operator)
+                                    res += whereItem
+                                case whereItems: SQLWhereItems =>
+                                    if (res.length > 0)
+                                        res += SQLWhereItemClause(operator)
+                                    res += whereItems
+                                case betweenItem: SQLWhereBetweenItem =>
+                                    if (res.length > 0)
+                                        res += SQLWhereItemClause(operator)
+                                    res += betweenItem
+                                case SQLNullWhereItem =>
+                                case x =>
+                                    throw new RuntimeException(s"Bad branch of ${x}")
                             }
+                        case x =>
+                            throw new RuntimeException(s"Bad branch of ${x}")
                     }
 
                     res
@@ -119,15 +105,14 @@ object DsRequest {
     }
 }
 
-case class DsRequest(sqlDialect: SQLDialect, startRow: Int, endRow: Int, sortBy: Json, data: Json, textMatchStyle: String = "exact") extends Logging {
-    val cursor: HCursor = data.hcursor
+case class DsRequest(sqlDialect: SQLDialect, startRow: Number, endRow: Number, sortBy: Json, data: JsonObject, textMatchStyle: String = "exact") extends Logging {
 
-    logger trace (newLine + s"sqlDialect: ${sqlDialect.toString} startRow: $startRow endRow: $endRow sortBy: ${sortBy.spaces4} textMatchStyle: $textMatchStyle data: ${data.spaces4}")
+    logger trace (newLine + s"sqlDialect: ${sqlDialect.toString} startRow: ${startRow.toString()} endRow: ${endRow.toString()} sortBy: ${sortBy.toPrettyString} textMatchStyle: ${textMatchStyle} data: ${data.toPrettyString}")
 
-    def isAdvancedFilter: Boolean = cursor.get[String]("_constructor") match {
-        case Left(_) ⇒ false
-        case Right(x) if x == "AdvancedCriteria" => true
-        case _ ⇒ false
+    def isAdvancedFilter: Boolean = data.getStringOpt("_constructor") match {
+        case None => false
+        case Some(x: String) if x == "AdvancedCriteria" => true
+        case _ => false
     }
 
     def appendCriteria(fields: List[BasicClassBOColumn[_]], columns: SQLFields, bindMap: ArrayBuffer[BindingColumn]): SQLWhereItem = {
@@ -171,63 +156,58 @@ case class DsRequest(sqlDialect: SQLDialect, startRow: Int, endRow: Int, sortBy:
                     }
                 } else {
                     val whereItems = SQLWhereItems()
-                    data.asObject.foreach {
-                        obj ⇒
-                            val items = obj.toMap.filter(_._1 !== "ts")
-                            items.foreach {
-                                case (key, _list) if _list.isArray =>
-                                    val list = _list.asArray.get
-                                    fields.filter(_.nameInBo === key).headOption match {
-                                        case None =>
-                                            throw new RuntimeException(s"Key ${key} not found")
-                                        case _ =>
-                                    }
-
-                                    val _values = list.filter(_ != Json.Null)
-                                    _values foreach (value => bindMap += BindingColumn(fields.filter(_.nameInBo === key).head, value.toString))
-
-                                    val _textMachStyle = TextMatchStyle getObject textMatchStyle
-
-                                    val placeHolders: Vector[SQLValue] = _values.map(item => SQLValue(_textMachStyle.getBindPlaceholder))
-
-                                    if (whereItems.length > 0)
-                                        whereItems += SQLWhereItemClause(opIdAnd)
-                                    whereItems += SQLWhereItem(field = columns.fields.filter(field => field.nameInBo === key).head, operator = opIdInSet, value = SQLValues(placeHolders: _*))
-
-                                    logger.trace(s"whereItems is: ${newLine + whereItems.toSQL()}")
-
-                                case (key, value) if !value.isNull =>
-
-                                    fields.filter(_.nameInBo === key).headOption match {
-                                        case None =>
-                                            throw new RuntimeException(s"Key ${key} not found")
-                                        case _ =>
-                                    }
-
-                                    bindMap += BindingColumn(fields.filter(_.nameInBo === key).head, value.toString)
-
-                                    val _textMachStyle = TextMatchStyle getObject textMatchStyle
-
-                                    def getOperator: OperatorId = _textMachStyle.toSQL match {
-                                        case "=" => opIdEquals
-                                        case "LIKE" => opIdContains
-                                        case _ => throw new RuntimeException("Bad branch of textMuchStyle")
-                                    }
-
-                                    if (whereItems.length > 0)
-                                        whereItems += SQLWhereItemClause(opIdAnd)
-
-                                    whereItems += SQLWhereItem(field = columns.fields.filter(field => field.nameInBo === key).head, operator = getOperator, value = SQLValue(_textMachStyle.getBindPlaceholder))
-                                    logger.trace(s"whereItems is: ${newLine + whereItems.toSQL()}")
-
-                                case (key, value) if value.isNull =>
-                                    logger warn s"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Key : $key = null !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-
-                                case x =>
-                                    throw new RuntimeException(s"Bad branch: $x")
+                    val items = data.getProxyObject.filter(_._1 !== "ts")
+                    items.foreach {
+                        case (key, values: JsonList) =>
+                            fields.filter(_.nameInBo === key).headOption match {
+                                case None =>
+                                    throw new RuntimeException(s"Key ${key} not found")
+                                case _ =>
                             }
-                    }
 
+                            val _values = values.filter(_.toString != "null")
+                            _values foreach (value => bindMap += BindingColumn(fields.filter(_.nameInBo === key).head, value.toString))
+
+                            val _textMachStyle = TextMatchStyle getObject textMatchStyle
+
+                            val placeHolders: ArrayBuffer[SQLValue] = _values.map(item => SQLValue(_textMachStyle.getBindPlaceholder))
+
+                            if (whereItems.length > 0)
+                                whereItems += SQLWhereItemClause(opIdAnd)
+                            whereItems += SQLWhereItem(field = columns.fields.filter(field => field.nameInBo === key).head, operator = opIdInSet, value = SQLValues(placeHolders: _*))
+
+                            logger.trace(s"whereItems is: ${newLine + whereItems.toSQL()}")
+
+                        case (key, value) if value.toString != "null" =>
+
+                            fields.filter(_.nameInBo === key).headOption match {
+                                case None =>
+                                    throw new RuntimeException(s"Key ${key} not found")
+                                case _ =>
+                            }
+
+                            bindMap += BindingColumn(fields.filter(_.nameInBo === key).head, value.toString)
+
+                            val _textMachStyle = TextMatchStyle getObject textMatchStyle
+
+                            def getOperator: OperatorId = _textMachStyle.toSQL match {
+                                case "=" => opIdEquals
+                                case "LIKE" => opIdContains
+                                case _ => throw new RuntimeException("Bad branch of textMuchStyle")
+                            }
+
+                            if (whereItems.length > 0)
+                                whereItems += SQLWhereItemClause(opIdAnd)
+
+                            whereItems += SQLWhereItem(field = columns.fields.filter(field => field.nameInBo === key).head, operator = getOperator, value = SQLValue(_textMachStyle.getBindPlaceholder))
+                            logger.trace(s"whereItems is: ${newLine + whereItems.toSQL()}")
+
+                        case (key, value) if value.toString == "null" =>
+                            logger warn s"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Key : $key = null !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+
+                        case x =>
+                            throw new RuntimeException(s"Bad branch: $x")
+                    }
                     SQLWhereItem(whereItems = whereItems)
                 }
         }
