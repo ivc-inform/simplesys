@@ -72,7 +72,7 @@ object Circe {
             case Left(_) ⇒ None
         }
 
-        def append(_json: Json): Json = json.asObject match {
+        def ++(_json: Json): Json = json.asObject match {
             case None ⇒ _json
             case Some(jsonObject) ⇒
                 _json.asObject match {
@@ -83,7 +83,7 @@ object Circe {
 
         }
 
-        def append(_json: Option[Json]): Json = json.asObject match {
+        def ++(_json: Option[Json]): Json = json.asObject match {
             case None ⇒ _json.getOrElse(Json.Null)
             case Some(jsonObject) ⇒
                 _json.getOrElse(Json.Null).asObject match {
@@ -93,30 +93,92 @@ object Circe {
                 }
 
         }
+    }
 
-        implicit class Circe1Opt(json: Option[Json]) {
-            def toPrettyString = json.getOrElse(Json.Null).spaces4
+    implicit class Circe1Opt(json: Option[Json]) {
+        val cursor: HCursor = json.getOrElse(Json.Null).hcursor
 
-            def append(_json: Json): Json = json.getOrElse(Json.Null).asObject match {
-                case None ⇒ _json
-                case Some(jsonObject) ⇒
-                    _json.asObject match {
-                        case None ⇒ json.getOrElse(Json.Null)
-                        case Some(_jsonObject) ⇒
-                            fromFields(jsonObject.toMap ++ _jsonObject.toMap)
-                    }
+        def toPrettyString = json.getOrElse(Json.Null).spaces4
 
-            }
+        def getString(key: String): String = cursor.downField(key).as[String] match {
+            case Right(x) ⇒ x
+            case Left(failure) ⇒ throw failure
+        }
 
-            def append(_json: Option[Json]): Json = json.getOrElse(Json.Null).asObject match {
-                case None ⇒ _json.getOrElse(Json.Null)
-                case Some(jsonObject) ⇒
-                    _json.getOrElse(Json.Null).asObject match {
-                        case None ⇒ json.getOrElse(Json.Null)
-                        case Some(_jsonObject) ⇒
-                            fromFields(jsonObject.toMap ++ _jsonObject.toMap)
-                    }
-            }
+        def getStringOpt(key: String): Option[String] = cursor.downField(key).as[String] match {
+            case Right(x) ⇒ Some(x)
+            case Left(_) ⇒ None
+        }
+
+        def getLong(key: String): Long = cursor.downField(key).as[Long] match {
+            case Right(x) ⇒ x
+            case Left(failure) ⇒ throw failure
+        }
+
+        def getLongOpt(key: String): Option[Long] = cursor.downField(key).as[Long] match {
+            case Right(x) ⇒ Some(x)
+            case Left(_) ⇒ None
+        }
+
+        def getDouble(key: String): Double = cursor.downField(key).as[Double] match {
+            case Right(x) ⇒ x
+            case Left(failure) ⇒ throw failure
+        }
+
+        def getDoubleOpt(key: String): Option[Double] = cursor.downField(key).as[Double] match {
+            case Right(x) ⇒ Some(x)
+            case Left(_) ⇒ None
+        }
+
+        def getLocalDateTime(key: String): LocalDateTime = cursor.downField(key).as[String] match {
+            case Right(x) ⇒ x.toLocalDateTime()
+            case Left(failure) ⇒ throw failure
+        }
+
+        def getLocalDateTimeOpt(key: String): Option[LocalDateTime] = cursor.downField(key).as[String] match {
+            case Right(x) ⇒ Some(x.toLocalDateTime())
+            case Left(_) ⇒ None
+        }
+
+        def getJsonObject(key: String): Json = cursor.downField(key).as[Json] match {
+            case Right(x) ⇒ x
+            case Left(failure) ⇒ throw failure
+        }
+
+        def getJsonObjectOpt(key: String): Option[Json] = cursor.downField(key).as[Json] match {
+            case Right(x) ⇒ Some(x)
+            case Left(_) ⇒ None
+        }
+
+        def getBoolean(key: String): Boolean = cursor.downField(key).as[Boolean] match {
+            case Right(x) ⇒ x
+            case Left(failure) ⇒ throw failure
+        }
+
+        def getBooleanOpt(key: String): Option[Boolean] = cursor.downField(key).as[Boolean] match {
+            case Right(x) ⇒ Some(x)
+            case Left(_) ⇒ None
+        }
+
+        def ++(_json: Json): Json = json.getOrElse(Json.Null).asObject match {
+            case None ⇒ _json
+            case Some(jsonObject) ⇒
+                _json.asObject match {
+                    case None ⇒ json.getOrElse(Json.Null)
+                    case Some(_jsonObject) ⇒
+                        fromFields(jsonObject.toMap ++ _jsonObject.toMap)
+                }
+
+        }
+
+        def ++(_json: Option[Json]): Json = json.getOrElse(Json.Null).asObject match {
+            case None ⇒ _json.getOrElse(Json.Null)
+            case Some(jsonObject) ⇒
+                _json.getOrElse(Json.Null).asObject match {
+                    case None ⇒ json.getOrElse(Json.Null)
+                    case Some(_jsonObject) ⇒
+                        fromFields(jsonObject.toMap ++ _jsonObject.toMap)
+                }
         }
     }
 
