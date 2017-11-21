@@ -6,7 +6,9 @@ import com.simplesys.circe.Circe._
 import io.circe.Json
 import io.circe.Json._
 
-case class Transaction(transactionNum: String)
+
+case class Operations(operation: Option[Json] = None)
+case class Transaction(transactionNum: Option[String] = None, operations: Seq[Operations]= Seq.empty)
 
 case class DSRequest(data: Json, startRow: Option[Int] = None, endRow: Option[Int] = None, textMatchStyle: Option[String] = None, sortBy: Option[Json] = Some(fromString("exact")), transaction: Option[Transaction] = None) extends CirceHelper {
 
