@@ -31,10 +31,10 @@ object Circe {
         )
 
         def spaces21 = indented("  ").pretty(json)
-        
+
         def spaces41 = indented("    ").pretty(json)
 
-        def toPrettyString = json.spaces4
+        def toPrettyString = json.spaces41
 
         val cursor: HCursor = json.hcursor
 
@@ -124,7 +124,33 @@ object Circe {
     implicit class Circe1Opt(json: Option[Json]) {
         val cursor: HCursor = json.getOrElse(Json.Null).hcursor
 
-        def toPrettyString = json.getOrElse(Json.Null).spaces4
+        def noSpaces1 = Printer(
+            preserveOrder = true,
+            dropNullKeys = true,
+            indent = strEmpty
+        ).pretty(json.getOrElse(Json.Null))
+
+
+        private def indented(indent: String): Printer = Printer(
+            preserveOrder = true,
+            dropNullKeys = true,
+            indent = indent,
+            lbraceRight = newLine,
+            rbraceLeft = newLine,
+            lbracketRight = newLine,
+            rbracketLeft = newLine,
+            lrbracketsEmpty = newLine,
+            arrayCommaRight = newLine,
+            objectCommaRight = newLine,
+            colonLeft = space,
+            colonRight = space
+        )
+
+        def spaces21 = indented("  ").pretty(json.getOrElse(Json.Null))
+
+        def spaces41 = indented("    ").pretty(json.getOrElse(Json.Null))
+
+        def toPrettyString = json.spaces41
 
         def getString(key: String): String = cursor.downField(key).as[String] match {
             case Right(x) ⇒ x
