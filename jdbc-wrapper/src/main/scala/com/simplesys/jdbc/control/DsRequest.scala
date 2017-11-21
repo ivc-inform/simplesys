@@ -138,7 +138,7 @@ case class DsRequest(sqlDialect: SQLDialect, startRow: Int, endRow: Int, sortBy:
         }
 
         data match {
-            case null =>
+            case item if item.isEmpty =>
                 SQLWhereItem()
             case _ =>
                 if (isAdvancedFilter) {
