@@ -34,7 +34,6 @@ object Circe {
         
         def spaces41 = indented("    ").pretty(json)
 
-
         def toPrettyString = json.spaces4
 
         val cursor: HCursor = json.hcursor

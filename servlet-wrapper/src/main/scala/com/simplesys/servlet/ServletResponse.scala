@@ -5,6 +5,7 @@ import java.util.Locale
 import javax.servlet.http.{HttpServletResponse ⇒ JHttpServletResponse}
 import javax.servlet.{ServletOutputStream, ServletResponse ⇒ JServletResponse}
 
+import com.simplesys.circe.Circe._
 import com.simplesys.common.equality.SimpleEquality._
 import com.simplesys.log.Logging
 import com.simplesys.servlet.http.HttpServletResponse
@@ -13,7 +14,6 @@ import com.simplesys.xml.Elem
 import io.circe.Json
 
 import scala.io.Codec
-import com.simplesys.circe.Circe._
 
 object ServletResponse {
     def apply(response: JServletResponse) = new ServletResponse(response)
@@ -62,8 +62,7 @@ class ServletResponse(protected[servlet] val proxy: JServletResponse) extends Lo
     def PrintAndFlush(elem: Elem) {
         PrintAndFlush(elem.toUnEscapeString)
     }
-
-
+    
     def PrintAndFlush(json: Json, prettyString: Boolean = false) {
         if (prettyString)
             PrintAndFlush(json.spaces41)
@@ -74,16 +73,16 @@ class ServletResponse(protected[servlet] val proxy: JServletResponse) extends Lo
 
     def Print(json: Json, prettyString: Boolean = false) {
         if (prettyString)
-            Print(json.spaces4)
+            Print(json.spaces41)
         else
-            Print(json.noSpaces)
+            Print(json.noSpaces1)
     }
 
     def PrintAndClose(json: Json, prettyString: Boolean = false) {
         if (prettyString)
-            PrintAndClose(json.spaces4)
+            PrintAndClose(json.spaces41)
         else
-            PrintAndClose(json.noSpaces)
+            PrintAndClose(json.noSpaces1)
     }
 
     def Print(str: String) {
