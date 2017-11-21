@@ -3,12 +3,14 @@ package com.simplesys.isc.dataBinging
 import java.time.LocalDateTime
 
 import com.simplesys.circe.Circe._
-import io.circe.Json
+import io.circe.{Json, JsonObject}
 import io.circe.Json._
 
 case class Transaction(transactionNum: Option[String] = None, operations: Seq[Json] = Seq.empty)
 
-case class DSRequest(data: Json, startRow: Option[Int] = None, endRow: Option[Int] = None, textMatchStyle: Option[String] = None, sortBy: Vector[Json] = Vector(fromString("exact")), transaction: Option[Transaction] = None, oldValues: Option[Json] = None) {
+case class DSRequest(data: JsonObject, startRow: Option[Int] = None, endRow: Option[Int] = None, textMatchStyle: Option[String] = None, sortBy: Vector[Json] = Vector(fromString("exact")), transaction: Option[Transaction] = None, oldValues: Option[Json] = None) {
+
+    def toPrettyString = data.toPrettyString
 
     def getString(key: String): String = data getString key
 
@@ -33,4 +35,12 @@ case class DSRequest(data: Json, startRow: Option[Int] = None, endRow: Option[In
     def getBoolean(key: String): Boolean = data getBoolean key
 
     def getBooleanOpt(key: String): Option[Boolean] = data getBooleanOpt key
+
+    def getJsonList(key: String): Vector[Json] = data getJsonList  key
+
+    def getJsonListOpt(key: String): Option[Vector[Json]] = data getJsonListOpt  key
+
+    def getProxyObject: Map[String, Json] = data.getProxyObject
+
+    def getJsonElement(key: String): Option[Json] = data getJsonElement key
 }
