@@ -126,6 +126,10 @@ object Circe {
     implicit def impLongopt(long: Option[Long]): Json = if (long.isEmpty) Json.Null else fromLong(long.get)
     implicit def impLongarr(long: Array[Long]): Json = if (long.isEmpty) Json.Null else fromLong(long.head)
 
+    implicit def impBoolean(long: Boolean): Json = fromBoolean(long)
+    implicit def impBooleanopt(long: Option[Boolean]): Json = if (long.isEmpty) Json.Null else fromBoolean(long.get)
+    implicit def impBooleanarr(long: Array[Boolean]): Json = if (long.isEmpty) Json.Null else fromBoolean(long.head)
+
     implicit def impInt(long: Int): Json = fromInt(long)
     implicit def impIntopt(long: Option[Int]): Json = if (long.isEmpty) Json.Null else fromInt(long.get)
     implicit def impIntarr(long: Array[Int]): Json = if (long.isEmpty) Json.Null else fromInt(long.head)
