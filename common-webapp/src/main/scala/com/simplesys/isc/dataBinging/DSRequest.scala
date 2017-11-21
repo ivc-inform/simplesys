@@ -8,9 +8,9 @@ import io.circe.Json._
 
 
 case class Operations(operation: Option[Json] = None)
-case class Transaction(transactionNum: Option[String] = None, operations: Seq[Operations]= Seq.empty)
+case class Transaction(transactionNum: Option[String] = None, operations: Seq[Operations] = Seq.empty)
 
-case class DSRequest(data: Json, startRow: Option[Int] = None, endRow: Option[Int] = None, textMatchStyle: Option[String] = None, sortBy: Option[Json] = Some(fromString("exact")), transaction: Option[Transaction] = None) extends CirceHelper {
+case class DSRequest(data: Json, startRow: Option[Int] = None, endRow: Option[Int] = None, textMatchStyle: Option[String] = None, sortBy: Option[Json] = Some(fromString("exact")), transaction: Option[Transaction] = None, oldValues: Option[Json] = None) extends CirceHelper {
 
     def getString(key: String): String = data getString key
 
@@ -27,4 +27,12 @@ case class DSRequest(data: Json, startRow: Option[Int] = None, endRow: Option[In
     def getLocalDateTime(key: String): LocalDateTime = data getLocalDateTime key
 
     def getLocalDateTimeOpt(key: String): Option[LocalDateTime] = data getLocalDateTimeOpt key
+
+    def getJsonObject(key: String): Json = data getJsonObject key
+
+    def getJsonObjectOpt(key: String): Option[Json] = data getJsonObjectOpt key
+
+    def getBoolean(key: String): Boolean = data getBoolean key
+
+    def getBooleanOpt(key: String): Option[Boolean] = data getBooleanOpt key
 }

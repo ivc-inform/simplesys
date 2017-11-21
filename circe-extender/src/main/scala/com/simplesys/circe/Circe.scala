@@ -61,6 +61,16 @@ object Circe {
             case Right(x) ⇒ Some(x)
             case Left(_) ⇒ None
         }
+
+        def getBoolean(key: String): Boolean = cursor.downField(key).as[Boolean] match {
+            case Right(x) ⇒ x
+            case Left(failure) ⇒ throw failure
+        }
+
+        def getBooleanOpt(key: String): Option[Boolean] = cursor.downField(key).as[Boolean] match {
+            case Right(x) ⇒ Some(x)
+            case Left(_) ⇒ None
+        }
     }
 
     implicit def impString(str: String): Json = fromString(str)
