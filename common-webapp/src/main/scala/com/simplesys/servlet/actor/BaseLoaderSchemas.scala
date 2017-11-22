@@ -14,9 +14,6 @@ class BaseLoaderSchemas(val request: HttpServletRequest, val response: HttpServl
                 case Some(schemaList: DSResponse) =>
                     Out(schemaList)
 
-                case Some(schemaList: DSResponseFailureEx) =>
-                    Out(schemaList)
-
                 case Some(_) =>
                     Out("")
 
