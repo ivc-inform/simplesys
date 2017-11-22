@@ -109,7 +109,7 @@ object Circe {
                 case None ⇒ Vector.empty
                 case Some(x) ⇒ x
             }
-            case Left(failure) ⇒ Vector.empty
+            case Left(_) ⇒ Vector.empty
         }
 
         def getJsonListOpt(key: String): Option[Vector[Json]] = cursor.downField(key).as[Json] match {
