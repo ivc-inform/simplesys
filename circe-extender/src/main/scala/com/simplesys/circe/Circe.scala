@@ -41,7 +41,7 @@ object Circe {
 
         def getJsonElement(key: String): Option[Json] = cursor.downField(key).as[Json] match {
             case Right(x) ⇒ Some(x)
-            case Left(failure) ⇒ None
+            case Left(_) ⇒ None
         }
 
         def getString(key: String): String = cursor.downField(key).as[String] match {
@@ -106,10 +106,10 @@ object Circe {
 
         def getJsonList(key: String): Vector[Json] = cursor.downField(key).as[Json] match {
             case Right(x) ⇒ x.asArray match {
-                case None ⇒ throw new RuntimeException(s"Bad branch for key: $key")
+                case None ⇒ Vector.empty
                 case Some(x) ⇒ x
             }
-            case Left(failure) ⇒ throw failure
+            case Left(failure) ⇒ Vector.empty
         }
 
         def getJsonListOpt(key: String): Option[Vector[Json]] = cursor.downField(key).as[Json] match {
@@ -117,7 +117,7 @@ object Circe {
                 case None ⇒ None
                 case Some(x) ⇒ Some(x)
             }
-            case Left(failure) ⇒ throw failure
+            case Left(_) ⇒ None
         }
 
         def ++(_json: Json): Json = json.asObject match {

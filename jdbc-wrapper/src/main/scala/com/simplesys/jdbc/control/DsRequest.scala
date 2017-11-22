@@ -62,7 +62,7 @@ object DsRequest {
                     }
 
                 case x =>
-                    throw new RuntimeException(s"Bad branch of ${x}")
+                    throw new RuntimeException(s"Bad branch of $x")
             }
         }
     }
