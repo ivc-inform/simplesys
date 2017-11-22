@@ -1066,17 +1066,23 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
                 case _ =>
                     dataSource.sqlDialect match {
                         case OracleDialect =>
-                            dsRequest.sortBy.asArray.foreach {
-                                _.foreach {
-                                    _.asString.foreach {
-                                        f ⇒
-                                            getColumnInBase(SQLField(name = f)) match {
-                                                case Some(field) =>
-                                                    res += SQLOrderBy(field = field, dir = if (f.toString.indexOf("-") > -1) DescOrderBy else AscOrderBy)
-                                                case _ =>
+                            val sb = dsRequest.sortBy
+                            sb match {
+                                case null =>
+                                case sortBy =>
+                                    sortBy.foreach(
+                                        f => {
+                                            f.asString match {
+                                                case None ⇒
+                                                case Some(f) ⇒
+                                                    getColumnInBase(SQLField(name = f)) match {
+                                                        case Some(field) =>
+                                                            res += SQLOrderBy(field = field, dir = if (f.toString.indexOf("-") > -1) DescOrderBy else AscOrderBy)
+                                                        case _ =>
+                                                    }
                                             }
-                                    }
-                                }
+                                        }
+                                    )
                             }
                         case _ =>
                     }

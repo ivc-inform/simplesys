@@ -198,4 +198,8 @@ class Test extends FunSuite with Config with Logging with XMLLoader {
             data = Json.Null
         ).asJson.spaces41)
     }
+
+    test("Vector") {
+       println(Vector.empty[Json].asJson.asArray)
+    }
 }
