@@ -97,7 +97,7 @@ object DsRequest {
                     }
 
                     res
-                case x =>                                                                                                                                     
+                case x =>
                     throw new RuntimeException(s"Bad branch of $x")
             }
         }
@@ -154,18 +154,21 @@ case class DsRequest(sqlDialect: SQLDialect, startRow: Int, endRow: Int, sortBy:
                         //SQLWhereItem()
                     }
                 } else {
+                    def checkExistsField(key: String): Unit = {
+                        fields.filter(_.nameInBo === key).headOption match {
+                            case None =>
+                                throw new RuntimeException(s"Key $key not found")
+                            case _ =>
+                        }
+                    }
+
                     val whereItems = SQLWhereItems()
                     val items = data.asObject.get.getProxyObject.filter(_._1 !== "ts")
                     items.foreach {
                         case (key, values: Json) if values.isArray =>
-                            fields.filter(_.nameInBo === key).headOption match {
-                                case None =>
-                                    throw new RuntimeException(s"Key $key not found")
-                                case _ =>
-                            }
+                            checkExistsField(key)
 
-
-                            val _values: Vector[Json] = values.asArray.getOrElse(Vector.empty).filter(_.noSpaces1 != "null")
+                            val _values: Vector[Json] = values.asArray.getOrElse(Vector.empty) /*.filter(_.noSpaces1 != "null")*/
                             _values foreach (value => bindMap += BindingColumn(fields.filter(_.nameInBo === key).head, value.toString))
 
                             val _textMachStyle = TextMatchStyle getObject textMatchStyle
@@ -177,14 +180,10 @@ case class DsRequest(sqlDialect: SQLDialect, startRow: Int, endRow: Int, sortBy:
                             whereItems += SQLWhereItem(field = columns.fields.filter(field => field.nameInBo === key).head, operator = opIdInSet, value = SQLValues(placeHolders: _*))
 
                             logger.trace(s"whereItems is: ${newLine + whereItems.toSQL()}")
-                                                                                                                                                                
-                        case (key, value) if value.noSpaces1 != "null" =>
 
-                            fields.filter(_.nameInBo === key).headOption match {
-                                case None =>
-                                    throw new RuntimeException(s"Key $key not found")
-                                case _ =>
-                            }
+                        case (key, value) /*if value.noSpaces1 != "null"*/ =>
+
+                            checkExistsField(key)
 
                             bindMap += BindingColumn(fields.filter(_.nameInBo === key).head, value.toString)
 
