@@ -1071,16 +1071,14 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
                                 case null =>
                                 case sortBy =>
                                     sortBy.foreach(
-                                        f => {
-                                            f.asString match {
-                                                case None ⇒
-                                                case Some(f) ⇒
-                                                    getColumnInBase(SQLField(name = f)) match {
-                                                        case Some(field) =>
-                                                            res += SQLOrderBy(field = field, dir = if (f.toString.indexOf("-") > -1) DescOrderBy else AscOrderBy)
-                                                        case _ =>
-                                                    }
-                                            }
+                                        _.asString match {
+                                            case None ⇒
+                                            case Some(f) ⇒
+                                                getColumnInBase(SQLField(name = f)) match {
+                                                    case Some(field) =>
+                                                        res += SQLOrderBy(field = field, dir = if (f.toString.indexOf("-") > -1) DescOrderBy else AscOrderBy)
+                                                    case _ =>
+                                                }
                                         }
                                     )
                             }
