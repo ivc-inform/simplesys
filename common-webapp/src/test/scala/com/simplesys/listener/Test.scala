@@ -196,8 +196,7 @@ class Test extends FunSuite with Config with Logging with XMLLoader {
             startRow = 0,
             endRow = 0,
             sortBy = Vector.empty,
-            data = Json.Null,
-            textMatchStyle = "exact"
+            data = Json.Null
         ).asJson.spaces41)
     }
 }
