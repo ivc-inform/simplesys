@@ -1,12 +1,20 @@
 package com.simplesys.listener
 
 import com.simplesys.annotation.RSTransfer
+import com.simplesys.circe.Circe._
 import com.simplesys.common.Strings._
 import com.simplesys.config.Config
+import com.simplesys.isc.dataBinging.DSRequest
+import com.simplesys.jdbc.control.DsRequest
 import com.simplesys.log.Logging
+import com.simplesys.sql.OracleDialect
 import com.simplesys.xml.Xml
 import com.simplesys.xml.factory.XMLLoader
+import io.circe.Json
+import io.circe.Json._
 import org.scalatest.FunSuite
+import io.circe.generic.auto._
+import io.circe.syntax._
 
 import scala.io.Codec
 import scala.reflect.ClassTag
@@ -104,7 +112,6 @@ class Test extends FunSuite with Config with Logging with XMLLoader {
         //println(seq.size)
 
 
-
         (seq map (item => CommonWebAppListener.minPath(seq, item))).distinct.sortWith(_ < _) foreach println
     }
 
@@ -166,15 +173,27 @@ class Test extends FunSuite with Config with Logging with XMLLoader {
     }
 
     test("To Json") {
-        val xml = loadString("""<DataSource ID="Action">
-                               |    <fields>
-                               |        <field name="target" type="string"/>
-                               |        <field name="name" type="string"/>
-                               |        <field name="title" type="string"/>
-                               |        <field name="mapping" type="string" multiple="true"/>
-                               |    </fields>
-                               |</DataSource>""".stripMargin)
+        val xml = loadString(
+            """<DataSource ID="Action">
+              |    <fields>
+              |        <field name="target" type="string"/>
+              |        <field name="name" type="string"/>
+              |        <field name="title" type="string"/>
+              |        <field name="mapping" type="string" multiple="true"/>
+              |    </fields>
+              |</DataSource>""".stripMargin)
         val json = Xml.getJS(xml, "Action", true)
         println(json)
+    }
+
+    test("DSRequest") {
+        println(new DsRequest(
+            sqlDialect = OracleDialect,
+            startRow = 0,
+            endRow = 0,
+            sortBy = Vector.empty,
+            data = Json.Null,
+            textMatchStyle = "exact"
+        ).asJson.spaces41)
     }
 }
