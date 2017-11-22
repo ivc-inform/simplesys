@@ -187,9 +187,8 @@ class Test extends FunSuite with Config with Logging with XMLLoader {
     }
 
     test("DSRequest") {
-        import de.heikoseeberger.akkahttpcirce._
-        import CirceEnum._
-        //import CirceEnum._ Необходим для правильного отображения Enum типа case object from sealed trait; в общем случае это имеет вид {"name":{}}
+        import de.heikoseeberger.akkahttpcirce.CirceEnum._
+        //import de.heikoseeberger.akkahttpcirce.CirceEnum._ Необходим для правильного отображения Enum типа case object from sealed trait; в общем случае это имеет вид {"name":{}}
 
         println(new DsRequest(
             sqlDialect = OracleDialect,
