@@ -1,5 +1,6 @@
 package com.simplesys.servlet.actor
 
+import com.simplesys.isc.dataBinging.{DSResponse, DSResponseBase, DSResponseFailureEx}
 import com.simplesys.servlet._
 import com.simplesys.servlet.http.{HttpServletRequest, HttpServletResponse}
 import com.simplesys.servlet.isc.{GetData, ServletActor}
@@ -10,7 +11,10 @@ class BaseLoaderSchemas(val request: HttpServletRequest, val response: HttpServl
     def receive = {
         case GetData => {
             servletContext.Attribute("schemaList") match {
-                case Some(schemaList: Json) =>
+                case Some(schemaList: DSResponse) =>
+                    Out(schemaList)
+
+                case Some(schemaList: DSResponseFailureEx) =>
                     Out(schemaList)
 
                 case Some(_) =>
