@@ -201,9 +201,6 @@ case class DsRequest(sqlDialect: SQLDialect, startRow: Int, endRow: Int, sortBy:
                             whereItems += SQLWhereItem(field = columns.fields.filter(field => field.nameInBo === key).head, operator = getOperator, value = SQLValue(_textMachStyle.getBindPlaceholder))
                             logger.trace(s"whereItems is: ${newLine + whereItems.toSQL()}")
 
-                        case (key, value) if value.noSpaces1 == "null" =>
-                            logger warn s"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Key : $key = null !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-
                         case x =>
                             throw new RuntimeException(s"Bad branch: $x")
                     }

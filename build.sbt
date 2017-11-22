@@ -88,9 +88,10 @@ lazy val circeExtender = Project(id = "circe-extender", base = file("circe-exten
   )
   .settings(
     libraryDependencies ++= Seq(
-        CommonDeps.circeCore,
-        CommonDeps.circeGeneric,
-        CommonDeps.circeParcer,
+//        CommonDeps.circeCore,
+//        CommonDeps.circeGeneric,
+//        CommonDeps.circeParcer,
+        CommonDeps.akkaHttpCirce,
         CommonDeps.scalaTest
     )
 
