@@ -4,22 +4,20 @@ import com.simplesys.annotation.RSTransfer
 import com.simplesys.circe.Circe._
 import com.simplesys.common.Strings._
 import com.simplesys.config.Config
-import com.simplesys.isc.dataBinging.DSRequest
 import com.simplesys.jdbc.control.DsRequest
 import com.simplesys.log.Logging
 import com.simplesys.sql.OracleDialect
 import com.simplesys.xml.Xml
 import com.simplesys.xml.factory.XMLLoader
 import io.circe.Json
-import io.circe.Json._
-import org.scalatest.FunSuite
 import io.circe.generic.auto._
 import io.circe.syntax._
+import org.scalatest.FunSuite
 
-import scala.io.Codec
 import scala.reflect.ClassTag
 import scala.reflect.runtime.universe._
 import scala.reflect.runtime.{universe ⇒ ru}
+import com.simplesys.common.Time._
 
 @RSTransfer(urlPattern = "123456")
 class A
@@ -124,7 +122,7 @@ class Test extends FunSuite with Config with Logging with XMLLoader {
     test("get methods of object") {
 
         def makeVersionList[T: TypeTag : ClassTag](e: T): Unit = {
-            import scala.reflect.runtime.{universe => ru}
+            import scala.reflect.runtime.{universe ⇒ ru}
 
             val classLoaderMirror = ru.runtimeMirror(getClass.getClassLoader)
             val a: ru.Type = ru.typeOf[T]
@@ -187,7 +185,6 @@ class Test extends FunSuite with Config with Logging with XMLLoader {
     }
 
     test("DSRequest") {
-        import de.heikoseeberger.akkahttpcirce.CirceEnum._
         //import de.heikoseeberger.akkahttpcirce.CirceEnum._ Необходим для правильного отображения Enum типа case object from sealed trait; в общем случае это имеет вид {"name":{}}
 
         println(new DsRequest(
@@ -200,6 +197,10 @@ class Test extends FunSuite with Config with Logging with XMLLoader {
     }
 
     test("Vector") {
-       println(Vector.empty[Json].asJson.asArray)
+        println(Vector.empty[Json].asJson.asArray)
+    }
+
+    test("StrTodate") {
+        println(localDateTime2Str("2017-11-01T08:00:00.000Z".replace("Z", "").toLocalDateTime()))
     }
 }

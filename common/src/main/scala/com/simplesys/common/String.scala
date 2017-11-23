@@ -77,11 +77,12 @@ object Strings {
         def toLocalTime(dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_TIME): LocalTime = LocalTime.parse(string.unQuoted, dateTimeFormatter)
     }
 
-    def localDateTime2Str(localDateTime: LocalDateTime, dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME) : String = localDateTime.format(dateTimeFormatter)
+    def localDateTime2Str(localDateTime: LocalDateTime, dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME): String = localDateTime.format(dateTimeFormatter)
 
     implicit class LocalDateTimeOpt(localDateTime: LocalDateTime) {
         def getMillis: Long = localDateTime.atZone(ZoneId.systemDefault()).toInstant.toEpochMilli
         def asString(dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME): String = localDateTime2Str(localDateTime, dateTimeFormatter)
+
     }
 
     implicit class LonfToLocalDateTime(millis: Long) {
@@ -353,7 +354,13 @@ object Strings {
         def apply() = strEmpty.space
     }
 
+    object Point {
+        override def toString = "."
+        def apply() = "."
+    }
+
     val space = Space()
+    val point = Point()
     val spaceC: Char = Space()(0)
 
     object fill {
