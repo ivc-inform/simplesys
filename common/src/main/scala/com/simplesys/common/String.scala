@@ -78,7 +78,7 @@ object Strings {
             if (string.contains("Z")) {
                 val systemZone = ZoneId.systemDefault()
                 val localDateTime = LocalDateTime.parse(string.unQuoted, SS_LOCAL_DATE_TIME_Z)
-                val currentOffsetForMyZone = systemZone.getRules().getOffset(localDateTime)
+                val currentOffsetForMyZone = systemZone.getRules.getOffset(localDateTime)
                 localDateTime.plusSeconds(currentOffsetForMyZone.getTotalSeconds)
             }
             else
@@ -89,11 +89,11 @@ object Strings {
     }
 
     def localDateTime2Str(localDateTime: LocalDateTime, dateTimeFormatter: DateTimeFormatter = SS_LOCAL_DATE_TIME): String = localDateTime.format(dateTimeFormatter)
-    def utcDateTime2Str(zonedDateTime: LocalDateTime, dateTimeFormatter: DateTimeFormatter = SS_LOCAL_DATE_TIME): String = {
+    def utcDateTime2Str(utcDateTime: LocalDateTime, dateTimeFormatter: DateTimeFormatter = SS_LOCAL_DATE_TIME): String = {
         val systemZone = ZoneId.systemDefault()
-        val currentOffsetForMyZone = systemZone.getRules().getOffset(zonedDateTime)
+        val currentOffsetForMyZone = systemZone.getRules.getOffset(utcDateTime)
 
-        zonedDateTime.plusSeconds(currentOffsetForMyZone.getTotalSeconds).format(dateTimeFormatter)
+        utcDateTime.plusSeconds(currentOffsetForMyZone.getTotalSeconds).format(dateTimeFormatter)
     }
 
     implicit class LocalDateTimeOpt(localDateTime: LocalDateTime) {
