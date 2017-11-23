@@ -211,6 +211,7 @@ class Test extends FunSuite with Config with Logging with XMLLoader {
         println(s"currentOffsetForMyZone: $currentOffsetForMyZone")
 
         println("2017-11-01T08:00:00.000Z".toLocalDateTime().asString())
+        println("2017-11-23T13:41:02.294".toLocalDateTime().asString())
         //println("2017-11-01T08:00:00.000Z".toLocalDateTime())
 
         //println("01.11.2017 08:00:05".toLocalDateTime(SS_LOCAL_DATE_TIME).atZone(ZoneId.systemDefault()))

@@ -81,8 +81,11 @@ object Strings {
                 val currentOffsetForMyZone = systemZone.getRules.getOffset(localDateTime)
                 localDateTime.plusSeconds(currentOffsetForMyZone.getTotalSeconds)
             }
+            else if (string.contains("T"))
+                LocalDateTime.parse(string.unQuoted, ISO_LOCAL_DATE_TIME)
             else
                 LocalDateTime.parse(string.unQuoted, dateTimeFormatter)
+
         }
         def toLocalDate(dateTimeFormatter: DateTimeFormatter = ISO_LOCAL_DATE): LocalDate = LocalDate.parse(string.unQuoted, dateTimeFormatter)
         def toLocalTime(dateTimeFormatter: DateTimeFormatter = ISO_LOCAL_TIME): LocalTime = LocalTime.parse(string.unQuoted, dateTimeFormatter)
