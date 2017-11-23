@@ -46,7 +46,7 @@ object Circe {
 
         def getString(key: String): String = cursor.downField(key).as[String] match {
             case Right(x) ⇒ x
-            case Left(failure) ⇒ throw failure
+            case Left(_) ⇒ throw new RuntimeException(s"Key $key not found.")
         }
 
         def getStringOpt(key: String): Option[String] = cursor.downField(key).as[String] match {
@@ -56,7 +56,7 @@ object Circe {
 
         def getLong(key: String): Long = cursor.downField(key).as[Long] match {
             case Right(x) ⇒ x
-            case Left(failure) ⇒ throw failure
+            case Left(_) ⇒ throw new RuntimeException(s"Key $key not found.")
         }
 
         def getLongOpt(key: String): Option[Long] = cursor.downField(key).as[Long] match {
@@ -66,7 +66,7 @@ object Circe {
 
         def getDouble(key: String): Double = cursor.downField(key).as[Double] match {
             case Right(x) ⇒ x
-            case Left(failure) ⇒ throw failure
+            case Left(_) ⇒ throw new RuntimeException(s"Key $key not found.")
         }
 
         def getDoubleOpt(key: String): Option[Double] = cursor.downField(key).as[Double] match {
@@ -76,7 +76,7 @@ object Circe {
 
         def getLocalDateTime(key: String): LocalDateTime = cursor.downField(key).as[String] match {
             case Right(x) ⇒ x.toLocalDateTime()
-            case Left(failure) ⇒ throw failure
+            case Left(_) ⇒ throw new RuntimeException(s"Key $key not found.")
         }
 
         def getLocalDateTimeOpt(key: String): Option[LocalDateTime] = cursor.downField(key).as[String] match {
@@ -86,7 +86,7 @@ object Circe {
 
         def getJsonObject(key: String): Json = cursor.downField(key).as[Json] match {
             case Right(x) ⇒ x
-            case Left(failure) ⇒ throw failure
+            case Left(_) ⇒ throw new RuntimeException(s"Key $key not found.")
         }
 
         def getJsonObjectOpt(key: String): Option[Json] = cursor.downField(key).as[Json] match {
