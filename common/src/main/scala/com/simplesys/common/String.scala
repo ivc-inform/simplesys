@@ -77,9 +77,9 @@ object Strings {
         def toLocalDateTime(dateTimeFormatter: DateTimeFormatter = SS_LOCAL_DATE_TIME): LocalDateTime = {
             if (string.contains("Z")) {
                 val systemZone = ZoneId.systemDefault()
-                val zonedDateTime = LocalDateTime.parse(string.unQuoted, SS_LOCAL_DATE_TIME_Z)
-                val currentOffsetForMyZone = systemZone.getRules().getOffset(zonedDateTime)
-                zonedDateTime.plusSeconds(currentOffsetForMyZone.getTotalSeconds)
+                val localDateTime = LocalDateTime.parse(string.unQuoted, SS_LOCAL_DATE_TIME_Z)
+                val currentOffsetForMyZone = systemZone.getRules().getOffset(localDateTime)
+                localDateTime.plusSeconds(currentOffsetForMyZone.getTotalSeconds)
             }
             else
                 LocalDateTime.parse(string.unQuoted, dateTimeFormatter)
