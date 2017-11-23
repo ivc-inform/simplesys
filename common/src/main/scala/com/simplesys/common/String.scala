@@ -75,8 +75,12 @@ object Strings {
 
     implicit class stringToDate(val string: String) {
         def toLocalDateTime(dateTimeFormatter: DateTimeFormatter = SS_LOCAL_DATE_TIME): LocalDateTime = {
-            if (string.contains("Z"))
-                LocalDateTime.parse(string.unQuoted, SS_LOCAL_DATE_TIME_Z)
+            if (string.contains("Z")) {
+                val systemZone = ZoneId.systemDefault()
+                val zonedDateTime = LocalDateTime.parse(string.unQuoted, SS_LOCAL_DATE_TIME_Z)
+                val currentOffsetForMyZone = systemZone.getRules().getOffset(zonedDateTime)
+                zonedDateTime.plusSeconds(currentOffsetForMyZone.getTotalSeconds)
+            }
             else
                 LocalDateTime.parse(string.unQuoted, dateTimeFormatter)
         }
@@ -85,10 +89,16 @@ object Strings {
     }
 
     def localDateTime2Str(localDateTime: LocalDateTime, dateTimeFormatter: DateTimeFormatter = SS_LOCAL_DATE_TIME): String = localDateTime.format(dateTimeFormatter)
+    def utcDateTime2Str(zonedDateTime: LocalDateTime, dateTimeFormatter: DateTimeFormatter = SS_LOCAL_DATE_TIME): String = {
+        val systemZone = ZoneId.systemDefault()
+        val currentOffsetForMyZone = systemZone.getRules().getOffset(zonedDateTime)
+
+        zonedDateTime.plusSeconds(currentOffsetForMyZone.getTotalSeconds).format(dateTimeFormatter)
+    }
 
     implicit class LocalDateTimeOpt(localDateTime: LocalDateTime) {
         def getMillis: Long = localDateTime.atZone(ZoneId.systemDefault()).toInstant.toEpochMilli
-        def asString(dateTimeFormatter: DateTimeFormatter = ISO_LOCAL_DATE_TIME): String = localDateTime2Str(localDateTime, dateTimeFormatter)
+        def asString(dateTimeFormatter: DateTimeFormatter = SS_LOCAL_DATE_TIME): String = localDateTime2Str(localDateTime, dateTimeFormatter)
 
     }
 

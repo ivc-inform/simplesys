@@ -1,9 +1,9 @@
 package com.simplesys.listener
 
-import java.time.ZoneId
+import java.time.{Instant, ZoneId, ZoneOffset}
 
 import com.simplesys.annotation.RSTransfer
-import com.simplesys.circe.Circe._
+//import com.simplesys.circe.Circe._
 import com.simplesys.common.Strings._
 import com.simplesys.config.Config
 import com.simplesys.jdbc.control.DsRequest
@@ -195,7 +195,7 @@ class Test extends FunSuite with Config with Logging with XMLLoader {
             endRow = 0,
             sortBy = Vector.empty,
             data = Json.Null
-        ).asJson.spaces41)
+        ).asJson.spaces4)
     }
 
     test("Vector") {
@@ -203,7 +203,14 @@ class Test extends FunSuite with Config with Logging with XMLLoader {
     }
 
     test("StrTodate") {
-        println(localDateTime2Str("2017-11-01T08:00:00.000Z".toLocalDateTime(), SS_LOCAL_DATE_TIME))
+        val instant = Instant.now(); //can be LocalDateTime
+        println(s"instant: $instant")
+        val systemZone = ZoneId.systemDefault(); // my timezone
+        println(s"systemZone: $systemZone")
+        val currentOffsetForMyZone: ZoneOffset = systemZone.getRules().getOffset(instant)
+        println(s"currentOffsetForMyZone: $currentOffsetForMyZone")
+
+        println("2017-11-01T08:00:00.000Z".toLocalDateTime().asString())
         //println("2017-11-01T08:00:00.000Z".toLocalDateTime())
 
         //println("01.11.2017 08:00:05".toLocalDateTime(SS_LOCAL_DATE_TIME).atZone(ZoneId.systemDefault()))

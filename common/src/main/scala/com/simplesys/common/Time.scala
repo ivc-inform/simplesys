@@ -51,6 +51,6 @@ object Time {
       .append(ISO_LOCAL_DATE)
       .appendLiteral('T')
       .append(SS_LOCAL_TIME_Z)
-      .appendLiteral('Z')
+      .appendOffsetId
       .toFormatter(Locale.getDefault(Locale.Category.FORMAT))
 }
