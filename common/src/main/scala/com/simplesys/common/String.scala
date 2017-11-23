@@ -4,7 +4,7 @@ import java.io.{File, InputStream}
 import java.math.BigInteger
 import java.text.{DateFormat, DecimalFormat, DecimalFormatSymbols, SimpleDateFormat}
 import java.time.format.DateTimeFormatter
-import java.time.{LocalDate, LocalDateTime, LocalTime, ZoneId}
+import java.time._
 import java.time.format.DateTimeFormatter._
 
 import com.simplesys.common.equality.SimpleEquality._
@@ -74,7 +74,12 @@ object Strings {
     }
 
     implicit class stringToDate(val string: String) {
-        def toLocalDateTime(dateTimeFormatter: DateTimeFormatter = ISO_LOCAL_DATE_TIME): LocalDateTime = LocalDateTime.parse(string.unQuoted, dateTimeFormatter)
+        def toLocalDateTime(dateTimeFormatter: DateTimeFormatter = ISO_LOCAL_DATE_TIME): LocalDateTime = {
+            if (string.contains("Z"))
+                LocalDateTime.parse(string.unQuoted, SS_LOCAL_DATE_TIME_Z)
+            else
+                LocalDateTime.parse(string.unQuoted, dateTimeFormatter)
+        }
         def toLocalDate(dateTimeFormatter: DateTimeFormatter = ISO_LOCAL_DATE): LocalDate = LocalDate.parse(string.unQuoted, dateTimeFormatter)
         def toLocalTime(dateTimeFormatter: DateTimeFormatter = ISO_LOCAL_TIME): LocalTime = LocalTime.parse(string.unQuoted, dateTimeFormatter)
     }

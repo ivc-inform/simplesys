@@ -1,5 +1,7 @@
 package com.simplesys.listener
 
+import java.time.ZoneId
+
 import com.simplesys.annotation.RSTransfer
 import com.simplesys.circe.Circe._
 import com.simplesys.common.Strings._
@@ -202,7 +204,8 @@ class Test extends FunSuite with Config with Logging with XMLLoader {
 
     test("StrTodate") {
         //println(localDateTime2Str("2017-11-01T08:00:00.000Z".toLocalDateTime(), SS_LOCAL_DATE_TIME))
-        //println("2017-11-01T08:00:00.000Z".toLocalDateTime())
-        println("01.11.2017 08:00:05".toLocalDateTime(SS_LOCAL_DATE_TIME))
+        println("2017-11-01T08:00:00.000Z".toLocalDateTime())
+
+        //println("01.11.2017 08:00:05".toLocalDateTime(SS_LOCAL_DATE_TIME).atZone(ZoneId.systemDefault()))
     }
 }
