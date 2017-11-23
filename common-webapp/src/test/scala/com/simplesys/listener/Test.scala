@@ -1,5 +1,7 @@
 package com.simplesys.listener
 
+import java.time.format.DateTimeFormatter
+
 import com.simplesys.annotation.RSTransfer
 import com.simplesys.circe.Circe._
 import com.simplesys.common.Strings._
@@ -201,6 +203,6 @@ class Test extends FunSuite with Config with Logging with XMLLoader {
     }
 
     test("StrTodate") {
-        println(localDateTime2Str("2017-11-01T08:00:00.000Z".replace("Z", "").toLocalDateTime(), SS_LOCAL_DATE_TIME))
+        println(localDateTime2Str("2017-11-01T08:00:00.000Z".toLocalDateTime(DateTimeFormatter.ISO_LOCAL_DATE_TIME), SS_LOCAL_DATE_TIME))
     }
 }
