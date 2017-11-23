@@ -74,7 +74,7 @@ object Strings {
     }
 
     implicit class stringToDate(val string: String) {
-        def toLocalDateTime(dateTimeFormatter: DateTimeFormatter = ISO_LOCAL_DATE_TIME): LocalDateTime = {
+        def toLocalDateTime(dateTimeFormatter: DateTimeFormatter = SS_LOCAL_DATE_TIME): LocalDateTime = {
             if (string.contains("Z"))
                 LocalDateTime.parse(string.unQuoted, SS_LOCAL_DATE_TIME_Z)
             else
@@ -84,7 +84,7 @@ object Strings {
         def toLocalTime(dateTimeFormatter: DateTimeFormatter = ISO_LOCAL_TIME): LocalTime = LocalTime.parse(string.unQuoted, dateTimeFormatter)
     }
 
-    def localDateTime2Str(localDateTime: LocalDateTime, dateTimeFormatter: DateTimeFormatter = ISO_LOCAL_DATE_TIME): String = localDateTime.format(dateTimeFormatter)
+    def localDateTime2Str(localDateTime: LocalDateTime, dateTimeFormatter: DateTimeFormatter = SS_LOCAL_DATE_TIME): String = localDateTime.format(dateTimeFormatter)
 
     implicit class LocalDateTimeOpt(localDateTime: LocalDateTime) {
         def getMillis: Long = localDateTime.atZone(ZoneId.systemDefault()).toInstant.toEpochMilli
