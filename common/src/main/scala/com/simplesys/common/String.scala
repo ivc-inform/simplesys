@@ -3,12 +3,14 @@ package com.simplesys.common
 import java.io.{File, InputStream}
 import java.math.BigInteger
 import java.text.{DateFormat, DecimalFormat, DecimalFormatSymbols, SimpleDateFormat}
-import java.time.{LocalDate, LocalDateTime, LocalTime, ZoneId}
 import java.time.format.DateTimeFormatter
+import java.time.{LocalDate, LocalDateTime, LocalTime, ZoneId}
+import java.time.format.DateTimeFormatter._
 
 import com.simplesys.common.equality.SimpleEquality._
 import org.apache.commons.io.IOUtils
 import org.apache.commons.lang3.StringEscapeUtils
+import com.simplesys.common.Time._
 
 import scala.io.Codec._
 import scala.util.Try
@@ -72,16 +74,16 @@ object Strings {
     }
 
     implicit class stringToDate(val string: String) {
-        def toLocalDateTime(dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME): LocalDateTime = LocalDateTime.parse(string.unQuoted, dateTimeFormatter)
-        def toLocalDate(dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE): LocalDate = LocalDate.parse(string.unQuoted, dateTimeFormatter)
-        def toLocalTime(dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_TIME): LocalTime = LocalTime.parse(string.unQuoted, dateTimeFormatter)
+        def toLocalDateTime(dateTimeFormatter: DateTimeFormatter = ISO_LOCAL_DATE_TIME): LocalDateTime = LocalDateTime.parse(string.unQuoted, dateTimeFormatter)
+        def toLocalDate(dateTimeFormatter: DateTimeFormatter = ISO_LOCAL_DATE): LocalDate = LocalDate.parse(string.unQuoted, dateTimeFormatter)
+        def toLocalTime(dateTimeFormatter: DateTimeFormatter = ISO_LOCAL_TIME): LocalTime = LocalTime.parse(string.unQuoted, dateTimeFormatter)
     }
 
-    def localDateTime2Str(localDateTime: LocalDateTime, dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME): String = localDateTime.format(dateTimeFormatter)
+    def localDateTime2Str(localDateTime: LocalDateTime, dateTimeFormatter: DateTimeFormatter = ISO_LOCAL_DATE_TIME): String = localDateTime.format(dateTimeFormatter)
 
     implicit class LocalDateTimeOpt(localDateTime: LocalDateTime) {
         def getMillis: Long = localDateTime.atZone(ZoneId.systemDefault()).toInstant.toEpochMilli
-        def asString(dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME): String = localDateTime2Str(localDateTime, dateTimeFormatter)
+        def asString(dateTimeFormatter: DateTimeFormatter = ISO_LOCAL_DATE_TIME): String = localDateTime2Str(localDateTime, dateTimeFormatter)
 
     }
 
