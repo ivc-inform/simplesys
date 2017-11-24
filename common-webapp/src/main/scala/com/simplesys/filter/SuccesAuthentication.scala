@@ -42,6 +42,6 @@ object LoginRequiredResponse  extends Log {
         if (!response.IsCommitted)
             response.FlushBuffer()
         
-        response Print (logJSActor(RPCResponse(RPCResponseData(status = statusLoginIncorrect, errorMessage = "Требуется аутентификация !").asJson)))
+        response Print (logJSActor(RPCResponse(RPCResponseData(status = statusLoginRequired, errorMessage = "Требуется аутентификация !").asJson)))
     }
 }
