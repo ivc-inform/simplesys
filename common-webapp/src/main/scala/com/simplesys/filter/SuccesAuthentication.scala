@@ -1,19 +1,20 @@
 package com.simplesys.filter
 
 import akka.actor.ActorSystem
-import com.simplesys.isc.dataBinging.{RPCResponse, RPCResponseData}
+import com.simplesys.circe.Circe._
+import com.simplesys.isc.dataBinging.RPCResponse
+import com.simplesys.isc.dataBinging.RPCResponse._
 import com.simplesys.log.Logging
 import com.simplesys.servlet.http.{HttpServletRequest, HttpServletResponse}
-import com.simplesys.isc.dataBinging.RPCResponse._
-import com.simplesys.isc.dataBinging.RPCResponseData
 import io.circe.Json
-import io.circe.syntax._
 import io.circe.generic.auto._
+import io.circe.syntax._
 
 trait Log extends Logging {
     implicit def toOpt[T](x: T): Option[T] = Some(x)
-    def logJSActor(json: Json): Json = {
-        logger debug json.spaces4
+    def logJSActor(response: RPCResponse): Json = {
+        val json = response.asJson
+        logger debug json.spaces41
         json
     }
 }
@@ -23,7 +24,7 @@ object SuccesAuthentication extends Log {
         if (!response.IsCommitted)
             response.FlushBuffer()
 
-        response Print (logJSActor(RPCResponse(data = RPCResponseData(status = statusSuccess, login = login, userId = id, captionUser = captionUser, codeGroup = codeGroup, simpleSysContextPath = request.ContextPath).asJson).asJson))
+        response Print (logJSActor(RPCResponse(status = statusSuccess, login = login, userId = id, captionUser = captionUser, codeGroup = codeGroup, simpleSysContextPath = request.ContextPath)))
     }
 }
 
@@ -32,7 +33,7 @@ object FailureAuthentication extends Log {
         if (!response.IsCommitted)
             response.FlushBuffer()
 
-        response Print (logJSActor(RPCResponse(data = RPCResponseData(status = statusLoginIncorrect, errorMessage = errorMessage).asJson).asJson))
+        response Print (logJSActor(RPCResponse(status = statusLoginIncorrect, errorMessage = errorMessage)))
     }
 }
 
@@ -41,6 +42,6 @@ object LoginRequiredResponse  extends Log {
         if (!response.IsCommitted)
             response.FlushBuffer()
         
-        response Print (logJSActor(RPCResponse(data = RPCResponseData(status = statusLoginIncorrect, errorMessage = "Требуется аутентификация !").asJson).asJson))
+        response Print (logJSActor(RPCResponse(status = statusLoginIncorrect, errorMessage = "Требуется аутентификация !")))
     }
 }

@@ -90,7 +90,7 @@ class ServletResponse(protected[servlet] val proxy: JServletResponse) extends Lo
     }
 
     def Print(str: Json) {
-        Writer write str.noSpaces
+        Writer write str.noSpaces1
     }
 
     def PrintAndFlush(str: String) {
