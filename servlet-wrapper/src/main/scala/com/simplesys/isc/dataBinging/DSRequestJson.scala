@@ -9,7 +9,7 @@ import io.circe.syntax._
 
 case class Transaction(transactionNum: Option[String] = None, operations: Seq[Json] = Seq.empty)
 
-case class DSRequest(startRow: Option[Int] = None, endRow: Option[Int] = None, textMatchStyle: Option[String] = None, sortBy: Vector[Json] = Vector.empty, transaction: Option[Transaction] = None, oldValues: Option[Json] = None)
+case class DSRequest(startRow: Option[Int] = None, endRow: Option[Int] = None, textMatchStyle: Option[String] = None, sortBy: Option[Vector[Json]] = None, transaction: Option[Transaction] = None, oldValues: Option[Json] = None)
 
 case class DSRequestJson(dsRequest: DSRequest) {
 
