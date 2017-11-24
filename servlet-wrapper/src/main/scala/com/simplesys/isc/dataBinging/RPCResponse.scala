@@ -2,7 +2,7 @@ package com.simplesys.isc.dataBinging
 
 import io.circe.Json
 
-case class RPCResponse(status: Int, login: Option[String] = None, userId: Option[Long] = None, captionUser: Option[String] = None, codeGroup: Option[String] = None, simpleSysContextPath: Option[String] = None, errorMessage: Option[String] = None, data: Option[Json] = None)
+case class RPCResponseData(status: Int, login: Option[String] = None, userId: Option[Long] = None, captionUser: Option[String] = None, codeGroup: Option[String] = None, simpleSysContextPath: Option[String] = None, errorMessage: Option[String] = None)
 
 object RPCResponse {
     val statusSuccess = 0
@@ -21,4 +21,5 @@ object RPCResponse {
     val statusServerTimeout = -100
 }
 
+case class RPCResponse(data: Json)
 

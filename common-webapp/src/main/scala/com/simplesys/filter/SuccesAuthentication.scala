@@ -2,7 +2,7 @@ package com.simplesys.filter
 
 import akka.actor.ActorSystem
 import com.simplesys.circe.Circe._
-import com.simplesys.isc.dataBinging.RPCResponse
+import com.simplesys.isc.dataBinging.{RPCResponse, RPCResponseData}
 import com.simplesys.isc.dataBinging.RPCResponse._
 import com.simplesys.log.Logging
 import com.simplesys.servlet.http.{HttpServletRequest, HttpServletResponse}
@@ -24,7 +24,7 @@ object SuccesAuthentication extends Log {
         if (!response.IsCommitted)
             response.FlushBuffer()
 
-        response Print (logJSActor(RPCResponse(status = statusSuccess, login = login, userId = id, captionUser = captionUser, codeGroup = codeGroup, simpleSysContextPath = request.ContextPath)))
+        response Print (logJSActor(RPCResponse(RPCResponseData(status = statusSuccess, login = login, userId = id, captionUser = captionUser, codeGroup = codeGroup, simpleSysContextPath = request.ContextPath).asJson)))
     }
 }
 
@@ -33,7 +33,7 @@ object FailureAuthentication extends Log {
         if (!response.IsCommitted)
             response.FlushBuffer()
 
-        response Print (logJSActor(RPCResponse(status = statusLoginIncorrect, errorMessage = errorMessage)))
+        response Print (logJSActor(RPCResponse(RPCResponseData(status = statusLoginIncorrect, errorMessage = errorMessage).asJson)))
     }
 }
 
@@ -42,6 +42,6 @@ object LoginRequiredResponse  extends Log {
         if (!response.IsCommitted)
             response.FlushBuffer()
         
-        response Print (logJSActor(RPCResponse(status = statusLoginIncorrect, errorMessage = "Требуется аутентификация !")))
+        response Print (logJSActor(RPCResponse(RPCResponseData(status = statusLoginIncorrect, errorMessage = "Требуется аутентификация !").asJson)))
     }
 }
