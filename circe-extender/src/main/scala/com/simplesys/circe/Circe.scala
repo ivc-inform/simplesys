@@ -64,6 +64,16 @@ object Circe {
             case Left(_) ⇒ None
         }
 
+        def getInt(key: String): Int = cursor.downField(key).as[Int] match {
+            case Right(x) ⇒ x
+            case Left(_) ⇒ throw new RuntimeException(s"Key $key not found.")
+        }
+
+        def getIntOpt(key: String): Option[Int] = cursor.downField(key).as[Int] match {
+            case Right(x) ⇒ Some(x)
+            case Left(_) ⇒ None
+        }
+
         def getDouble(key: String): Double = cursor.downField(key).as[Double] match {
             case Right(x) ⇒ x
             case Left(_) ⇒ throw new RuntimeException(s"Key $key not found.")
@@ -163,6 +173,10 @@ object Circe {
 
         def getLongOpt(key: String): Option[Long] = json.getOrElse(Json.Null).getLongOpt(key)
 
+        def getInt(key: String): Int = json.getOrElse(Json.Null).getInt(key)
+
+        def getIntOpt(key: String): Option[Int] = json.getOrElse(Json.Null).getIntOpt(key)
+
         def getDouble(key: String): Double = json.getOrElse(Json.Null).getDouble(key)
 
         def getDoubleOpt(key: String): Option[Double] = json.getOrElse(Json.Null).getDoubleOpt(key)
@@ -208,6 +222,10 @@ object Circe {
 
         def getLongOpt(key: String): Option[Long] = fromJsonObject(jsonObject).getLongOpt(key)
 
+        def getInt(key: String): Int = fromJsonObject(jsonObject).getInt(key)
+
+        def getIntOpt(key: String): Option[Int] = fromJsonObject(jsonObject).getIntOpt(key)
+
         def getDouble(key: String): Double = fromJsonObject(jsonObject).getDouble(key)
 
         def getDoubleOpt(key: String): Option[Double] = fromJsonObject(jsonObject).getDoubleOpt(key)
@@ -236,7 +254,7 @@ object Circe {
     }
 
     implicit class Circe3Opt(json: Vector[Json]) {
-        def toPrettyString = arr(json:_*).toPrettyString
+        def toPrettyString = arr(json: _*).toPrettyString
     }
 
     implicit def impString(str: String): Json = fromString(str)

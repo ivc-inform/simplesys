@@ -19,6 +19,10 @@ case class DSRequest(request: Json, startRow: Option[Int] = None, endRow: Option
 
     def getLongOpt(key: String): Option[Long] = request getLongOpt key
 
+    def getInt(key: String): Int = request getInt key
+
+    def getIntOpt(key: String): Option[Int] = request getIntOpt key
+
     def getDouble(key: String): Double = request getDouble key
 
     def getDoubleOpt(key: String): Option[Double] = request getDoubleOpt key
@@ -35,9 +39,9 @@ case class DSRequest(request: Json, startRow: Option[Int] = None, endRow: Option
 
     def getBooleanOpt(key: String): Option[Boolean] = request getBooleanOpt key
 
-    def getJsonList(key: String): Vector[Json] = request getJsonList  key
+    def getJsonList(key: String): Vector[Json] = request getJsonList key
 
-    def getJsonListOpt(key: String): Option[Vector[Json]] = request getJsonListOpt  key
+    def getJsonListOpt(key: String): Option[Vector[Json]] = request getJsonListOpt key
 
     def getJsonElement(key: String): Option[Json] = request getJsonElement key
 }
