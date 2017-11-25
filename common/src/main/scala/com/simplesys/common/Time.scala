@@ -1,12 +1,11 @@
 package com.simplesys.common
 
-import java.time.chrono.IsoChronology
-import java.time.format.{DateTimeFormatterBuilder, ResolverStyle, SignStyle}
 import java.time.format.DateTimeFormatter._
+import java.time.format.DateTimeFormatterBuilder
 import java.time.temporal.ChronoField._
 import java.util.Locale
+
 import com.simplesys.common.Strings._
-import java.time.chrono.Chronology
 
 
 object Time {
