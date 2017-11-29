@@ -55,6 +55,7 @@ object Strings {
         def escapeEcmaScript = StringEscapeUtils.escapeEcmaScript(string)
         def dblQuotedJS = "\"" + StringEscapeUtils.escapeEcmaScript(string) + "\""
         def quoted = "'" + string + "'"
+        def ellipsis = s"$string ..."
     }
 
     implicit class fltrOpts(val strings: List[String]) {
