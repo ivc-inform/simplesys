@@ -20,7 +20,10 @@ case object ScalaNullPropertyElement extends ScalaPropertyElement {
 }
 
 case class ScalaClassJSONPropertyString(value: String) extends ScalaPropertyElement {
-    def serrialize(indent: Int = 0) = value.dblQuoted
+    def serrialize(indent: Int = 0) = {
+        import com.simplesys.common.JVM.Strings._
+        value.dblQuoted
+    }
 }
 
 object ScalaClassJSONPropertyJSCode extends Logging {
@@ -85,35 +88,59 @@ case class ScalaClassJSONPropertyBoolean(value: Boolean) extends ScalaPropertyEl
 }
 
 case class ScalaClassJSONPropertyDate(value: LocalDateTime) extends ScalaPropertyElement {
-    def serrialize(indent: Int = 0) = value.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")).dblQuoted
+    def serrialize(indent: Int = 0) = {
+        import com.simplesys.common.JVM.Strings._
+        value.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")).dblQuoted
+    }
 }
 
 case class ScalaClassJSONPropertyDateTime(value: LocalDateTime) extends ScalaPropertyElement {
-    def serrialize(indent: Int = 0) = value.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")).dblQuoted
+    def serrialize(indent: Int = 0) = {
+        import com.simplesys.common.JVM.Strings._
+        value.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")).dblQuoted
+    }
 }
 
 case class ScalaClassJSONPropertyDblQuotedValue(value: String) extends ScalaPropertyElement {
-    def serrialize(indent: Int = 0) = value.dblQuoted + ".dblQuoted"
+    def serrialize(indent: Int = 0) = {
+        import com.simplesys.common.JVM.Strings._
+        value.dblQuoted + ".dblQuoted"
+    }
 }
 
 case class ScalaClassJSONPropertyURLValue(value: String) extends ScalaPropertyElement {
-    def serrialize(indent: Int = 0) = value.dblQuoted + ".url"
+    def serrialize(indent: Int = 0) = {
+        import com.simplesys.common.JVM.Strings._
+        value.dblQuoted + ".url"
+    }
 }
 
 case class ScalaClassJSONPropertyURLwithVarValue(value: String, variable: String) extends ScalaPropertyElement {
-    def serrialize(indent: Int = 0) = value.dblQuoted + s".url(${variable})"
+    def serrialize(indent: Int = 0) = {
+        import com.simplesys.common.JVM.Strings._
+        value.dblQuoted + s".url(${variable})"
+    }
 }
 
 case class ScalaClassJSONPropertyUnqValue(value: String) extends ScalaPropertyElement {
-    def serrialize(indent: Int = 0) = value.dblQuoted + ".unq"
+    def serrialize(indent: Int = 0) = {
+        import com.simplesys.common.JVM.Strings._
+        value.dblQuoted + ".unq"
+    }
 }
 
 case class ScalaClassJSONPropertyEllipsisValue(value: String) extends ScalaPropertyElement {
-    def serrialize(indent: Int = 0) = value.dblQuoted + ".ellps"
+    def serrialize(indent: Int = 0) = {
+        import com.simplesys.common.JVM.Strings._
+        value.dblQuoted + ".ellps"
+    }
 }
 
 case class ScalaClassJSONPropertyApproxValue(value: String) extends ScalaPropertyElement {
-    def serrialize(indent: Int = 0) = "s" + value.dblQuoted
+    def serrialize(indent: Int = 0) = {
+        import com.simplesys.common.JVM.Strings._
+        "s" + value.dblQuoted
+    }
 }
 
 case class ScalaClassJSONPropertyUnQuotedValue(value: String) extends ScalaPropertyElement {

@@ -42,7 +42,10 @@ object DsRequest {
                                             val placesHolder = ArrayBuffer.empty[SQLAbsValue]
                                             list foreach {
                                                 item =>
-                                                    if (!item.toString.unQuoted.isEmpty) {
+                                                    if (! {
+                                                        import com.simplesys.common.JVM.Strings._
+                                                        item.toString.unQuoted.isEmpty
+                                                    }) {
                                                         placesHolder += SQLValue(operator.getBindPlaceholder)
                                                         bindMap += BindingColumn(getColumn(fieldName), item.toString)
                                                     }
@@ -118,7 +121,10 @@ case class DsRequest(sqlDialect: SQLDialect, startRow: Int, endRow: Int, sortBy:
         implicit val _bindMap = bindMap
 
         def getColumnInBase(columnNameInBo: String): SQLField = {
-            val a: String = columnNameInBo.unQuoted.replace("-", "")
+            val a: String = {
+                import com.simplesys.common.JVM.Strings._
+                columnNameInBo.unQuoted.replace("-", "")
+            }
             val _b: List[BasicClassBOColumn[_]] = fields.filter(_.nameInBo === a)
             if (_b.length != 1) {
                 _b.foreach(_.log(0))

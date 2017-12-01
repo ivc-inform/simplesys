@@ -933,7 +933,10 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
         }
 
         def getColumnInBase(columnInBo: SQLField): Option[SQLField] = {
-            val columnName: String = columnInBo.name.unQuoted.replace("-", "");
+            val columnName: String = {
+                import com.simplesys.common.JVM.Strings._
+                columnInBo.name.unQuoted.replace("-", "")
+            }
             val field = compoundAllColumns.filter(_.nameInBo === columnName).headOption
             field match {
                 case Some(field) => Some(columnInBo.copy(name = field.name, tableOwner = field.getTableOwner))

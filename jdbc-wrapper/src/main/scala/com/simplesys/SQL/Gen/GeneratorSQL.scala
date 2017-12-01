@@ -29,10 +29,22 @@ sealed abstract class SQLElement extends Logging {
 
 case class SQLTable(name: String, quoted: Boolean = true) extends SQLAbsTable {
 
-    override def toSQL(indent: Int): String = spaces(indent) + (if (quoted) name.toHeightFont.dblQuoted else name.toHeightFont)
-    override def toInsertSQL(indent: Int): String = spaces(indent) + (if (quoted) name.toHeightFont.dblQuoted else name.toHeightFont)
-    override def toUpdateSQL(indent: Int): String = spaces(indent) + (if (quoted) name.toHeightFont.dblQuoted else name.toHeightFont)
-    override def toDeleteSQL(indent: Int): String = spaces(indent) + (if (quoted) name.toHeightFont.dblQuoted else name.toHeightFont)
+    override def toSQL(indent: Int): String = spaces(indent) + (if (quoted) {
+        import com.simplesys.common.JVM.Strings._
+        name.toHeightFont.dblQuoted
+    } else name.toHeightFont)
+    override def toInsertSQL(indent: Int): String = spaces(indent) + (if (quoted) {
+        import com.simplesys.common.JVM.Strings._
+        name.toHeightFont.dblQuoted
+    } else name.toHeightFont)
+    override def toUpdateSQL(indent: Int): String = spaces(indent) + (if (quoted) {
+        import com.simplesys.common.JVM.Strings._
+        name.toHeightFont.dblQuoted
+    } else name.toHeightFont)
+    override def toDeleteSQL(indent: Int): String = spaces(indent) + (if (quoted) {
+        import com.simplesys.common.JVM.Strings._
+        name.toHeightFont.dblQuoted
+    } else name.toHeightFont)
 
     def isEmpty = name.isEmpty
     def nonEmpty = !isEmpty
@@ -75,28 +87,40 @@ case class SQLField(name: String,
 
     def toSQL(indent: Int): String = {
         if (quoted)
-            (if (isSystem) strEmpty else (if (tableOwner.name.isEmpty) getBaseAliasTable else tableOwner.toSQL() + ".")) + getName.toHeightFont.dblQuoted + getAliasField
+            (if (isSystem) strEmpty else (if (tableOwner.name.isEmpty) getBaseAliasTable else tableOwner.toSQL() + ".")) + {
+                import com.simplesys.common.JVM.Strings._
+                getName.toHeightFont.dblQuoted
+            } + getAliasField
         else
             (if (isSystem) strEmpty else (if (tableOwner.name.isEmpty) getBaseAliasTable else tableOwner.toSQL() + ".")) + getName.toHeightFont + getAliasField
     }
 
     override def toInsertSQL(indent: Int): String = {
         if (quoted)
-            (if (isSystem) strEmpty else name.toHeightFont.dblQuoted)
+            (if (isSystem) strEmpty else {
+                import com.simplesys.common.JVM.Strings._
+                name.toHeightFont.dblQuoted
+            })
         else
             (if (isSystem) strEmpty else name.toHeightFont)
     }
 
     override def toUpdateSQL(indent: Int): String = {
         if (quoted)
-            (if (isSystem) strEmpty else name.toHeightFont.dblQuoted)
+            (if (isSystem) strEmpty else {
+                import com.simplesys.common.JVM.Strings._
+                name.toHeightFont.dblQuoted
+            })
         else
             (if (isSystem) strEmpty else name)
     }
 
     override def toDeleteSQL(indent: Int): String = {
         if (quoted)
-            (if (isSystem) strEmpty else name.toHeightFont.dblQuoted)
+            (if (isSystem) strEmpty else {
+                import com.simplesys.common.JVM.Strings._
+                name.toHeightFont.dblQuoted
+            })
         else
             (if (isSystem) strEmpty else name.toHeightFont)
     }
@@ -160,7 +184,10 @@ case class SQLFields(fields: Seq[SQLField] = Seq.empty[SQLField]) extends SQLEle
     def sqlFieldsWithTableOwner(tableOwner: SQLTable): SQLFields = SQLFields(_fields.map(field => field.copy(tableOwner = tableOwner.copy(quoted = false), name = if (field.alias.nonEmpty) field.alias.name else field.name, alias = SQLAlias(strEmpty))))
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    def getFieldInBase(nameInBo: String): SQLField = _fields.filter(_.nameInBo === nameInBo.unQuoted).head
+    def getFieldInBase(nameInBo: String): SQLField = _fields.filter(_.nameInBo === {
+        import com.simplesys.common.JVM.Strings._
+        nameInBo.unQuoted
+    }).head
 
     override def toSQL(indent: Int): String = (_fields map (_ toSQL indent)).sortWith(_ < _).mkString(",".newLine + spaces(indent))
     override def toInsertSQL(indent: Int): String = (_fields map (_ toInsertSQL indent)).mkString(",".space)
@@ -674,7 +701,10 @@ case class SQLJoinCondition(field: SQLField, operator: OperatorId, fieldJoin: SQ
     override def toSQL(indent: Int): String = {
         def getField(field: SQLField, indent: Int = 0): String = {
             if (field.quoted)
-                (if (field.isSystem) strEmpty else (if (field.tableOwner.name.isEmpty) getBaseAliasTable else field.tableOwner.toSQL() + ".")) + (if (field.alias.isEmpty) field.getName.toHeightFont.dblQuoted else field.alias.name)
+                (if (field.isSystem) strEmpty else (if (field.tableOwner.name.isEmpty) getBaseAliasTable else field.tableOwner.toSQL() + ".")) + (if (field.alias.isEmpty) {
+                    import com.simplesys.common.JVM.Strings._
+                    field.getName.toHeightFont.dblQuoted
+                } else field.alias.name)
             else
                 (if (field.isSystem) strEmpty else (if (field.tableOwner.name.isEmpty) getBaseAliasTable else field.tableOwner.toSQL() + ".")) + (if (field.alias.isEmpty) field.getName else field.alias.name)
         }
@@ -1243,7 +1273,10 @@ case class SQLCompoundTable(fields: SQLFields = new SQLFields(),
     private def getTableNameWithOutAlias = {
         from.table match {
             case SQLTable(name: String, quoted) =>
-                space + (if (quoted) name.toHeightFont.dblQuoted else name.toHeightFont)
+                space + (if (quoted) {
+                    import com.simplesys.common.JVM.Strings._
+                    name.toHeightFont.dblQuoted
+                } else name.toHeightFont)
             case _ =>
                 strEmpty
         }

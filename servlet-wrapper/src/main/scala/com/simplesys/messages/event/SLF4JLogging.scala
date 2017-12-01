@@ -35,7 +35,10 @@ class Slf4jLogger extends akka.event.slf4j.Slf4jLogger with StdOutLogger {
         val channels: Set[String] = list.map {
             item ⇒
                 item.asString match {
-                    case Some(str) ⇒ str.unQuoted
+                    case Some(str) ⇒ {
+                        import com.simplesys.common.JVM.Strings._
+                        str.unQuoted
+                    }
                     case x => throw new RuntimeException(s"Bad branch $x")
                 }
         }.toSet
