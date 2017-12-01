@@ -25,6 +25,9 @@ object CommonDeps {
     val javaxTransaction = "javax.transaction" % "jta" % versions.javaxTransactionVersion
     val servletAPI = "javax.servlet" % "javax.servlet-api" % versions.servletAPIVersion
 
+    val commonCross = "com.simplesys.cross" %% "common-cross" % versions.ssSympleSysCrossVersion
+    val circeCross = "com.simplesys.cross" %% "circe-extender" % versions.ssSympleSysCrossVersion
+
     val wrappedSaxonEE = "com.simplesys.saxon" % "saxon-ee" % versions.wrappedSaxonEEVersion
     val xerces = "xerces" % "xercesImpl" % versions.xercesVersion
     val hikariCP = "com.zaxxer" % "HikariCP" % versions.hikariCPVersionVersion
@@ -77,6 +80,7 @@ object CommonDeps {
 
         val javaxTransactionVersion = "1.1"
         val servletAPIVersion = "3.1.0"
+        val ssSympleSysCrossVersion = "1.0.0.5-SNAPHOT"
 
         val wrappedSaxonEEVersion = "9.5.1.2-1"
         val xercesVersion = "2.11.0"
