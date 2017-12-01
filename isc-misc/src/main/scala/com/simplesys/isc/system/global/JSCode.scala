@@ -1,10 +1,11 @@
 package com.simplesys.isc.system.global
 
-import io.Source
-import io.Codec._
-import com.simplesys.common._
 import com.simplesys.common.Strings._
+import com.simplesys.common._
 import com.simplesys.log.Logging
+
+import scala.io.Source
+import scala.io.Codec._
 
 object JSCode extends Logging {
   def loadFromURI(uriBox: URIBox): String = {

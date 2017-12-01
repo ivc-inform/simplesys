@@ -1,12 +1,14 @@
 package com.simplesys.isc.tools
 
-import io.Source
-import com.simplesys.log.Logging
-import java.io.{PrintWriter, File}
+import java.io.{File, PrintWriter}
+
+import com.simplesys.common.Strings.newLine
 import com.simplesys.common._
 import com.simplesys.control.ControlStructs._
-import collection.mutable
-import com.simplesys.common.Strings.newLine
+import com.simplesys.log.Logging
+
+import scala.collection.mutable
+import scala.io.Source
 
 object ChangeAttributes {
   val AttrDeclare = """(\s*)(\w+\_*)(\s*\:\s*)(\w+)(\s*=\s*)(\"?\[?\$?\**[\w*\s*]*\.*\/?\w*\]?\/*\w*\.*\-*\w*\-*\w*\-*\w*\"?[\<?\w*\/?\>?]*\??)(\s*\,?)(.*)""".r
