@@ -63,6 +63,7 @@ object CommonDeps {
     val akkaHttpCirce = "de.heikoseeberger" %% "akka-http-circe" % "1.18.2-SNAPSHOT"
 
     val circeExtender = "com.simplesys.cross" %% "circe-extender" % versions.ssCrossVersion
+    val servletWrapper = "com.simplesys.cross" %% "servlet-wrapper" % versions.ssCrossVersion
 
     object versions {
         val scalaModulesVersion = "1.0.6"

@@ -241,6 +241,7 @@ lazy val servletWrapper = Project(id = "servlet-wrapper", base = file("servlet-w
     scalacOptions += "-Dscalac:patmat:analysisBudget=1024",
 
     libraryDependencies ++= Seq(
+        CommonDeps.servletWrapper,
         CommonDeps.circeExtender,
         CommonDeps.servletAPI % Provided,
         CommonDeps.scalaTest
