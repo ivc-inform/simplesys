@@ -80,7 +80,7 @@ object CommonDeps {
 
         val javaxTransactionVersion = "1.1"
         val servletAPIVersion = "3.1.0"
-        val ssSympleSysCrossVersion = "1.0.0.5-SNAPHOT"
+        val ssSympleSysCrossVersion = "1.0.0.5-SNAPSHOT"
 
         val wrappedSaxonEEVersion = "9.5.1.2-1"
         val xercesVersion = "2.11.0"

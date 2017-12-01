@@ -117,13 +117,13 @@ lazy val configWrapper = Project(id = "config-wrapper", base = file("config-wrap
       xmlExtender
   )
   .settings(
-    libraryDependencies ++= Seq(
-        CommonDeps.commonCross,
-        CommonDeps.configWrapper,
-        CommonDeps.configTypesafe,
-        CommonDeps.scalaTest
-    )
-).settings(CommonSettings.defaultProjectSettings)
+      libraryDependencies ++= Seq(
+          CommonDeps.commonCross,
+          CommonDeps.configWrapper,
+          CommonDeps.configTypesafe,
+          CommonDeps.scalaTest
+      )
+  ).settings(CommonSettings.defaultProjectSettings)
 
 lazy val coreDomains = Project(id = "core-domains", base = file("core-domains"))
   .dependsOn(
@@ -138,16 +138,20 @@ lazy val coreDomains = Project(id = "core-domains", base = file("core-domains"))
       )
   ).settings(CommonSettings.defaultProjectSettings)
 
-lazy val coreLibrary = Project(id = "core-library", base = file("core-library")).settings(
-    libraryDependencies ++= Seq(
-        CommonDeps.scalaXml,
-        CommonDeps.scalaTest
-    )
-).settings(CommonSettings.defaultProjectSettings)
+lazy val coreLibrary = Project(id = "core-library", base = file("core-library"))
+  .settings(
+      libraryDependencies ++= Seq(
+          CommonDeps.scalaXml,
+          CommonDeps.scalaTest
+      )
+  )
+  .settings(CommonSettings.defaultProjectSettings)
 
-lazy val coreUtils = Project(id = "core-utils", base = file("core-utils")).settings(
-    libraryDependencies += CommonDeps.scalaReflect.value
-).settings(CommonSettings.defaultProjectSettings)
+lazy val coreUtils = Project(id = "core-utils", base = file("core-utils"))
+  .settings(
+      libraryDependencies += CommonDeps.scalaReflect.value
+  )
+  .settings(CommonSettings.defaultProjectSettings)
 
 lazy val doobieExtender = Project(id = "doobie-extender", base = file("doobie-extender")).dependsOn(logbackWrapper).settings(
     libraryDependencies ++= Seq(
@@ -178,14 +182,14 @@ lazy val iscMisc = Project(id = "isc-misc", base = file("isc-misc"))
       xmlExtender
   )
   .settings(
-    libraryDependencies ++= Seq(
-        CommonDeps.commonCross,
-        CommonDeps.rhino,
-        CommonDeps.scalaReflect.value,
-        CommonDeps.scalaParserCombinators,
-        CommonDeps.scalaTest
-    )
-).settings(CommonSettings.defaultProjectSettings)
+      libraryDependencies ++= Seq(
+          CommonDeps.commonCross,
+          CommonDeps.rhino,
+          CommonDeps.scalaReflect.value,
+          CommonDeps.scalaParserCombinators,
+          CommonDeps.scalaTest
+      )
+  ).settings(CommonSettings.defaultProjectSettings)
 
 lazy val jdbcWrapper = Project(id = "jdbc-wrapper", base = file("jdbc-wrapper"))
   .dependsOn(
@@ -222,25 +226,27 @@ lazy val saxonWrapper = Project(id = "saxon-wrapper", base = file("saxon-wrapper
       scalaIOExtender
   )
   .settings(
-    libraryDependencies ++= Seq(
-        CommonDeps.commonCross,
-        CommonDeps.wrappedSaxonEE,
-        CommonDeps.scalaTest
-    )
-).settings(CommonSettings.defaultProjectSettings)
+      libraryDependencies ++= Seq(
+          CommonDeps.commonCross,
+          CommonDeps.wrappedSaxonEE,
+          CommonDeps.scalaTest
+      )
+  ).settings(CommonSettings.defaultProjectSettings)
 
 lazy val scalaGen = Project(id = "scala-gen", base = file("scala-gen"))
   .dependsOn(
       scalaIOExtender,
       iscMisc)
   .settings(
-    libraryDependencies ++= Seq(
-        CommonDeps.commonCross,
-        CommonDeps.scalaTest
-    )
-).settings(CommonSettings.defaultProjectSettings)
+      libraryDependencies ++= Seq(
+          CommonDeps.commonCross,
+          CommonDeps.scalaTest
+      )
+  ).settings(CommonSettings.defaultProjectSettings)
 
-lazy val scalaIOExtender = Project(id = "scala-io-extender", base = file("scala-io-extender")).dependsOn(logbackWrapper).settings(
+lazy val scalaIOExtender = Project(id = "scala-io-extender", base = file("scala-io-extender"))
+  .dependsOn(logbackWrapper)
+  .settings(
     libraryDependencies ++= Seq(
         CommonDeps.javaxTransaction,
         CommonDeps.scalaArm,
@@ -270,52 +276,52 @@ lazy val servletWrapper = Project(id = "servlet-wrapper", base = file("servlet-w
 lazy val utilEvalExtender = Project(id = "util-eval-extender", base = file("util-eval-extender"))
   .dependsOn()
   .settings(
-    libraryDependencies ++= Seq(
-        CommonDeps.commonCross,
-        CommonDeps.utilEval,
-        CommonDeps.scalaTest
-    )
-).settings(CommonSettings.defaultProjectSettings)
+      libraryDependencies ++= Seq(
+          CommonDeps.commonCross,
+          CommonDeps.utilEval,
+          CommonDeps.scalaTest
+      )
+  ).settings(CommonSettings.defaultProjectSettings)
 
 lazy val xmlExtender = Project(id = "xml-extender", base = file("xml-extender"))
   .dependsOn(
       saxonWrapper
   )
   .settings(
-    libraryDependencies ++= Seq(
-        CommonDeps.commonCross,
-        CommonDeps.xerces,
-        CommonDeps.junit,
-        CommonDeps.scalaTest
-    )
-).settings(CommonSettings.defaultProjectSettings)
+      libraryDependencies ++= Seq(
+          CommonDeps.commonCross,
+          CommonDeps.xerces,
+          CommonDeps.junit,
+          CommonDeps.scalaTest
+      )
+  ).settings(CommonSettings.defaultProjectSettings)
 
 lazy val hikariCP = Project(id = "hikari-cp", base = file("hikari-cp"))
   .dependsOn(
       configWrapper
   )
   .settings(
-    libraryDependencies ++= Seq(
-        CommonDeps.commonCross,
-        CommonDeps.hikariCP,
-        CommonDeps.jdbcOracle12,
-        CommonDeps.jdbcOracle12UCP,
-        CommonDeps.jdbcOracleN18_12,
-        CommonDeps.scalaTest
-    )
-).settings(CommonSettings.defaultProjectSettings)
+      libraryDependencies ++= Seq(
+          CommonDeps.commonCross,
+          CommonDeps.hikariCP,
+          CommonDeps.jdbcOracle12,
+          CommonDeps.jdbcOracle12UCP,
+          CommonDeps.jdbcOracleN18_12,
+          CommonDeps.scalaTest
+      )
+  ).settings(CommonSettings.defaultProjectSettings)
 
 lazy val slickExtension = Project(id = "slick-extension", base = file("slick-extension"))
   .dependsOn(
       configWrapper
   )
   .settings(
-    libraryDependencies ++= Seq(
-        CommonDeps.commonCross,
-        CommonDeps.slick,
-        CommonDeps.slickHikariCP,
-        CommonDeps.jdbcOracle12,
-        CommonDeps.scalaTest
-    )
-).settings(CommonSettings.defaultProjectSettings)
+      libraryDependencies ++= Seq(
+          CommonDeps.commonCross,
+          CommonDeps.slick,
+          CommonDeps.slickHikariCP,
+          CommonDeps.jdbcOracle12,
+          CommonDeps.scalaTest
+      )
+  ).settings(CommonSettings.defaultProjectSettings)
 
