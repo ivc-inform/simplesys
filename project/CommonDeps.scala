@@ -9,7 +9,7 @@ object PluginDeps {
 
     object versions {
         val sbtCoffeScriptVersion = "1.1.4"
-        val jdbcPluginVersion = "1.0.4-SNAPSHOT"
+        val jdbcPluginVersion = "1.0.3"
         val jsonPluginVersion = "1.0.3"
     }
 }
@@ -24,10 +24,6 @@ object CommonDeps {
     val logbackCore = "ch.qos.logback" % "logback-core" % versions.logbackVersion
     val javaxTransaction = "javax.transaction" % "jta" % versions.javaxTransactionVersion
     val servletAPI = "javax.servlet" % "javax.servlet-api" % versions.servletAPIVersion
-
-    val commonCross = "com.simplesys.cross" %% "common-cross" % versions.ssSympleSysCrossVersion
-    val circeCross = "com.simplesys.cross" %% "circe-extender" % versions.ssSympleSysCrossVersion
-    val servletWrapperCross = "com.simplesys.cross" %% "servlet-wrapper" % versions.ssSympleSysCrossVersion
 
     val wrappedSaxonEE = "com.simplesys.saxon" % "saxon-ee" % versions.wrappedSaxonEEVersion
     val xerces = "xerces" % "xercesImpl" % versions.xercesVersion
@@ -81,7 +77,6 @@ object CommonDeps {
 
         val javaxTransactionVersion = "1.1"
         val servletAPIVersion = "3.1.0"
-        val ssSympleSysCrossVersion = "1.0.0.5-SNAPSHOT"
 
         val wrappedSaxonEEVersion = "9.5.1.2-1"
         val xercesVersion = "2.11.0"

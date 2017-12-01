@@ -47,9 +47,7 @@ object StandartErrorListener {
 
       construct match {
         case Location.LITERAL_RESULT_ELEMENT => "element constructor <" + inst.getObjectName.getDisplayName + ">"
-        case Location.LITERAL_RESULT_ATTRIBUTE =>
-          import com.simplesys.common.JVM.Strings._
-          "attribute constructor <" + inst.getObjectName.getDisplayName + "=" + "{...}".dblQuoted
+        case Location.LITERAL_RESULT_ATTRIBUTE => "attribute constructor <" + inst.getObjectName.getDisplayName + "=" + "{...}".dblQuoted
         case _ => ""
       }
     }

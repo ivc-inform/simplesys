@@ -36,10 +36,7 @@ object JDBC extends Logging{
 
     implicit def arrayBoolean2JsonElement(value: Array[Boolean]): Option[Json] = if (value.length == 0) None else Some(fromBoolean(value.head))
 
-    implicit def arrayInputStream2JsonElement(value: Array[InputStream]): Option[Json] = if (value.length == 0) None else Some(fromString({
-        import com.simplesys.common.JVM.Strings._
-        value.head.asString
-    }))
+    implicit def arrayInputStream2JsonElement(value: Array[InputStream]): Option[Json] = if (value.length == 0) None else Some(fromString(value.head.asString))
 
     //implicit def unwrapOpt[T: ClassTag](value: T): Option[T] = Option(value)
     implicit def seqBigDecimal2BigDecimal(value: Seq[BigDecimal]): BigDecimal = value.head

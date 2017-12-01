@@ -1,6 +1,6 @@
 package com.simplesys.isc.system.misc
 
-import com.simplesys.common.JVM.Strings._
+import com.simplesys.common.Strings._
 import com.simplesys.json.UnquotedString
 
 object StringMethod {

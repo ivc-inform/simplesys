@@ -71,10 +71,7 @@ package object scalaGen {
 
     implicit class Params21Opts(tuple: (String, String)) {
         def param = new ScalaClassInitParametr(key = tuple._1, value = tuple._2)
-        def dblQuotedParam = new ScalaClassInitParametr(key = tuple._1, value = {
-            import com.simplesys.common.JVM.Strings._
-            tuple._2.dblQuoted
-        } + ".dblQuoted")
+        def dblQuotedParam = new ScalaClassInitParametr(key = tuple._1, value = tuple._2.dblQuoted + ".dblQuoted")
 
         def property = ScalaClassJSONProperty(key = tuple._1, value = tuple._2.str)
         def dblQuotedProperty = ScalaClassJSONProperty(key = tuple._1, value = tuple._2.dblQuotedValue)
@@ -89,10 +86,7 @@ package object scalaGen {
 
     implicit class Params210Opts(tuple: (TypeSymbol, String)) {
         def param = new ScalaClassInitParametr(key = tuple._1.toString, value = tuple._2)
-        def dblQuotedParam = new ScalaClassInitParametr(key = tuple._1.toString, value = {
-            import com.simplesys.common.JVM.Strings._
-            tuple._2.dblQuoted
-        } + ".dblQuoted")
+        def dblQuotedParam = new ScalaClassInitParametr(key = tuple._1.toString, value = tuple._2.dblQuoted + ".dblQuoted")
     }
 
     implicit class Params22Opts(tuple: (String, ScalaPropertyElement)) {

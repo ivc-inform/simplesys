@@ -107,10 +107,7 @@ class ScalaStringElement(string: String) extends ScalaObjectElement {
 }
 
 case class ScalaUnquotedStringElement(string: String) extends ScalaObjectElement {
-    def serrialize(indent: Int = 0) = spaces(indent) + {
-        import com.simplesys.common.JVM.Strings._
-        string.dblQuoted
-    } + ".unq"
+    def serrialize(indent: Int = 0) = spaces(indent) + string.dblQuoted + ".unq"
 }
 
 case class ScalaUnquotedStringElement1(string: String) extends ScalaObjectElement {
@@ -358,10 +355,7 @@ case class ScalaMethod(name: String,
             body = body,
             serrializeToOneString = true
         ),
-        ScalaExpression({
-            import com.simplesys.common.JVM.Strings._
-            "logger.debug (" + (name + ": ").dblQuoted
-        } + " + " + name + ".toString)"),
+        ScalaExpression("logger.debug (" + (name + ": ").dblQuoted + " + " + name + ".toString)"),
         ScalaExpression(name)
     )
     else body
@@ -388,10 +382,7 @@ case class ScalaTestMethod(name: String,
                            serrializeToOneString: Boolean = false) extends ScalaElement {
 
     def serrialize(indent: Int = 0) = {
-        spaces(indent) + {
-            import com.simplesys.common.JVM.Strings._
-            name.dblQuoted
-        } + testKind.serrialize(1).space + (body match {
+        spaces(indent) + name.dblQuoted + testKind.serrialize(1).space + (body match {
             case x: ScalaBody =>
                 if (x.length === 1)
                     "{" + /*newLine + */ spaces(indent + indentSize) + (if (serrializeToOneString) body.serrializeToOneString(indent) else body.serrialize(indent)) + newLine + spaces(indent) + "}"
@@ -472,10 +463,7 @@ case class ScalaVariable(name: String,
                 body = body,
                 serrializeToOneString = true
             ),
-            ScalaExpression({
-                import com.simplesys.common.JVM.Strings._
-                "logger.debug (" + (_name + ": ").dblQuoted
-            } + " + " + (if (loggedFunction == strEmpty) _name + ".toString" else loggedFunction) + ")"),
+            ScalaExpression("logger.debug (" + (_name + ": ").dblQuoted + " + " + (if (loggedFunction == strEmpty) _name + ".toString" else loggedFunction) + ")"),
             ScalaExpression(_name)
         )
         else body
@@ -856,10 +844,7 @@ case class ScalaControlStruct(name: String, nameQuoted: Boolean = false, body: B
             else
                 newLine + spaces(indent + indentSize) + x
         }
-        spaces(indent) + (if (nameQuoted) {
-            import com.simplesys.common.JVM.Strings._
-            name.dblQuoted
-        } else name) + res
+        spaces(indent) + (if (nameQuoted) name.dblQuoted else name) + res
     }
 }
 

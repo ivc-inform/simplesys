@@ -1,7 +1,7 @@
 package com.simplesys.isc.system.misc
 
 import com.simplesys.json.UnquotedString
-import com.simplesys.common.JVM.Strings._
+import com.simplesys.common.Strings._
 
 object VarExp {
     def apply(rHandExpr: String) = new VarExp(rHandExpr)

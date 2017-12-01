@@ -14,10 +14,7 @@ class JavaScriptStringElement(string: String) extends JavaScriptElement {
 }
 
 case class JavaScriptSwitchCaseItem(`case`: String, body: JavaScriptBody) extends JavaScriptElement {
-    def serrialize(indent: Int): String = spaces(indent) + "case".space + {
-        import com.simplesys.common.JVM.Strings._
-        `case`.dblQuoted
-    } + ":".newLine + body.serrialize(indent)
+    def serrialize(indent: Int): String = spaces(indent) + "case".space + `case`.dblQuoted + ":".newLine + body.serrialize(indent)
 }
 
 case class JavaScriptSwitch(switch: String, default: JavaScriptBody, caseItems: JavaScriptSwitchCaseItem*) extends JavaScriptElement {
