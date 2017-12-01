@@ -61,7 +61,9 @@ object CommonDeps {
     val specs2 = "org.specs2" %% "specs2-core" % "4.0.0" % Test
 
     val akkaHttpCirce = "de.heikoseeberger" %% "akka-http-circe" % "1.18.2-SNAPSHOT"
-    
+
+    val circeExtender = "com.simplesys.cross" %% "circe-extender" % versions.ssCrossVersion
+
     object versions {
         val scalaModulesVersion = "1.0.6"
 
@@ -109,8 +111,8 @@ object CommonDeps {
 
         val utilEvalVersion = "6.43.0"
         val configWrapperVersion = "0.4.4"
-
-        val circeVersion = "0.9.0-M2"
+        
+        val ssCrossVersion = "1.0.0.5-SNAPSHOT"
     }
 }
 

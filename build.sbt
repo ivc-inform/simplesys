@@ -10,7 +10,6 @@ lazy val root = (project in file(".")).
   enablePlugins(GitVersioning).
   aggregate(
       logbackWrapper,
-      circeExtender,
       common,
       scalaIOExtender,
       classUtil,
@@ -82,23 +81,9 @@ lazy val classUtil = Project(id = "class-util", base = file("class-util")).depen
 
 ).settings(CommonSettings.defaultProjectSettings)
 
-lazy val circeExtender = Project(id = "circe-extender", base = file("circe-extender"))
-  .dependsOn(
-      common
-  )
-  .settings(
-    libraryDependencies ++= Seq(
-//        CommonDeps.circeCore,
-//        CommonDeps.circeGeneric,
-//        CommonDeps.circeParcer,
-        CommonDeps.akkaHttpCirce,
-        CommonDeps.scalaTest
-    )
-
-).settings(CommonSettings.defaultProjectSettings)
-
 lazy val common = (project in file("common")).dependsOn(logbackWrapper).settings(
     libraryDependencies ++= Seq(
+        CommonDeps.circeExtender,
         CommonDeps.apacheCommonsLang,
         CommonDeps.apacheCommonsIO,
         CommonDeps.scalaXml,
@@ -140,9 +125,10 @@ lazy val configWrapper = Project(id = "config-wrapper", base = file("config-wrap
     )
 ).settings(CommonSettings.defaultProjectSettings)
 
-lazy val coreDomains = Project(id = "core-domains", base = file("core-domains")).dependsOn(coreUtils, xmlExtender, circeExtender).settings(
+lazy val coreDomains = Project(id = "core-domains", base = file("core-domains")).dependsOn(coreUtils, xmlExtender).settings(
     libraryDependencies ++= Seq(
         CommonDeps.liquibaseWrapped,
+        CommonDeps.circeExtender,
         CommonDeps.scalaTest
     )
 ).settings(CommonSettings.defaultProjectSettings)
@@ -196,8 +182,7 @@ lazy val jdbcWrapper = Project(id = "jdbc-wrapper", base = file("jdbc-wrapper"))
       oraclePoolDataSources,
       scalaGen,
       coreDomains,
-      coreLibrary,
-      circeExtender
+      coreLibrary
   )
   .enablePlugins(JDBCPlugin)
   .settings(
@@ -206,6 +191,7 @@ lazy val jdbcWrapper = Project(id = "jdbc-wrapper", base = file("jdbc-wrapper"))
     scalacOptions += "-language:existentials",
 
     libraryDependencies ++= Seq(
+        CommonDeps.circeExtender,
         CommonDeps.scalazCore,
         CommonDeps.scalaTest
     )
@@ -249,13 +235,13 @@ lazy val servletWrapper = Project(id = "servlet-wrapper", base = file("servlet-w
       coreUtils,
       oraclePoolDataSources,
       xmlExtender,
-      akkaExtender,
-      circeExtender
+      akkaExtender
   )
   .settings(
     scalacOptions += "-Dscalac:patmat:analysisBudget=1024",
 
     libraryDependencies ++= Seq(
+        CommonDeps.circeExtender,
         CommonDeps.servletAPI % Provided,
         CommonDeps.scalaTest
     )
