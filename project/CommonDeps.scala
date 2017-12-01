@@ -27,6 +27,7 @@ object CommonDeps {
 
     val commonCross = "com.simplesys.cross" %% "common-cross" % versions.ssSympleSysCrossVersion
     val circeCross = "com.simplesys.cross" %% "circe-extender" % versions.ssSympleSysCrossVersion
+    val servletWrapperCross = "com.simplesys.cross" %% "servlet-wrapper" % versions.ssSympleSysCrossVersion
 
     val wrappedSaxonEE = "com.simplesys.saxon" % "saxon-ee" % versions.wrappedSaxonEEVersion
     val xerces = "xerces" % "xercesImpl" % versions.xercesVersion
