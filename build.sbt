@@ -10,7 +10,6 @@ lazy val root = (project in file(".")).
   enablePlugins(GitVersioning).
   aggregate(
       logbackWrapper,
-      circeExtender,
       common,
       scalaIOExtender,
       classUtil,
@@ -82,20 +81,6 @@ lazy val classUtil = Project(id = "class-util", base = file("class-util")).depen
 
 ).settings(CommonSettings.defaultProjectSettings)
 
-lazy val circeExtender = Project(id = "circe-extender", base = file("circe-extender"))
-  .dependsOn(
-      common
-  )
-  .settings(
-    libraryDependencies ++= Seq(
-//        CommonDeps.circeCore,
-//        CommonDeps.circeGeneric,
-//        CommonDeps.circeParcer,
-        CommonDeps.akkaHttpCirce,
-        CommonDeps.scalaTest
-    )
-
-).settings(CommonSettings.defaultProjectSettings)
 
 lazy val common = (project in file("common")).dependsOn(logbackWrapper).settings(
     libraryDependencies ++= Seq(
@@ -140,7 +125,12 @@ lazy val configWrapper = Project(id = "config-wrapper", base = file("config-wrap
     )
 ).settings(CommonSettings.defaultProjectSettings)
 
-lazy val coreDomains = Project(id = "core-domains", base = file("core-domains")).dependsOn(coreUtils, xmlExtender, circeExtender).settings(
+lazy val coreDomains = Project(id = "core-domains", base = file("core-domains"))
+  .dependsOn(
+      coreUtils,
+      xmlExtender,
+      circeExtender)
+  .settings(
     libraryDependencies ++= Seq(
         CommonDeps.liquibaseWrapped,
         CommonDeps.scalaTest
