@@ -7,6 +7,7 @@ import com.simplesys.log.Logging
 import com.simplesys.servlet.ServletContext
 import com.simplesys.servlet.http.{HttpServletRequest, HttpServletResponse}
 import com.simplesys.xml.Elem
+import com.simplesys.circe.Circe._
 import io.circe.Json
 import io.circe.Json._
 import io.circe.generic.auto._
@@ -38,6 +39,7 @@ trait ServletActor extends Actor with Config with Logging {
     }
 
     def Out(out: Json): Unit = {
+        logger trace s"out: ${out.spaces41}"
         response PrintAndFlush out
         request.AsyncContext.Complete()
     }
