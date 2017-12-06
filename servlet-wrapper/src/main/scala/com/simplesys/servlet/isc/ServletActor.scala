@@ -1,8 +1,10 @@
 package com.simplesys.servlet.isc
 
+
 import akka.actor.{Actor, PoisonPill}
 import com.simplesys.config.Config
-import com.simplesys.isc.dataBinging.{DSResponse, DSResponseBase, DSResponseFailureEx}
+import com.simplesys.isc.dataBinging.{DSResponse, Response}
+import com.simplesys.isc.dataBinging.DSResponse._
 import com.simplesys.log.Logging
 import com.simplesys.servlet.ServletContext
 import com.simplesys.servlet.http.{HttpServletRequest, HttpServletResponse}
@@ -28,13 +30,17 @@ trait ServletActor extends Actor with Config with Logging {
 
     implicit protected val system = context.system
 
-    def Out(out: DSResponseBase): Unit = {
-        out match {
-            case out: DSResponse ⇒
-                response PrintAndFlush obj("response" → out.asJson)
-            case out: DSResponseFailureEx ⇒
-                response PrintAndFlush obj("response" → out.asJson)
-        }
+    def Out(out: DSResponse): Unit = {
+        val _out = Response(out).asJson
+        logger trace s"out: ${_out.spaces41}"
+        response PrintAndFlush _out
+        request.AsyncContext.Complete()
+    }
+
+    def Out(out: Response): Unit = {
+        val _out = out.asJson
+        logger trace s"out: ${_out.spaces41}"
+        response PrintAndFlush _out
         request.AsyncContext.Complete()
     }
 
