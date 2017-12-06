@@ -6,12 +6,10 @@ import javax.servlet.{ServletRequest ⇒ JServletRequest}
 import com.simplesys.common.Strings._
 import com.simplesys.servlet.ServletRequest
 import com.simplesys.servlet.http.HttpServletRequest
-import io.circe.Json.JArray
-import io.circe.parser._
-import io.circe.{Json}
-import io.circe.Json._
+import io.circe.Json
 
 import scala.io.Codec
+import io.circe.parser._
 
 object SseServletRequest {
     def apply(request: JHttpServletRequest): SseServletRequest = new SseServletRequest(request)
@@ -24,21 +22,43 @@ object SseServletRequest {
     def apply(request: ServletRequest): SseServletRequest = apply(request.proxy)
 }
 
-class SseServletRequest(override protected[servlet] val proxy: JHttpServletRequest) extends HttpServletRequest(proxy){
+class SseServletRequest(override protected[servlet] val proxy: JHttpServletRequest) extends HttpServletRequest(proxy) {
 
     def SessionID: String = Session.get.Id
 
     def SubscribedChannels: Set[String] = Parameter("subscribedChannels") match {
         case None =>
-            Set.empty[String]
+            Set.empty
         case Some(subscribedChannels) =>
-            parse(subscribedChannels).getOrElse(Json.Null).asArray
-            match {
-                case Some(array) ⇒
-                    array.map(_.asString).filter(_.isDefined).map(_.get).toSet
-                case None ⇒
-                    Set.empty[String]
+            parse(subscribedChannels) match {
+                case Right(json) ⇒
+                    if (json.isObject)
+                        json.asObject match {
+                            case None ⇒
+                                Set.empty
+                            case Some(obj) ⇒
+                                obj.toMap.map {
+                                    case (key, _) => key
+                                }.toSet
+                        }
+                    else if (json.isArray)
+                        json.asArray match {
+                            case None ⇒ Set.empty
+                            case Some(array) ⇒ array.map {
+                                item ⇒
+                                    if (item.isString)
+                                        item.asString
+                                    else if (item.isNumber)
+                                        item.asNumber.map(_.toString)
+                                    else
+                                        None
+                            }.filter(_.isDefined).map(_.get).toSet
+                        }
+                    else
+                        Set.empty
+                case Left(_) ⇒ Set.empty
             }
+
     }
 
     def EventStream: Boolean = Parameter("eventStream") match {

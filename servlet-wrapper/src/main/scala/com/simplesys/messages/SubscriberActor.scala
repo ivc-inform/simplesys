@@ -12,7 +12,7 @@ object SubscriberActor {
     def props(request: SseServletRequest, response: SseServletResponse) = Props(new SubscriberActor(request, response))
 }
 
-class SubscriberActor(val request: SseServletRequest, val response: SseServletResponse) extends Actor with Logging {
+class SubscriberActor(val request: SseServletRequest, val response: SseServletResponse) extends Actor with Logging{
 
     private[this] lazy val channels: Set[String] = request.SubscribedChannels
 
@@ -38,14 +38,14 @@ class SubscriberActor(val request: SseServletRequest, val response: SseServletRe
 
     override def receive: Receive = {
         case Message(id, data, channels, event) =>
-            logger debug s"this.channels: ${this.channels.map(x => x).mkString("[", ", ", "]")}"
-            logger debug s"arrived channels: ${channels.map(x => x).mkString("[", ", ", "]")}"
+            logger debug s"this.channels: ${this.channels.map(x => x).mkString("[",", ","]")}"
+            logger debug s"arrived channels: ${channels.map(x => x).mkString("[",", ","]")}"
             val _channels = this.channels intersect channels
 
             if (_channels.size > 0) {
-                logger debug s"intersect channels: ${_channels.map(x => x).mkString("[", ", ", "]")}"
-                val __channels = arr(_channels.map(fromString(_)).toSeq: _*)
-                response.SendMessage(data, event = event, id = Some(id), channels = __channels)
+                logger debug s"intersect channels: ${_channels.map(x => x).mkString("[",", ","]")}"
+                val __channels = Vector(_channels.map(fromString).toSeq:_*)
+                response.SendMessage(data = data, event = event, id = Some(id), channels = __channels)
             }
     }
 }

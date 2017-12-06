@@ -3,13 +3,13 @@ package com.simplesys.messages.event
 import akka.event.Logging._
 import akka.event.slf4j.Logger
 import com.simplesys.akka.http.sse._
-import com.simplesys.common.Strings._
-import com.simplesys.messages.ActorConfig._
 import com.simplesys.messages.Message
 import io.circe.Json
 import io.circe.Json._
 
 class Slf4jLogger extends akka.event.slf4j.Slf4jLogger with StdOutLogger {
+
+    import com.simplesys.messages.ActorConfig._
 
     private val errorFormat = """<span class="error">[ERROR]</span> <span class="errorTimeStamp">[%s]</span> <span class="errorThreadName">[%s]</span> <span class="errorLogSource">[%s]</span> <span class="errorMessge">%s</span> <span class="errorCause">%s</span>"""
     private val errorFormatWithoutCause = """<span class="error">[ERROR]</span> <span class="errorTimeStamp">[%s]</span> <span class="errorThreadName">[%s]</span> <span class="errorLogSource">[%s]</span> <span class="errorMessge">%s</span>"""
@@ -30,20 +30,6 @@ class Slf4jLogger extends akka.event.slf4j.Slf4jLogger with StdOutLogger {
         }
     }
 
-    private def sendMessage(list: Vector[Json], strMessage: String) {
-
-        val channels: Set[String] = list.map {
-            item ⇒
-                item.asString match {
-                    case Some(str) ⇒ str.unQuoted
-                    case x => throw new RuntimeException(s"Bad branch $x")
-                }
-        }.toSet
-
-        if (channels.size > 0)
-            SendMessage(Message(id = "", event = None, data = fromString(strMessage), channels = channels))
-    }
-
     def getWarning(event: Warning): Unit =
         withMdc(event.logSource, event) {
             Logger(event.logClass, event.logSource).warn("{}", event.message.trimChannelTail.asInstanceOf[AnyRef])
@@ -59,11 +45,24 @@ class Slf4jLogger extends akka.event.slf4j.Slf4jLogger with StdOutLogger {
             Logger(event.logClass, event.logSource).debug("{}", event.message.trimChannelTail.asInstanceOf[AnyRef])
         }
 
+    private def sendMessage(list: Vector[Json], strMessage: String) {
+        val channels: Set[String] = list.map {
+            case item if item.isString ⇒
+                item.asString
+            case x =>
+                throw new RuntimeException(s"Bad branch $x")
+        }.filter(_.isDefined).map(_.get).toSet
+
+        if (channels.size > 0)
+            SendMessage(Message(id = "", event = None, data = fromString(strMessage), channels = channels))
+    }
+
     override def receive = {
 
         case event@Error(cause, logSource, logClass, message) ⇒
-            getChannelsList(message).asArray match {
-                case Some(list) =>
+
+            getChannelsList(message) match {
+                case list: Vector[_] if list.size > 0 =>
                     val f: String = if (event.cause == Error.NoCause) errorFormatWithoutCause else errorFormat
 
                     val strMessage = f.format(
@@ -82,8 +81,8 @@ class Slf4jLogger extends akka.event.slf4j.Slf4jLogger with StdOutLogger {
 
 
         case event@Warning(logSource, logClass, message) ⇒
-            getChannelsList(message).asArray match {
-                case Some(array) if array.size > 0 =>
+            getChannelsList(message) match {
+                case list: Vector[_] if list.size > 0 =>
                     val strMessage = warningFormat.format(
                         timestamp(event),
                         event.thread.getName,
@@ -91,7 +90,7 @@ class Slf4jLogger extends akka.event.slf4j.Slf4jLogger with StdOutLogger {
                         getWithoutChannels(event.message.trimChannelTail))
 
                     getWarning(event)
-                    sendMessage(array, strMessage)
+                    sendMessage(list, strMessage)
 
                 case _ =>
                     getWarning(event)
@@ -99,8 +98,8 @@ class Slf4jLogger extends akka.event.slf4j.Slf4jLogger with StdOutLogger {
 
 
         case event@Info(logSource, logClass, message) ⇒
-            getChannelsList(message).asArray match {
-                case Some(array) if array.size > 0 =>
+            getChannelsList(message) match {
+                case list: Vector[_] if list.size > 0 =>
                     val strMessage = infoFormat.format(
                         timestamp(event),
                         event.thread.getName,
@@ -108,15 +107,15 @@ class Slf4jLogger extends akka.event.slf4j.Slf4jLogger with StdOutLogger {
                         getWithoutChannels(event.message.trimChannelTail))
 
                     getInfo(event)
-                    sendMessage(array, strMessage)
+                    sendMessage(list, strMessage)
 
                 case _ =>
                     getInfo(event)
             }
 
         case event@Debug(logSource, logClass, message) ⇒
-            getChannelsList(message).asArray match {
-                case Some(array) if array.size > 0 =>
+            getChannelsList(message) match {
+                case list: Vector[_] if list.size > 0 =>
                     val strMessage = debugFormat.format(
                         timestamp(event),
                         event.thread.getName,
@@ -124,7 +123,7 @@ class Slf4jLogger extends akka.event.slf4j.Slf4jLogger with StdOutLogger {
                         getWithoutChannels(event.message.trimChannelTail))
 
                     getDebug(event)
-                    sendMessage(array, strMessage)
+                    sendMessage(list, strMessage)
 
                 case _ =>
                     getDebug(event)

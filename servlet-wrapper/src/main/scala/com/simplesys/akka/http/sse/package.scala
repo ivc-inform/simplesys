@@ -7,16 +7,16 @@ import io.circe.Json._
 package object sse {
     val marker = "@@@channels:"
 
-    def getChannelsList(message: Any): Json = {
+    def getChannelsList(message: Any): Vector[Json] = {
         message match {
             case message: String => getChannelsList(message)
-            case _ => arr()
+            case _ => Vector.empty
         }
     }
 
-    def getChannelsList(message: String): Json = {
-        def array: Array[Json] = message.substring(message.indexOf(marker) + marker.length + 1, message.length - 1).split(",").map { case x: String => fromString(x.trim)}
-        if (message.indexOf(marker) == -1) arr() else arr(array: _*)
+    def getChannelsList(message: String): Vector[Json] = {
+        def array: Vector[Json] = message.substring(message.indexOf(marker) + marker.length + 1, message.length - 1).split(",").map { case x: String => fromString(x.trim)}.toVector
+        if (message.indexOf(marker) == -1) Vector.empty else array
     }
 
     def getWithoutChannels(message: Any): String = {
