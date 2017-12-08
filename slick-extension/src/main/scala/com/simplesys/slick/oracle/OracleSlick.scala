@@ -1,21 +1,12 @@
 package com.simplesys.slick.oracle
 
-import com.typesafe.config.ConfigFactory
-import slick.jdbc.{JdbcBackend, JdbcProfile}
-import slick.basic.DatabaseConfig
 import com.simplesys.common.Strings._
+import com.typesafe.config.ConfigFactory
+import slick.basic.DatabaseConfig
+import slick.jdbc.JdbcProfile
 
 trait OracleSlick {
-    //val databaseConfig: DatabaseConfig[JdbcProfile] = DatabaseConfig.forConfig[JdbcProfile]("slick", ConfigFactory.load())
-    val databaseConfig: DatabaseConfig[JdbcProfile] = DatabaseConfig.forConfig[JdbcProfile]("slick", ConfigFactory.parseString(
-        """slick {
-          |    db {
-          |      url = "jdbc:oracle:thin:@//dev.db-support.ru:1521/orcl"
-          |      user = "temp"
-          |      password = "temp"
-          |  }
-          |     driver = "slick.jdbc.OracleProfile$"
-          |}""".stripMargin))
+    val databaseConfig: DatabaseConfig[JdbcProfile] = DatabaseConfig.forConfig[JdbcProfile]("slick", ConfigFactory.load())
     val db = databaseConfig.db
     val profile = databaseConfig.profile
 }
@@ -29,5 +20,5 @@ object OracleSlick {
               password = %s
           }
              driver = %s
-        }""".stripMargin.format(url.dblQuoted, user.dblQuoted, password.dblQuoted, driver.dblQuoted)))
+        }""".format(url.dblQuoted, user.dblQuoted, password.dblQuoted, driver.dblQuoted)))
 }
