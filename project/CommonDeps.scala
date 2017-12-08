@@ -84,7 +84,7 @@ object CommonDeps {
 
         val wrappedSaxonEEVersion = "9.5.1.2-1"
         val xercesVersion = "2.11.0"
-        val hikariCPVersionVersion = "2.7.1"
+        val hikariCPVersionVersion = "2.7.4"
         val slickVersion = "3.3.0-SNAPSHOT"
 
         val configTypesafeVersion = "1.3.1"
