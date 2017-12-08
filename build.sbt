@@ -276,6 +276,7 @@ lazy val hikariCP = Project(id = "hikari-cp", base = file("hikari-cp")).dependsO
 lazy val slickExtension = Project(id = "slick-extension", base = file("slick-extension")).dependsOn(common, configWrapper).settings(
     libraryDependencies ++= Seq(
         CommonDeps.slick,
+        CommonDeps.slickCodeGen,
         CommonDeps.slickHikariCP,
         CommonDeps.jdbcOracle12,
         CommonDeps.scalaTest

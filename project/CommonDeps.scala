@@ -29,6 +29,7 @@ object CommonDeps {
     val xerces = "xerces" % "xercesImpl" % versions.xercesVersion
     val hikariCP = "com.zaxxer" % "HikariCP" % versions.hikariCPVersionVersion
     val slick = "com.typesafe.slick" %% "slick" % versions.slickVersion
+    val slickCodeGen = "com.typesafe.slick" %% "slick-codegen" % versions.slickVersion
     val slickHikariCP = "com.typesafe.slick" %% "slick-hikaricp" % versions.slickVersion
     val configTypesafe = "com.typesafe" % "config" % versions.configTypesafeVersion
 
