@@ -61,6 +61,7 @@ class TestSuit extends FunSuite with OracleSlick {
             fileName = fileName)
 
         Await.result(database.run(dbio), Duration.Inf)
+        database.shutdown
         val generatedFile = outputDir + "/" + pkg.replaceAllLiterally(".", "/") + "/" + fileName
         println(s"Source code has generated in ${generatedFile}")
     }
