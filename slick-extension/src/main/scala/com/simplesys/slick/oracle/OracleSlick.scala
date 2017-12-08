@@ -5,5 +5,7 @@ import slick.jdbc.JdbcProfile
 import slick.basic.DatabaseConfig
 
 trait OracleSlick {
-    val profile: JdbcProfile = DatabaseConfig.forDriverClassName[JdbcProfile]("slick.jdbc.OracleProfile$", "slick", ConfigFactory.load()).profile
+    val databaseConfig: DatabaseConfig[JdbcProfile] = DatabaseConfig.forDriverClassName[JdbcProfile]("slick.jdbc.OracleProfile$", "slick", ConfigFactory.load())
+    val db = databaseConfig.db
+    val profile = databaseConfig.profile
 }
