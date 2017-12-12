@@ -78,18 +78,24 @@ object Strings {
         def toLocalDateTime(dateTimeFormatter: DateTimeFormatter = SS_LOCAL_DATE_TIME): LocalDateTime = {
             if (string.contains("Z")) {
                 val systemZone = ZoneId.systemDefault()
-                val localDateTime = LocalDateTime.parse(string.unQuoted, SS_LOCAL_DATE_TIME_Z)
+                val localDateTime = LocalDateTime.parse(string, SS_LOCAL_DATE_TIME_Z)
                 val currentOffsetForMyZone = systemZone.getRules.getOffset(localDateTime)
                 localDateTime.plusSeconds(currentOffsetForMyZone.getTotalSeconds)
             }
-            else if (string.contains("T"))
-                LocalDateTime.parse(string.unQuoted, ISO_LOCAL_DATE_TIME)
+            else if (string.contains("T") && !string.contains("+"))
+                LocalDateTime.parse(string, ISO_LOCAL_DATE_TIME)
+            else if (string.contains("T") && string.contains("+")) {
+                val systemZone = ZoneId.systemDefault()
+                val localDateTime = LocalDateTime.parse(string, ISO_OFFSET_DATE_TIME)
+                val currentOffsetForMyZone = systemZone.getRules.getOffset(localDateTime)
+                localDateTime.plusSeconds(currentOffsetForMyZone.getTotalSeconds)
+            }
             else
-                LocalDateTime.parse(string.unQuoted, dateTimeFormatter)
+                LocalDateTime.parse(string, dateTimeFormatter)
 
         }
-        def toLocalDate(dateTimeFormatter: DateTimeFormatter = ISO_LOCAL_DATE): LocalDate = LocalDate.parse(string.unQuoted, dateTimeFormatter)
-        def toLocalTime(dateTimeFormatter: DateTimeFormatter = ISO_LOCAL_TIME): LocalTime = LocalTime.parse(string.unQuoted, dateTimeFormatter)
+        def toLocalDate(dateTimeFormatter: DateTimeFormatter = ISO_LOCAL_DATE): LocalDate = LocalDate.parse(string, dateTimeFormatter)
+        def toLocalTime(dateTimeFormatter: DateTimeFormatter = ISO_LOCAL_TIME): LocalTime = LocalTime.parse(string, dateTimeFormatter)
     }
 
     def localDateTime2Str(localDateTime: LocalDateTime, dateTimeFormatter: DateTimeFormatter = SS_LOCAL_DATE_TIME): String = localDateTime.format(dateTimeFormatter)
