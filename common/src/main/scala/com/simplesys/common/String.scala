@@ -90,7 +90,12 @@ object Strings {
                 val currentOffsetForMyZone = systemZone.getRules.getOffset(localDateTime)
                 localDateTime.plusSeconds(currentOffsetForMyZone.getTotalSeconds)
             }
-            else
+            else if (string.contains("+")) {
+                val systemZone = ZoneId.systemDefault()
+                val localDateTime = LocalDateTime.parse(string, dateTimeFormatter)
+                val currentOffsetForMyZone = systemZone.getRules.getOffset(localDateTime)
+                localDateTime.plusSeconds(currentOffsetForMyZone.getTotalSeconds)
+            } else
                 LocalDateTime.parse(string, dateTimeFormatter)
 
         }
