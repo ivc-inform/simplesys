@@ -11,6 +11,7 @@ object XMLs {
         }
     }
 
+    @inline
     def p(width: Int = 250, step: Int = 4) = new PrettyPrinter(width, step)
 
     implicit class ElemOpt(elem: Elem) {
