@@ -3,13 +3,9 @@ package com.simplesys.isc.system.typesDyn
 import ru.simplesys.coreutil.SealedEnumRuntime
 import ru.simplesys.meta.types.SCSimpleType
 
-//import scala.reflect.runtime.universe._
-
 sealed abstract trait FieldType extends SCSimpleType {
-    //lazy val scalaClassName = typeOf[this.type].termSymbol.name
     lazy val scalaClassName: String = this.getClass.getSimpleName.split("\\$").last
     override def scName: String = toString
-    //lazy val scalaClassName1: String = this.getClass.getSimpleName.replace("$","")
 }
 
 case object ftNull extends FieldType {
