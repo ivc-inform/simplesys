@@ -40,7 +40,6 @@ object CommonDeps {
     val akkaSLF4J = "com.typesafe.akka" %% "akka-slf4j" % versions.akkaVersion
     val akkaAgent = "com.typesafe.akka" %% "akka-agent" % versions.akkaVersion
     val akkaTestKit = "com.typesafe.akka" %% "akka-testkit" % versions.akkaVersion % Test
-    val liquibaseWrapped = "ru.simplesys.org.liquibase" % "liquibase-core" % versions.liquibaseWrapped
 
     val h2DB = "com.h2database" % "h2" % versions.h2DBVersion
     val derbyDB = "org.apache.derby" % "derby" % versions.derbyDBVersion
@@ -58,13 +57,12 @@ object CommonDeps {
     val scalaArm = "com.jsuereth" %% "scala-arm" % versions.scalaArmVersion
     val utilEval = "com.twitter" %% "util-eval" % versions.utilEvalVersion
     val configWrapper = "com.github.kxbmap" %% "configs" % versions.configWrapperVersion
-    val junit = "junit" % "junit" % "4.12" % Test
-    val specs2 = "org.specs2" %% "specs2-core" % "4.0.0" % Test
 
     val akkaHttpCirce = "de.heikoseeberger" %% "akka-http-circe" % "1.18.2-SNAPSHOT"
 
     val circeExtender = "com.simplesys.cross" %% "circe-extender" % versions.ssCrossVersion
     val servletWrapper = "com.simplesys.cross" %% "servlet-wrapper" % versions.ssCrossVersion
+    val liquibaseWrapped = "ru.simplesys.org.liquibase" % "liquibase-core" % versions.liquibaseWrapped
 
     object versions {
         val scalaModulesVersion = "1.0.6"

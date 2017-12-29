@@ -55,8 +55,6 @@ lazy val akkaExtender = Project(id = "akka-extender", base = file("akka-extender
         CommonDeps.akkaActor,
         CommonDeps.akkaAgent,
         CommonDeps.akkaSLF4J,
-        CommonDeps.junit,
-        CommonDeps.specs2,
         CommonDeps.akkaTestKit
     )
 ).settings(CommonSettings.defaultProjectSettings)
@@ -88,7 +86,6 @@ lazy val common = (project in file("common")).dependsOn(logbackWrapper).settings
         CommonDeps.apacheCommonsIO,
         CommonDeps.scalaXml,
         CommonDeps.scalaReflect.value,
-        CommonDeps.junit,
         CommonDeps.scalaTest
     )
 ).settings(CommonSettings.defaultProjectSettings)
@@ -202,7 +199,6 @@ lazy val logbackWrapper = Project(id = "logback-wrapper", base = file("logback-w
         CommonDeps.logbackCore,
         CommonDeps.logbackClassic,
         CommonDeps.logbackAccess,
-        CommonDeps.junit,
         CommonDeps.scalaTest
     )
 ).settings(CommonSettings.defaultProjectSettings)
@@ -258,7 +254,6 @@ lazy val utilEvalExtender = Project(id = "util-eval-extender", base = file("util
 lazy val xmlExtender = Project(id = "xml-extender", base = file("xml-extender")).dependsOn(common, saxonWrapper).settings(
     libraryDependencies ++= Seq(
         CommonDeps.xerces,
-        CommonDeps.junit,
         CommonDeps.scalaTest
     )
 ).settings(CommonSettings.defaultProjectSettings)
