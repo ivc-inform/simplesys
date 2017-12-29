@@ -6,7 +6,7 @@ import collection.JavaConverters._
 
 trait ServletContextListener extends JServletContextListener with Logging {
 
-    final def contextInitialized(sce: JServletContextEvent) {
+    override final def contextInitialized(sce: JServletContextEvent) {
         ContextInitialized1(ServletContextEvent(sce))
         logger trace "ContextInitialized ."
 
@@ -16,7 +16,7 @@ trait ServletContextListener extends JServletContextListener with Logging {
 
     }
 
-    final def contextDestroyed(sce: JServletContextEvent) {
+    override final def contextDestroyed(sce: JServletContextEvent) {
         ContextDestroyed1(ServletContextEvent(sce))
         logger trace "ContextDestroyed ."
     }

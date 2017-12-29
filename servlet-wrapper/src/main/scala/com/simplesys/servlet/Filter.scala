@@ -14,7 +14,7 @@ trait Filter extends JFilter with Logging {
     def FilterConfig = config
     def FilterContext = context
 
-    final def init(filterConfig: JFilterConfig) {
+    override final def init(filterConfig: JFilterConfig) {
         config = com.simplesys.servlet.FilterConfig(filterConfig)
         context = ServletContext(filterConfig.getServletContext)
         Init
@@ -26,7 +26,7 @@ trait Filter extends JFilter with Logging {
         logger trace "The method DoFilter is executed."
     }
 
-    final def destroy() {
+    override final def destroy() {
         config = null
         Destroy
         logger trace "The method destroy is executed."

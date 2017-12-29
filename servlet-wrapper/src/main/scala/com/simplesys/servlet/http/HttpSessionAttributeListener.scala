@@ -5,17 +5,17 @@ import com.simplesys.log.Logging
 
 
 trait HttpSessionAttributeListener extends JHttpSessionAttributeListener with Logging {
-    final def attributeAdded(se: JHttpSessionBindingEvent) {
+    override final def attributeAdded(se: JHttpSessionBindingEvent) {
         AttributeAdded(HttpSessionBindingEvent(se))
         logger trace "Attribute added."
     }
 
-    final def attributeRemoved(se: JHttpSessionBindingEvent) {
+    override final def attributeRemoved(se: JHttpSessionBindingEvent) {
         AttributeRemoved(HttpSessionBindingEvent(se))
         logger trace "Attribute removed."
     }
 
-    final def attributeReplaced(se: JHttpSessionBindingEvent) {
+    override final def attributeReplaced(se: JHttpSessionBindingEvent) {
         AttributeReplaced(HttpSessionBindingEvent(se))
         logger trace "Attribute replaced."
     }

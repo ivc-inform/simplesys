@@ -78,7 +78,7 @@ object CommonDeps {
         val apacheCommonsLangVersion = "3.4"
 
         val javaxTransactionVersion = "1.1"
-        val servletAPIVersion = "3.1.0"
+        val servletAPIVersion = "4.0.0"
 
         val wrappedSaxonEEVersion = "9.5.1.2-1"
         val xercesVersion = "2.11.0"
