@@ -14,7 +14,7 @@ object ControlStructs {
             param close
         }
 
-    def using[A <: Seq[ {def close() : Unit}], B](param: A)(f: A => B): B =
+    def usingSeq[A <: Seq[{def close() : Unit}], B](param: A)(f: A => B): B =
         try {
             f(param)
         }
