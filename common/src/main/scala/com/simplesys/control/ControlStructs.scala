@@ -14,6 +14,14 @@ object ControlStructs {
             param close
         }
 
+    def using[A <: Seq[ {def close() : Unit}], B](param: A)(f: A => B): B =
+        try {
+            f(param)
+        }
+        finally {
+            param.foreach(_.close())
+        }
+
     def boolMapList[T](test: => Boolean)(block: => T): List[T] = {
         val res = new ListBuffer[T]
 
