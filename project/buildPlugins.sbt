@@ -11,6 +11,3 @@ lazy val root = Project(id = "buildPlugins", base = file(".")).enablePlugins(Git
       PluginDeps.jsonPlugin,
       PluginDeps.jdbcPlugin
   )
-
-
-
