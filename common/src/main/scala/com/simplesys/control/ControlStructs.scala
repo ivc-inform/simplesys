@@ -2,7 +2,6 @@ package com.simplesys.control
 
 import scala.collection.mutable.{ArrayBuffer, ListBuffer}
 import scala.reflect.ClassTag
-//import scala.collection.SeqView
 import scala.language.reflectiveCalls
 
 object ControlStructs {
