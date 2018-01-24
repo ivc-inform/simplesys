@@ -39,7 +39,7 @@ trait ServletActorDyn extends ServletActor {
 
     def OutOk(implicit system: ActorSystem) = OutStatus(RPCResponseDyn.statusSuccess)
 
-    def OutFailure(text: String)(implicit system: ActorSystem) = super.Out(new DSResponseFailureDyn(throw new RuntimeException(text)))
+    def OutFailure(text: String)(implicit system: ActorSystem) = super.Out(new DSResponseFailureDyn(new RuntimeException(text)))
 
     def OutFailure(result: ValidationEx[_])(implicit system: ActorSystem) = super.Out(
         result printException match {
