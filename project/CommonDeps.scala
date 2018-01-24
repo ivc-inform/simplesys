@@ -69,9 +69,9 @@ object CommonDeps {
 
         val akkaVersion = "2.5.8"
 
-        val scalazVersion = "7.2.8"
+        val scalazVersion = "7.2.18"
 
-        val doobieVersion = "0.4.1"
+        val doobieVersion = "0.4.4"
 
         val logbackVersion = "1.2.3"
                                                                                                                                              
@@ -82,7 +82,7 @@ object CommonDeps {
 
         val wrappedSaxonEEVersion = "9.5.1.2-1"
         val xercesVersion = "2.11.0"
-        val hikariCPVersionVersion = "2.7.4"
+        val hikariCPVersionVersion = "2.7.6"
         val slickVersion = "3.2.1"
 
         val configTypesafeVersion = "1.3.1"
@@ -95,8 +95,8 @@ object CommonDeps {
         val oracle12DriverVersion = "12.2.0.1"
 
         val uTestVersion = "0.3.1"
-        val scalaTestVersion = "3.0.3"
-        val scalaMetaVersion = "2.0.1"
+        val scalaTestVersion = "3.0.4"
+        val scalaMetaVersion = "2.1.2"
         val scalaArmVersion = "2.0"
         val scalaParserCombinatorsVersion = "1.0.5"
         val scalaSpecsVersion = "3.8.6"
