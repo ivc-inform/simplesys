@@ -67,7 +67,7 @@ object CommonDeps {
     object versions {
         val scalaModulesVersion = "1.0.6"
 
-        val akkaVersion = "2.5.8"
+        val akkaVersion = "2.5.9"
 
         val scalazVersion = "7.2.18"
 
@@ -103,7 +103,7 @@ object CommonDeps {
         val sbtJUnitVersion = "0.11"
         val mockitoVersion = "1.9.5"
 
-        val rhinoVersion = "1.7.7.1"
+        val rhinoVersion = "1.7.8"
 
         val apacheCommonsIOVersion = "2.5"
 

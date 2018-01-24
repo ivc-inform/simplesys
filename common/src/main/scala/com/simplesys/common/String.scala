@@ -419,10 +419,6 @@ object Strings {
         }
     }
 
-    implicit class InputStreamOpts(stream: InputStream) {
-        def asString: String = IOUtils.toString(stream, "UTF-8")
-    }
-
     implicit class ClassOpts(cls: Class[_]) {
         def asCanonicalName: String = cls.getCanonicalName.replace("$", strEmpty)
     }
