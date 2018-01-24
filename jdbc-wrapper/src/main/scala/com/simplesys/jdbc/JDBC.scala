@@ -9,7 +9,7 @@ import com.simplesys.jdbc.control.{BasicClassBOColumn, Table}
 import com.simplesys.log.Logging
 import io.circe.Json
 import io.circe.Json._
-import com.simplesys.circe.Circe._
+import com.simplesys.circe.Circe.InputStreamOpt
 
 import scala.reflect.ClassTag
 
