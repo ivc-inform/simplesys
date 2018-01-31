@@ -6,7 +6,8 @@ import org.scalatest.FunSuite
 
 class Test extends FunSuite {
     test("connection") {
-        val dataSource = new OracleHikariDataSource("oraclcePoolDataSource")
+        //val dataSource = new OracleHikariDataSource("oraclcePoolDataSource")
+        val dataSource = new PostgreHikariDataSource("postgrePoolDataSource")
         val connection: Connection = dataSource.getConnection()
 
         println(s"Is closed: ${connection.isClosed}")

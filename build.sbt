@@ -264,6 +264,7 @@ lazy val hikariCP = Project(id = "hikari-cp", base = file("hikari-cp")).dependsO
         CommonDeps.jdbcOracle12,
         CommonDeps.jdbcOracle12UCP,
         CommonDeps.jdbcOracleN18_12,
+        CommonDeps.jdbcPostgres,
         CommonDeps.scalaTest
     )
 ).settings(CommonSettings.defaultProjectSettings)
