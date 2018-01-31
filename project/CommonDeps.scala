@@ -43,7 +43,7 @@ object CommonDeps {
 
     val h2DB = "com.h2database" % "h2" % versions.h2DBVersion
     val derbyDB = "org.apache.derby" % "derby" % versions.derbyDBVersion
-    //val jdbcPostgres = "org.postgresql" % "postgresql" % versions.postgresDriverVersion
+    val jdbcPostgres = "org.postgresql" % "postgresql" % versions.postgresDriverVersion
 
     val jdbcOracle12 = "com.oracle.jdbc" % "ojdbc8" % versions.oracle12DriverVersion
     val jdbcOracle12UCP = "com.oracle.jdbc" % "ucp" % versions.oracle12DriverVersion
@@ -91,7 +91,7 @@ object CommonDeps {
 
         val h2DBVersion = "1.4.193"
         val derbyDBVersion = "10.11.1.1"
-        val postgresDriverVersion = "9.4-1201-jdbc41"
+        val postgresDriverVersion = "42.2.1"
         val oracle12DriverVersion = "12.2.0.1"
 
         val uTestVersion = "0.3.1"

@@ -12,6 +12,6 @@ class PostgreHikariDataSource(override val pathBasename: String) extends HikariD
     pgConfig.setPassword(settings.password)
     pgConfig.addDataSourceProperty("databaseName", settings.databaseName.getOrElse("postgres"))
     pgConfig.addDataSourceProperty("serverName", settings.url)
-
-    //this(pgConfig)
+    
+    setDataSourceProperties(pgConfig.getDataSourceProperties)
 }
