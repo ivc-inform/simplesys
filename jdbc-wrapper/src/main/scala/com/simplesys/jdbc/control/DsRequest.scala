@@ -4,7 +4,6 @@ import com.simplesys.SQL.Gen._
 import com.simplesys.circe.Circe._
 import com.simplesys.common.Strings._
 import com.simplesys.common.equality.SimpleEquality._
-import com.simplesys.isc.system.misc.Number
 import com.simplesys.isc.system.typesDyn._
 import com.simplesys.jdbc.control.DsRequest._
 import com.simplesys.log.Logging

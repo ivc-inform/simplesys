@@ -5,7 +5,6 @@ import java.io.File
 import com.simplesys.common.Strings._
 import com.simplesys.common.equality.SimpleEquality._
 import com.simplesys.log.Logging
-import com.simplesys.script.JsBeautifier
 
 import scala.io.Codec._
 import scala.io.Source
@@ -22,7 +21,7 @@ class JavaScript(protected val proxy: Seq[FunctionResult]) extends Logging {
             throw new RuntimeException(s"Для функции '${functionName}' неоднозначный выбор.")
         }
         else
-            JsBeautifier(res(0).toString)
+            res(0).toString
     }
 }
 

@@ -15,7 +15,6 @@ lazy val root = (project in file(".")).
       classUtil,
       saxonWrapper,
       xmlExtender,
-      iscMisc,
       configWrapper,
       coreDomains,
       scalaGen,
@@ -165,15 +164,6 @@ lazy val iscComponents = Project(id = "isc-components", base = file("isc-compone
       (managedResources in Compile) ++= CoffeeScriptKeys.coffeeScript.value
   ).settings(CommonSettings.defaultProjectSettings)
 
-lazy val iscMisc = Project(id = "isc-misc", base = file("isc-misc")).dependsOn(common, xmlExtender).settings(
-    libraryDependencies ++= Seq(
-        CommonDeps.rhino,
-        CommonDeps.scalaReflect.value,
-        CommonDeps.scalaParserCombinators,
-        CommonDeps.scalaTest
-    )
-).settings(CommonSettings.defaultProjectSettings)
-
 lazy val jdbcWrapper = Project(id = "jdbc-wrapper", base = file("jdbc-wrapper"))
   .dependsOn(
       oraclePoolDataSources,
@@ -210,7 +200,7 @@ lazy val saxonWrapper = Project(id = "saxon-wrapper", base = file("saxon-wrapper
     )
 ).settings(CommonSettings.defaultProjectSettings)
 
-lazy val scalaGen = Project(id = "scala-gen", base = file("scala-gen")).dependsOn(common, scalaIOExtender, iscMisc).settings(
+lazy val scalaGen = Project(id = "scala-gen", base = file("scala-gen")).dependsOn(common, scalaIOExtender).settings(
     libraryDependencies ++= Seq(
         CommonDeps.scalaTest
     )
