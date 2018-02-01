@@ -5,24 +5,6 @@ import com.simplesys.common.Strings._
 import org.mozilla.javascript.{ScriptableObject, Context}
 
 object CSSBeautifier {
-    /*private val engine = (new ScriptEngineManager) getEngineByName ("JavaScript")
-  
-    URLBox.getResourceAsStreamReader("beautify-css.js") match {
-      case None =>
-      case Some(stream) =>
-        using(stream) {
-          engine.eval
-        }
-    }
-  
-    def apply(inStr: String): String = {
-      if (engine.isInstanceOf[Invocable]) {
-        val result = engine.asInstanceOf[Invocable].invokeFunction("css_beautify", inStr)
-        newLine + result.toString + newLine
-      }
-      else
-        ""
-    }*/
 
     val BEAUTIFY_CSS = "javascript/beautify-css.js"
 

@@ -7,24 +7,6 @@ import org.mozilla.javascript.{ScriptableObject, Context}
 
 
 object HTMLBeautifier {
-    /*private val engine = (new ScriptEngineManager) getEngineByName ("JavaScript")
-
-    URLBox.getResourceAsStreamReader("beautify-html.js") match {
-        case None =>
-        case Some(stream) =>
-            using(stream) {
-                engine.eval
-            }
-    }
-
-    def apply(inStr: String): String = {
-        if (engine.isInstanceOf[Invocable]) {
-            val result = engine.asInstanceOf[Invocable].invokeFunction("style_html", inStr)
-            newLine + result.toString + newLine
-        }
-        else
-            strEmpty
-    }*/
 
     val BEAUTIFY_HTML = "javascript/beautify-html.js"
 
