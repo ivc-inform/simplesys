@@ -8,7 +8,7 @@ object PluginDeps {
     val coursier = addSbtPlugin("io.get-coursier" % "sbt-coursier" % "1.0.0-RC12")
 
     object versions {
-        val sbtCoffeScriptVersion = "1.1.4"
+        val sbtCoffeScriptVersion = "1.1.5-SNAPSHOT"
         val jdbcPluginVersion = "1.0.4-SNAPSHOT"
         val jsonPluginVersion = "1.0.4-SNAPSHOT"
     }
