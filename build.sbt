@@ -97,21 +97,21 @@ lazy val commonWebApp = Project(id = "common-webapp", base = file("common-webapp
       classUtil
   )
   .settings(
-    sbtPlugin := false,
-    organization := CommonSettings.settingValues.organization,
-    CoffeeScriptKeys.sourceMap := false,
-    CoffeeScriptKeys.bare := false,
-    CoffeeScriptKeys.writeIncludeModules := true,
-    webTarget := (resourceDirectory in Compile).value / "webapp" / "javascript" / "generated" / "generatedComponents" / "coffeescript",
-    sourceDirectory in Assets := (resourceDirectory in Compile).value / "webapp" / "coffeescript" / "developed",
-    (managedResources in Compile) ++= CoffeeScriptKeys.coffeeScript.value,
+      sbtPlugin := false,
+      organization := CommonSettings.settingValues.organization,
+      CoffeeScriptKeys.sourceMap := false,
+      CoffeeScriptKeys.bare := false,
+      CoffeeScriptKeys.writeIncludeModules := true,
+      webTarget := (resourceDirectory in Compile).value / "webapp" / "javascript" / "generated" / "generatedComponents" / "coffeescript",
+      sourceDirectory in Assets := (resourceDirectory in Compile).value / "webapp" / "coffeescript" / "developed",
+      (managedResources in Compile) ++= CoffeeScriptKeys.coffeeScript.value,
 
-    scalacOptions += "-unchecked",
-    libraryDependencies ++= Seq(
-        CommonDeps.servletAPI % Provided,
-        CommonDeps.scalaTest
-    )
-).settings(CommonSettings.defaultProjectSettings)
+      scalacOptions += "-unchecked",
+      libraryDependencies ++= Seq(
+          CommonDeps.servletAPI % Provided,
+          CommonDeps.scalaTest
+      )
+  ).settings(CommonSettings.defaultProjectSettings)
 
 lazy val configWrapper = Project(id = "config-wrapper", base = file("config-wrapper")).dependsOn(common, xmlExtender).settings(
     libraryDependencies ++= Seq(
@@ -173,16 +173,16 @@ lazy val jdbcWrapper = Project(id = "jdbc-wrapper", base = file("jdbc-wrapper"))
   )
   .enablePlugins(JDBCPlugin)
   .settings(
-    com.simplesys.jdbc.plugins.jdbc.JDBCPlugin.autoImport.maxArity := 50,
+      com.simplesys.jdbc.plugins.jdbc.JDBCPlugin.autoImport.maxArity := 50,
 
-    scalacOptions += "-language:existentials",
+      scalacOptions += "-language:existentials",
 
-    libraryDependencies ++= Seq(
-        CommonDeps.circeExtender,
-        CommonDeps.scalazCore,
-        CommonDeps.scalaTest
-    )
-).settings(CommonSettings.defaultProjectSettings)
+      libraryDependencies ++= Seq(
+          CommonDeps.circeExtender,
+          CommonDeps.scalazCore,
+          CommonDeps.scalaTest
+      )
+  ).settings(CommonSettings.defaultProjectSettings)
 
 lazy val logbackWrapper = Project(id = "logback-wrapper", base = file("logback-wrapper")).settings(
     libraryDependencies ++= Seq(
@@ -200,7 +200,10 @@ lazy val saxonWrapper = Project(id = "saxon-wrapper", base = file("saxon-wrapper
     )
 ).settings(CommonSettings.defaultProjectSettings)
 
-lazy val scalaGen = Project(id = "scala-gen", base = file("scala-gen")).dependsOn(common, scalaIOExtender).settings(
+lazy val scalaGen = Project(id = "scala-gen", base = file("scala-gen")).dependsOn(
+    common,
+    scalaIOExtender
+).settings(
     libraryDependencies ++= Seq(
         CommonDeps.scalaTest
     )
@@ -224,15 +227,15 @@ lazy val servletWrapper = Project(id = "servlet-wrapper", base = file("servlet-w
       akkaExtender
   )
   .settings(
-    scalacOptions += "-Dscalac:patmat:analysisBudget=1024",
+      scalacOptions += "-Dscalac:patmat:analysisBudget=1024",
 
-    libraryDependencies ++= Seq(
-        CommonDeps.servletWrapper,
-        CommonDeps.circeExtender,
-        CommonDeps.servletAPI % Provided,
-        CommonDeps.scalaTest
-    )
-).settings(CommonSettings.defaultProjectSettings)
+      libraryDependencies ++= Seq(
+          CommonDeps.servletWrapper,
+          CommonDeps.circeExtender,
+          CommonDeps.servletAPI % Provided,
+          CommonDeps.scalaTest
+      )
+  ).settings(CommonSettings.defaultProjectSettings)
 
 lazy val utilEvalExtender = Project(id = "util-eval-extender", base = file("util-eval-extender")).dependsOn(common).settings(
     libraryDependencies ++= Seq(
