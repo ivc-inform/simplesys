@@ -8,6 +8,5 @@ lazy val root = Project(id = "buildPlugins", base = file(".")).enablePlugins(Git
   ))).
   settings(
       PluginDeps.sbtCoffeeScript,
-      //PluginDeps.jsonPlugin,
       PluginDeps.jdbcPlugin
   )
