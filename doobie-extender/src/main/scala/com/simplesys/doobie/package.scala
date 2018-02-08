@@ -7,7 +7,7 @@ import _root_.doobie.util.meta.Meta
 
 package object doobie {
     implicit val localDateTimeMeta: Meta[LocalDateTime] =
-        Meta[Timestamp].nxmap(
+        Meta[Timestamp].xmap(
             (timestamp) ⇒
                 timestamp.toLocalDateTime,
             (localDateTime) ⇒
