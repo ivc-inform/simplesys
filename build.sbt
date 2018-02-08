@@ -184,14 +184,15 @@ lazy val jdbcWrapper = Project(id = "jdbc-wrapper", base = file("jdbc-wrapper"))
       )
   ).settings(CommonSettings.defaultProjectSettings)
 
-lazy val logbackWrapper = Project(id = "logback-wrapper", base = file("logback-wrapper")).settings(
-    libraryDependencies ++= Seq(
-        CommonDeps.logbackCore,
-        CommonDeps.logbackClassic,
-        CommonDeps.logbackAccess,
-        CommonDeps.scalaTest
-    )
-).settings(CommonSettings.defaultProjectSettings)
+lazy val logbackWrapper = Project(id = "logback-wrapper", base = file("logback-wrapper"))
+  .settings(
+      libraryDependencies ++= Seq(
+          CommonDeps.logbackCore,
+          CommonDeps.logbackClassic,
+          CommonDeps.logbackAccess,
+          CommonDeps.scalaTest
+      )
+  ).settings(CommonSettings.defaultProjectSettings)
 
 lazy val saxonWrapper = Project(id = "saxon-wrapper", base = file("saxon-wrapper")).dependsOn(common, scalaIOExtender).settings(
     libraryDependencies ++= Seq(
@@ -209,14 +210,16 @@ lazy val scalaGen = Project(id = "scala-gen", base = file("scala-gen")).dependsO
     )
 ).settings(CommonSettings.defaultProjectSettings)
 
-lazy val scalaIOExtender = Project(id = "scala-io-extender", base = file("scala-io-extender")).dependsOn(logbackWrapper).settings(
-    libraryDependencies ++= Seq(
-        CommonDeps.javaxTransaction,
-        CommonDeps.scalaArm,
-        CommonDeps.scalaParserCombinators,
-        CommonDeps.scalaTest
-    )
-).settings(CommonSettings.defaultProjectSettings)
+lazy val scalaIOExtender = Project(id = "scala-io-extender", base = file("scala-io-extender"))
+  .dependsOn(logbackWrapper)
+  .settings(
+      libraryDependencies ++= Seq(
+          CommonDeps.javaxTransaction,
+          CommonDeps.scalaArm,
+          CommonDeps.scalaParserCombinators,
+          CommonDeps.scalaTest
+      )
+  ).settings(CommonSettings.defaultProjectSettings)
 
 lazy val servletWrapper = Project(id = "servlet-wrapper", base = file("servlet-wrapper"))
   .dependsOn(
