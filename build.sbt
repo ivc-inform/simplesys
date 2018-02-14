@@ -22,7 +22,6 @@ lazy val root = (project in file(".")).
       coreDomains,
       scalaGen,
       boneCPWrapper,
-      oraclePoolDataSources,
       servletWrapper,
       coreUtils,
       akkaExtender,
@@ -32,8 +31,7 @@ lazy val root = (project in file(".")).
       iscComponents,
       coreLibrary,
       utilEvalExtender,
-      doobieExtender,
-      hikariCP
+      doobieExtender
   ).
   settings(inThisBuild(Seq(
       git.baseVersion := CommonSettings.settingValues.baseVersion,
@@ -64,16 +62,6 @@ lazy val akkaExtender = Project(id = "akka-extender", base = file("akka-extender
         CommonDeps.scalaSpecsCore.value % Test,
         CommonDeps.scalaSpecsMock.value % Test,
         CommonDeps.scalaSpecsMatcherExtra.value % Test
-    )
-).settings(CommonSettings.defaultProjectSettings)
-
-lazy val oraclePoolDataSources = Project(id = "oracle-pool-datasources", base = file("oracle-pool-datasources")).dependsOn(common, configWrapper, logbackWrapper).settings(
-
-    libraryDependencies ++= Seq(
-        CommonDeps.jdbcOracle12.value,
-        CommonDeps.jdbcOracle12UCP.value,
-        CommonDeps.jdbcOracleN18_12.value,
-        CommonDeps.scalaTest.value % Test
     )
 ).settings(CommonSettings.defaultProjectSettings)
 
@@ -186,7 +174,6 @@ def arity(scalaVer: String, arity_2_11: Int, arity_2_10: Int): Int =
 lazy val jdbcWrapper = Project(id = "jdbc-wrapper", base = file("jdbc-wrapper"))
   .dependsOn(
       boneCPWrapper,
-      oraclePoolDataSources,
       scalaGen,
       coreDomains,
       coreLibrary
@@ -256,7 +243,7 @@ lazy val scalaIOExtender = Project(id = "scala-io-extender", base = file("scala-
     ) ++ CommonDeps.scalaParserCombinators.value.seq
 ).settings(CommonSettings.defaultProjectSettings)
 
-lazy val servletWrapper = Project(id = "servlet-wrapper", base = file("servlet-wrapper")).dependsOn(coreUtils, boneCPWrapper,  oraclePoolDataSources, xmlExtender, jsonExtenderTypesafe).settings(
+lazy val servletWrapper = Project(id = "servlet-wrapper", base = file("servlet-wrapper")).dependsOn(coreUtils, boneCPWrapper,  xmlExtender, jsonExtenderTypesafe).settings(
     scalacOptions += "-Dscalac:patmat:analysisBudget=1024",
 
     libraryDependencies ++= Seq(
@@ -294,13 +281,4 @@ lazy val xmlExtender = Project(id = "xml-extender", base = file("xml-extender"))
     )
 ).settings(CommonSettings.defaultProjectSettings)
 
-lazy val hikariCP = Project(id = "hikari-cp", base = file("hikari-cp")).dependsOn(common, configWrapper).settings(
-    libraryDependencies ++= Seq(
-        CommonDeps.hikariCP.value,
-        CommonDeps.jdbcOracle12.value,
-        CommonDeps.jdbcOracle12UCP.value,
-        CommonDeps.jdbcOracleN18_12.value,
-        CommonDeps.scalaTest.value % Test
-    )
-).settings(CommonSettings.defaultProjectSettings)
 

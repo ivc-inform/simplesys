@@ -22,7 +22,9 @@ import com.simplesys.tuple.{TupleSS1, TupleSS2}
 import org.joda.time.{DateTime, LocalDateTime}
 import ru.simplesys.meta.types._
 
+import scala.collection.mutable.ArrayBuffer
 import scala.reflect.ClassTag
+import scalaz.{Failure, Success}
 
 case class BindingColumn(column: BasicClassBOColumn[_], value: String)
 
@@ -921,6 +923,7 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
     def FetchOne(): ValidationEx[(Product with FieldProduct)#ReturnType] = selectOne(getFetchColumns, _join, _where)
 
     def selectSQL[FT <: Product with FieldProduct](columns: FT = allColumns, sql: SQLParam): ValidationEx[List[FT#ReturnType]] = {
+        import com.simplesys.jdbc.control.classBO._
         val sql_str: String = sql match {
             case SQL(sql) => sql
             case _ => throw new RuntimeException("Not SQL")
