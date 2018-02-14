@@ -116,6 +116,18 @@ object SessionStructures extends Logging {
         }
     }
 
+    def session[T](dataSource: BoneCPDataSource)(f: (Connection) => T): ValidationEx[T] = {
+        tryCatch {
+            val connection = dataSource.getConnection
+            try {
+                f(connection)
+            }
+            finally {
+                connection.close()
+            }
+        }
+    }
+
     def transaction[T](dataSource: PoolDataSource)(f: (Connection) => T): ValidationEx[T] = {
         tryCatch {
             val connection = dataSource.getConnection

@@ -5,34 +5,31 @@ import java.sql.{Connection, Date, PreparedStatement, ResultSet, SQLException, T
 
 import com.simplesys.SQL.Gen._
 import com.simplesys.SQL._
+import com.simplesys.bonecp.BoneCPDataSource
 import com.simplesys.common.Strings._
 import com.simplesys.common.array.{NotValue, toArray}
 import com.simplesys.common.equality.SimpleEquality._
 import com.simplesys.config.Config
-import com.simplesys.db.pool.PoolDataSource
 import com.simplesys.isc.system.typesDyn._
 import com.simplesys.jdbc.control.SessionStructures._
 import com.simplesys.jdbc.control.SuperTuple1._
 import com.simplesys.jdbc.control.classBO._
-import com.simplesys.jdbc.control.table.{From, TableInnerJoinCaseClass, TableJoinCondition, TableJoinCondition1, TableLeftJoinCaseClass}
+import com.simplesys.jdbc.control.table.{OrderByCaseClass ⇒ _, OrderByList ⇒ _, SetsList ⇒ _, WheresList ⇒ _, _}
 import com.simplesys.json.JsonElement
 import com.simplesys.log.Logging
 import com.simplesys.sql.OracleDialect
 import com.simplesys.tuple.{TupleSS1, TupleSS2}
-import org.joda.time._
+import org.joda.time.{DateTime, LocalDateTime}
 import ru.simplesys.meta.types._
 
-import scala.BigDecimal._
-import scala.collection.mutable.ArrayBuffer
 import scala.reflect.ClassTag
-import scalaz.{Failure, Success}
 
 case class BindingColumn(column: BasicClassBOColumn[_], value: String)
 
 trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
     top =>
 
-    def dataSource: PoolDataSource
+    def dataSource: BoneCPDataSource
 
     protected var _columns: Product with FieldProduct = _
     protected val _where = WheresList()
@@ -817,8 +814,8 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
         _offset
     }
 
-    def selectList[FT <: Product with FieldProduct](columns: FT = allColumns, join: JoinParam, where: WhereParam, orderBy: OrderByParam, fetchSize: Int = dataSource.settings.fetchSize, dsRequest: DSRequest): ValidationEx[List[FT#ReturnType]]
-    def selectIterator[FT <: Product with FieldProduct](columns: FT = allColumns, join: JoinParam, where: WhereParam, orderBy: OrderByParam, fetchSize: Int = dataSource.settings.fetchSize, dsRequest: DSRequest): ValidationExIterator[Iterator[FT#ReturnType]]
+    def selectList[FT <: Product with FieldProduct](columns: FT = allColumns, join: JoinParam, where: WhereParam, orderBy: OrderByParam, fetchSize: Int = dataSource.Config.FetchSize, dsRequest: DSRequest): ValidationEx[List[FT#ReturnType]]
+    def selectIterator[FT <: Product with FieldProduct](columns: FT = allColumns, join: JoinParam, where: WhereParam, orderBy: OrderByParam, fetchSize: Int = dataSource.Config.FetchSize, dsRequest: DSRequest): ValidationExIterator[Iterator[FT#ReturnType]]
 
     def selectListRoot[FT <: Product with FieldProduct](columns: FT = allColumns, from: FromParam, join: JoinParam, where: WhereParam, discriminator: WhereParam, orderBy: OrderByParam, fetchSize: Int, dsRequest: DSRequest): ValidationEx[List[FT#ReturnType]] = {
         prepareSelect(from = from, columns = columns.fields, join = join, where = where, discriminator = discriminator, orderBy = orderBy, dsRequest = dsRequest) match {
@@ -911,14 +908,14 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
 
     private def getFetchColumns = if (_columns == null) allColumns else _columns
 
-    def Fetch(): ValidationEx[List[RT]] = selectList(columns = getFetchColumns, join = _join, where = _where, orderBy = _orderBy, fetchSize = dataSource.settings.fetchSize, dsRequest = null)
+    def Fetch(): ValidationEx[List[RT]] = selectList(columns = getFetchColumns, join = _join, where = _where, orderBy = _orderBy, fetchSize = dataSource.Config.FetchSize, dsRequest = null)
     def Fetch(fetchSize: Int): ValidationEx[List[RT]] = selectList(columns = getFetchColumns, join = _join, where = _where, orderBy = _orderBy, fetchSize = fetchSize, dsRequest = null)
     def Fetch(fetchSize: Int, dsRequest: DSRequest): ValidationEx[List[RT]] = selectList(columns = getFetchColumns, join = _join, where = _where, orderBy = _orderBy, fetchSize = fetchSize, dsRequest = dsRequest)
-    def Fetch(dsRequest: DSRequest): ValidationEx[List[RT]] = selectList(columns = getFetchColumns, join = _join, where = _where, orderBy = _orderBy, fetchSize = dataSource.settings.fetchSize, dsRequest = dsRequest)
+    def Fetch(dsRequest: DSRequest): ValidationEx[List[RT]] = selectList(columns = getFetchColumns, join = _join, where = _where, orderBy = _orderBy, fetchSize = dataSource.Config.FetchSize, dsRequest = dsRequest)
 
-    def FetchIterator(): ValidationExIterator[Iterator[RT]] = selectIterator(columns = getFetchColumns, join = _join, where = _where, orderBy = _orderBy, fetchSize = dataSource.settings.fetchSize, dsRequest = null)
+    def FetchIterator(): ValidationExIterator[Iterator[RT]] = selectIterator(columns = getFetchColumns, join = _join, where = _where, orderBy = _orderBy, fetchSize = dataSource.Config.FetchSize, dsRequest = null)
     def FetchIterator(fetchSize: Int): ValidationExIterator[Iterator[RT]] = selectIterator(columns = getFetchColumns, join = _join, where = _where, orderBy = _orderBy, fetchSize = fetchSize, dsRequest = null)
-    def FetchIterator(dsRequest: DSRequest): ValidationExIterator[Iterator[RT]] = selectIterator(columns = getFetchColumns, join = _join, where = _where, orderBy = _orderBy, fetchSize = dataSource.settings.fetchSize, dsRequest = dsRequest)
+    def FetchIterator(dsRequest: DSRequest): ValidationExIterator[Iterator[RT]] = selectIterator(columns = getFetchColumns, join = _join, where = _where, orderBy = _orderBy, fetchSize = dataSource.Config.FetchSize, dsRequest = dsRequest)
     def FetchIterator(fetchSize: Int, dsRequest: DSRequest): ValidationExIterator[Iterator[RT]] = selectIterator(columns = getFetchColumns, join = _join, where = _where, orderBy = _orderBy, fetchSize = fetchSize, dsRequest = dsRequest)
 
     def FetchOne(): ValidationEx[(Product with FieldProduct)#ReturnType] = selectOne(getFetchColumns, _join, _where)
@@ -931,7 +928,7 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
 
         session(dataSource) {
             connection =>
-                prepareStatement(connection, sql_str, dataSource.settings.fetchSize) {
+                prepareStatement(connection, sql_str, dataSource.Config.FetchSize) {
                     preparedStatement =>
                         executeQuery(preparedStatement) {
                             resultSet => columns buildResult resultSet
@@ -948,7 +945,7 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
                 session(dataSource) {
                     connection =>
                         logger.trace(s"Constructed sql is: ${newLine + sql.toSQL()}")
-                        prepareStatement(connection, sql.toSQL(), dataSource.settings.fetchSize) {
+                        prepareStatement(connection, sql.toSQL(), dataSource.Config.FetchSize) {
                             preparedStatement =>
                                 binding(offset = 1, preparedStatement = preparedStatement, discriptors = discriptors, wheres = wheres, joinsDs = joinsDs, joinsBo = joinsBo, joinsTable = joinsTable, bindMap = bindMap)
                                 executeOne(preparedStatement) {
@@ -1452,7 +1449,7 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
     def updateWithoutCommit(connection: Connection, setters: SetParam, where: WhereParam, table: SQLTable): List[Int] = {
         val updateStr = MakeUpdateSQL(setters, where, table = table)
 
-        prepareStatement(connection, updateStr, dataSource.settings.fetchSize) {
+        prepareStatement(connection, updateStr, dataSource.Config.FetchSize) {
             preparedStatement =>
                 batch4Update(preparedStatement = preparedStatement, setters = setters, where = where)
                 preparedStatement.executeBatch().toList
@@ -1489,7 +1486,7 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
     }
 
     def deleteWithoutCommit(connection: Connection, where: WhereParam, table: SQLTable): List[Int] = {
-        prepareStatement(connection, makeDeleteSQL(where, table), dataSource.settings.fetchSize) {
+        prepareStatement(connection, makeDeleteSQL(where, table), dataSource.Config.FetchSize) {
             statement =>
                 batch4Delete(statement = statement, where = where)
                 statement.executeBatch().toList
