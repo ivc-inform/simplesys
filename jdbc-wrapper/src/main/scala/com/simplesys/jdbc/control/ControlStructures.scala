@@ -10,7 +10,6 @@ import com.simplesys.control.ControlStructs._
 import com.simplesys.db.pool.PoolDataSource
 import com.simplesys.jdbc.exception.{NoDataFoundException, TooManyRowsException}
 import com.simplesys.log.Logging
-import oracle.jdbc.OracleConnection
 
 import scala.annotation.tailrec
 import scalaz.Validation.FlatMap._
