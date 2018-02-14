@@ -4,25 +4,18 @@ import sbt.{Def, _}
 object PluginDeps {
     val sbtCoffeeScript = addSbtPlugin("com.typesafe.sbt" % "sbt-coffeescript" % versions.sbtCoffeScriptVersion)
     val jdbcPlugin = addSbtPlugin("com.simplesys" % "jdbc" % versions.jdbcPluginVersion)
-    val jsonPlugin = addSbtPlugin("com.simplesys" % "json" % versions.jsonPluginVersion)
     val coursier = addSbtPlugin("io.get-coursier" % "sbt-coursier" % "1.0.0-RC12")
 
     object versions {
-        val sbtCoffeScriptVersion = "1.1.5-SNAPSHOT"
-        val jdbcPluginVersion = "1.0.4-SNAPSHOT"
-        val jsonPluginVersion = "1.0.4-SNAPSHOT"
+        val sbtCoffeScriptVersion = "1.1.6"
+        val jdbcPluginVersion = "1.0.5"
     }
 }
 
 object CommonDeps {
     val scalaXml = "org.scala-lang.modules" %% "scala-xml" % versions.scalaModulesVersion
-    val scalaParserCombinators = "org.scala-lang.modules" %% "scala-parser-combinators" % versions.scalaParserCombinatorsVersion
     val scalaReflect = Def.setting("org.scala-lang" % "scala-reflect" % scalaVersion.value)
     val scalazCore = "org.scalaz" %% "scalaz-core" % versions.scalazVersion
-    val logbackClassic = "ch.qos.logback" % "logback-classic" % versions.logbackVersion
-    val logbackAccess = "ch.qos.logback" % "logback-access" % versions.logbackVersion
-    val logbackCore = "ch.qos.logback" % "logback-core" % versions.logbackVersion
-    val javaxTransaction = "javax.transaction" % "jta" % versions.javaxTransactionVersion
     val servletAPI = "javax.servlet" % "javax.servlet-api" % versions.servletAPIVersion
 
     val wrappedSaxonEE = "com.simplesys.saxon" % "saxon-ee" % versions.wrappedSaxonEEVersion
@@ -45,6 +38,10 @@ object CommonDeps {
     val derbyDB = "org.apache.derby" % "derby" % versions.derbyDBVersion
     val jdbcPostgres = "org.postgresql" % "postgresql" % versions.postgresDriverVersion
 
+    val logBackWrapper = "com.simplesys" %% "logback-wrapper" % "1.5.0.1"
+    val common = "com.simplesys" %% "common" % "1.5.0.1"
+    val scalaIOExtender = "com.simplesys" %% "scala-io-extender" % "1.5.0.1"
+    val scalaGen = "com.simplesys" %% "scala-gen" % "1.5.0.1"
     val jdbcOracle12 = "com.oracle.jdbc" % "ojdbc8" % versions.oracle12DriverVersion
     val jdbcOracle12UCP = "com.oracle.jdbc" % "ucp" % versions.oracle12DriverVersion
     val jdbcOracleN18_12 = "com.oracle.jdbc" % "orai18n" % versions.oracle12DriverVersion
@@ -54,7 +51,6 @@ object CommonDeps {
     val apacheCommonsLang = "org.apache.commons" % "commons-lang3" % versions.apacheCommonsLangVersion
     val apacheCommonsIO = "commons-io" % "commons-io" % versions.apacheCommonsIOVersion
     val scalaMeta = "org.scalameta" %% "scalameta" % versions.scalaMetaVersion
-    val scalaArm = "com.jsuereth" %% "scala-arm" % versions.scalaArmVersion
     val utilEval = "com.twitter" %% "util-eval" % versions.utilEvalVersion
     val configWrapper = "com.github.kxbmap" %% "configs" % versions.configWrapperVersion
 
@@ -71,13 +67,12 @@ object CommonDeps {
 
         val scalazVersion = "7.2.18"
 
-        val doobieVersion = "0.4.4"
+        val doobieVersion = "0.4.1"
 
         val logbackVersion = "1.2.3"
                                                                                                                                              
         val apacheCommonsLangVersion = "3.4"
-
-        val javaxTransactionVersion = "1.1"
+                                                                            
         val servletAPIVersion = "4.0.0"
 
         val wrappedSaxonEEVersion = "9.5.1.2-1"
@@ -88,7 +83,6 @@ object CommonDeps {
         val configTypesafeVersion = "1.3.1"
 
         val liquibaseWrapped = "3.0.2"
-
         val h2DBVersion = "1.4.193"
         val derbyDBVersion = "10.11.1.1"
         val postgresDriverVersion = "42.2.1"
@@ -97,8 +91,6 @@ object CommonDeps {
         val uTestVersion = "0.3.1"
         val scalaTestVersion = "3.0.4"
         val scalaMetaVersion = "2.1.2"
-        val scalaArmVersion = "2.0"
-        val scalaParserCombinatorsVersion = "1.0.5"
         val scalaSpecsVersion = "3.8.6"
         val sbtJUnitVersion = "0.11"
         val mockitoVersion = "1.9.5"
@@ -112,7 +104,7 @@ object CommonDeps {
         val utilEvalVersion = "6.43.0"
         val configWrapperVersion = "0.4.4"
         
-        val ssCrossVersion = "1.0.0.5-SNAPSHOT"
+        val ssCrossVersion = "1.0.0.6"
     }
 }
 
