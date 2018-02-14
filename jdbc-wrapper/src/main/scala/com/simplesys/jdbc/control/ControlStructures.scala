@@ -4,6 +4,7 @@ import java.io.{PrintWriter, StringWriter}
 import java.sql._
 import java.util.concurrent.TimeoutException
 
+import com.simplesys.bonecp.BoneCPDataSource
 import com.simplesys.common.Strings._
 import com.simplesys.control.ControlStructs._
 import com.simplesys.db.pool.PoolDataSource
@@ -117,6 +118,37 @@ object SessionStructures extends Logging {
     }
 
     def transaction[T](dataSource: PoolDataSource)(f: (Connection) => T): ValidationEx[T] = {
+        tryCatch {
+            val connection = dataSource.getConnection
+            val autoCommit = connection.getAutoCommit
+            connection setAutoCommit false
+            try {
+                val res = f(connection)
+                connection.commit()
+                connection setAutoCommit autoCommit
+                res
+            }
+            catch {
+                case e: BatchUpdateException =>
+                    connection.rollback()
+                    connection setAutoCommit autoCommit
+
+                    logger error e
+                    throw e
+                case e: Throwable =>
+                    connection.rollback()
+                    connection setAutoCommit autoCommit
+
+                    logger error e
+                    throw e
+            }
+            finally {
+                connection.close()
+            }
+        }
+    }
+
+    def transaction[T](dataSource: BoneCPDataSource)(f: (Connection) => T): ValidationEx[T] = {
         tryCatch {
             val connection = dataSource.getConnection
             val autoCommit = connection.getAutoCommit
