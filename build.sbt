@@ -21,7 +21,7 @@ lazy val root = (project in file(".")).
       jsonExtenderTypesafe,
       coreDomains,
       scalaGen,
-      //boneCPWrapper,
+      boneCPWrapper,
       oraclePoolDataSources,
       servletWrapper,
       coreUtils,
@@ -183,7 +183,14 @@ def arity(scalaVer: String, arity_2_11: Int, arity_2_10: Int): Int =
         case _ => arity_2_10
     }
 
-lazy val jdbcWrapper = Project(id = "jdbc-wrapper", base = file("jdbc-wrapper")).dependsOn(/*boneCPWrapper, */ oraclePoolDataSources, scalaGen, coreDomains, coreLibrary).enablePlugins(JDBCPlugin).settings(
+lazy val jdbcWrapper = Project(id = "jdbc-wrapper", base = file("jdbc-wrapper"))
+  .dependsOn(
+      boneCPWrapper,
+      oraclePoolDataSources,
+      scalaGen,
+      coreDomains,
+      coreLibrary
+  ).enablePlugins(JDBCPlugin).settings(
     com.simplesys.jdbc.plugins.jdbc.JDBCPlugin.autoImport.maxArity := arity(scalaVersion.value, 50, 22),
 
     scalacOptions += "-language:existentials",
@@ -249,7 +256,7 @@ lazy val scalaIOExtender = Project(id = "scala-io-extender", base = file("scala-
     ) ++ CommonDeps.scalaParserCombinators.value.seq
 ).settings(CommonSettings.defaultProjectSettings)
 
-lazy val servletWrapper = Project(id = "servlet-wrapper", base = file("servlet-wrapper")).dependsOn(coreUtils, /*boneCPWrapper, */ oraclePoolDataSources, xmlExtender, jsonExtenderTypesafe).settings(
+lazy val servletWrapper = Project(id = "servlet-wrapper", base = file("servlet-wrapper")).dependsOn(coreUtils, boneCPWrapper,  oraclePoolDataSources, xmlExtender, jsonExtenderTypesafe).settings(
     scalacOptions += "-Dscalac:patmat:analysisBudget=1024",
 
     libraryDependencies ++= Seq(
@@ -257,6 +264,20 @@ lazy val servletWrapper = Project(id = "servlet-wrapper", base = file("servlet-w
         CommonDeps.scalaTest.value % Test
     )
 ).settings(CommonSettings.defaultProjectSettings)
+
+lazy val boneCPWrapper = Project(id = "bonecp-wrapper", base = file("bonecp-wrapper")).dependsOn(logbackWrapper, common, xmlExtender, configWrapper, doobieExtender).settings(
+        scalacOptions += "-Dscalac:patmat:analysisBudget=1024",
+
+        libraryDependencies ++= Seq(
+            CommonDeps.boneCP.value,
+            CommonDeps.scalazCore.value,
+            CommonDeps.scalaTest.value % Test,
+            CommonDeps.h2DB.value % Test,
+            CommonDeps.derbyDB.value % Test,
+            //CommonDeps.jdbcPostgres.value % Test,
+            CommonDeps.jdbcOracle12.value % Test
+        )
+    ).settings(CommonSettings.defaultProjectSettings)
 
 lazy val utilEvalExtender = Project(id = "util-eval-extender", base = file("util-eval-extender")).dependsOn(common).settings(
     libraryDependencies ++= Seq(
