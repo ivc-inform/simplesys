@@ -119,7 +119,7 @@ trait MetaSupport {
         //select comments from user_col_comments where table_name = 'SAVE_TRANSACTION' and column_name = 'GTIMESTAMP'
         prepareStatement(connection, userColComments.toSQL(), dataSource.Config.FetchSize) {
             statement =>
-                dataSource.sqlDialect match {
+                dataSource.SQLDialect match {
                     case OracleDialect =>
                         while (result.next()) {
                             statement.setString(1, result.getString("TABLE_NAME"))
@@ -131,7 +131,7 @@ trait MetaSupport {
                         }
 
                     case _ =>
-                        throw new RuntimeException("Not implementation for :" + dataSource.sqlDialect)
+                        throw new RuntimeException("Not implementation for :" + dataSource.SQLDialect)
                 }
         }
 
@@ -209,7 +209,7 @@ trait MetaSupport {
 
         prepareStatement(connection, userTableComments.toSQL(), dataSource.Config.FetchSize) {
             statement =>
-                dataSource.sqlDialect match {
+                dataSource.SQLDialect match {
                     case OracleDialect =>
                         while (result.next()) {
                             statement.setString(1, result.getString("TABLE_NAME"))
@@ -220,7 +220,7 @@ trait MetaSupport {
                         }
 
                     case _ =>
-                        throw new RuntimeException("Not implementation for :" + dataSource.sqlDialect)
+                        throw new RuntimeException("Not implementation for :" + dataSource.SQLDialect)
                 }
         }
 

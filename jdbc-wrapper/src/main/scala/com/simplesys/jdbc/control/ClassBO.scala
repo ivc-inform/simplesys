@@ -796,7 +796,7 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
             case null =>
             case _ =>
                 if ((dsRequest.endRow.toLong !== 0) || (dsRequest.startRow.toLong !== 0))
-                    dataSource.sqlDialect match {
+                    dataSource.SQLDialect match {
                         case OracleDialect =>
                             val endRow = dsRequest.endRow.toLong + getInt("config.tailToEndRow")
                             preparedStatement.setLong(_offset, endRow)
@@ -808,7 +808,7 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
 
                             logger trace (s"Binding index: ${_offset}, value: ${startRow}")
                         case _ =>
-                            throw new RuntimeException("Not implementation for :" + dataSource.sqlDialect)
+                            throw new RuntimeException("Not implementation for :" + dataSource.SQLDialect)
                     }
         }
         _offset
@@ -1183,7 +1183,7 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
             dsRequest match {
                 case null =>
                 case _ =>
-                    dataSource.sqlDialect match {
+                    dataSource.SQLDialect match {
                         case OracleDialect =>
                             val sb = dsRequest.sortBy
                             sb match {
@@ -1291,7 +1291,7 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
             case x => x
         }: _*)
 
-        def preSQL(topLevel: Boolean): SQLAbsTable = dataSource.sqlDialect match {
+        def preSQL(topLevel: Boolean): SQLAbsTable = dataSource.SQLDialect match {
             case OracleDialect =>
                 val fields = getSQLColumns
                 //logger trace s"columns: ${newLine + fields.toSQL()}"
@@ -1315,7 +1315,7 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
                 preSQL(true)
             case _ =>
                 if (dsRequest.endRow.toLong != 0 || dsRequest.startRow.toLong != 0)
-                    dataSource.sqlDialect match {
+                    dataSource.SQLDialect match {
                         case OracleDialect =>
                             val _fields: SQLFields = getSQLColumns.sqlFieldsWithTableOwner(SQLTable("T1")) + SQLField(name = "ROWNUM", isSystem = true, quoted = false, alias = "sys$$simplesys$$rownum".als)
 
@@ -1335,7 +1335,7 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
                                 ordersBy = topLevelOrderBy(fields, sqlOrdersBy)
                             )
                         case _ =>
-                            logger warn ("Not implementation for :" + dataSource.sqlDialect.toString)
+                            logger warn ("Not implementation for :" + dataSource.SQLDialect.toString)
                             preSQL(true)
                     }
                 else
@@ -1407,7 +1407,7 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
         }
         //logger.trace(s"Constructed setFields is: ${newLine + setFields.toUpdateSQL().replace("$AliasTable$.", "")}")
 
-        def sqlUpdate: SQLAbsTable = dataSource.sqlDialect match {
+        def sqlUpdate: SQLAbsTable = dataSource.SQLDialect match {
             case OracleDialect =>
                 SQLCompoundTable(fields = setFields, from = SQLFrom(table), where = getWheres(where))
             case _ =>
@@ -1457,7 +1457,7 @@ trait ClassBO[T <: ClassBO[T]] extends Entity[T] with Config with Logging {
     }
 
     def makeDeleteSQL(where: WhereParam, table: SQLTable): String = {
-        val sqlDelete: SQLAbsTable = dataSource.sqlDialect match {
+        val sqlDelete: SQLAbsTable = dataSource.SQLDialect match {
             case OracleDialect =>
                 SQLCompoundTable(from = SQLFrom(table), where = getWheres(where))
             case _ =>
