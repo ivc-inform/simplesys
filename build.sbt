@@ -29,7 +29,7 @@ lazy val root = (project in file(".")).
   ).
   settings(inThisBuild(Seq(
       git.baseVersion := CommonSettings.settingValues.baseVersion,
-      scalaVersion := "2.12.4",
+      scalaVersion := "2.12.5",
       publishTo := {
           val corporateRepo = "http://maven-repo.mfms/"
           if (isSnapshot.value)
