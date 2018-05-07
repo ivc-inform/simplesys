@@ -29,7 +29,7 @@
 
 @simpleSyS.objects = {} unless @simpleSyS.objects
 
-@simpleSyS.config.confirmDeleting = 	"Вы уверенны в необходимости удаления ?"
+@simpleSyS.config.confirmDeleting = "Вы уверенны в необходимости удаления ?"
 
 @newLine = "\n"
 
